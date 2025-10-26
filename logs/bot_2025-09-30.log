@@ -1,0 +1,81 @@
+2025-09-30 05:56:52 - root - INFO - Starting Trading Signal Bot...
+2025-09-30 05:56:52 - app.db.database - INFO - Database initialized successfully
+2025-09-30 05:56:55 - app.services.telegram_service - INFO - Ensured default chat 'AskTheSage Customer Help' (-1002951925977) is in the database.
+2025-09-30 05:56:55 - app.services.telegram_service - INFO - Bot command menu has been set.
+2025-09-30 05:56:55 - app.services.telegram_service - INFO - Telegram bot initialized and polling started.
+2025-09-30 05:56:55 - root - INFO - Server starting on http://0.0.0.0:5000
+2025-09-30 06:05:26 - root - INFO - Server shutting down...
+2025-09-30 06:05:27 - app.services.telegram_service - INFO - Telegram bot has been shut down.
+2025-09-30 06:05:27 - root - INFO - Shutdown complete.
+2025-09-30 06:09:18 - root - INFO - Starting Trading Signal Bot...
+2025-09-30 06:09:18 - app.db.database - INFO - Database initialized successfully
+2025-09-30 06:09:18 - app.core.config - INFO - Attempting to load and apply settings from the database...
+2025-09-30 06:09:18 - app.core.config - INFO - No dynamic settings found in the database. Using existing values.
+2025-09-30 06:09:20 - app.services.telegram_service - INFO - Ensured default chat 'AskTheSage Customer Help' (-1002951925977) is in the database.
+2025-09-30 06:09:20 - app.services.telegram_service - INFO - Bot command menu has been set.
+2025-09-30 06:09:20 - app.services.telegram_service - INFO - Telegram bot initialized and polling started.
+2025-09-30 06:09:20 - root - INFO - Server starting on http://0.0.0.0:5000
+2025-09-30 06:09:39 - app.services.telegram_service - INFO - Admin 5135164547 changed setting MAX_SIGNALS_PER_DAY from 10 to 12
+2025-09-30 06:10:00 - app.services.telegram_service - INFO - Admin 5135164547 changed setting MIN_SECONDS_BETWEEN_SIGNALS from 60 to 1
+2025-09-30 06:10:29 - app.services.telegram_service - INFO - Bot paused by admin 5135164547
+2025-09-30 06:10:32 - app.services.telegram_service - INFO - Bot resumed by admin 5135164547
+2025-09-30 06:12:13 - root - INFO - Server shutting down...
+2025-09-30 06:12:14 - app.services.telegram_service - INFO - Telegram bot has been shut down.
+2025-09-30 06:12:14 - root - INFO - Shutdown complete.
+2025-09-30 06:17:18 - root - INFO - Starting Trading Signal Bot...
+2025-09-30 06:17:18 - app.db.database - INFO - Database initialized successfully
+2025-09-30 06:17:18 - app.core.config - INFO - Attempting to load and apply settings from the database...
+2025-09-30 06:17:18 - app.core.config - INFO - Successfully applied 2 settings from the database.
+2025-09-30 06:17:20 - app.services.telegram_service - INFO - Ensured default chat 'AskTheSage Customer Help' (-1002951925977) is in the database.
+2025-09-30 06:17:21 - app.services.telegram_service - INFO - Bot command menu has been set.
+2025-09-30 06:17:21 - app.services.telegram_service - INFO - Telegram bot initialized and polling started.
+2025-09-30 06:17:21 - root - INFO - Server starting on http://0.0.0.0:5000
+2025-09-30 06:27:22 - root - INFO - Server shutting down...
+2025-09-30 06:27:24 - app.services.telegram_service - INFO - Telegram bot has been shut down.
+2025-09-30 06:27:24 - root - INFO - Shutdown complete.
+2025-09-30 06:51:44 - root - INFO - Starting Trading Signal Bot...
+2025-09-30 06:51:44 - app.db.database - INFO - Database initialized successfully
+2025-09-30 06:51:44 - app.core.config - INFO - Attempting to load and apply settings from the database...
+2025-09-30 06:51:44 - app.core.config - INFO - Successfully applied 2 settings from the database.
+2025-09-30 06:51:47 - app.services.telegram_service - INFO - Ensured default chat 'AskTheSage Customer Help' (-1002951925977) is in the database.
+2025-09-30 06:51:47 - app.services.telegram_service - INFO - Bot command menu has been set.
+2025-09-30 06:51:47 - app.services.telegram_service - INFO - Telegram bot initialized and polling started.
+2025-09-30 06:51:47 - root - INFO - Server starting on http://0.0.0.0:5000
+2025-09-30 06:59:10 - root - INFO - Server shutting down...
+2025-09-30 06:59:12 - app.services.telegram_service - INFO - Telegram bot has been shut down.
+2025-09-30 06:59:12 - root - INFO - Shutdown complete.
+2025-09-30 06:59:16 - root - INFO - Starting Trading Signal Bot...
+2025-09-30 06:59:16 - app.db.database - INFO - Database initialized successfully
+2025-09-30 06:59:16 - app.core.config - INFO - Attempting to load and apply settings from the database...
+2025-09-30 06:59:16 - app.core.config - INFO - Successfully applied 2 settings from the database.
+2025-09-30 06:59:18 - app.services.telegram_service - INFO - Ensured default chat 'AskTheSage Customer Help' (-1002951925977) is in the database.
+2025-09-30 06:59:18 - app.services.telegram_service - INFO - Bot command menu has been set.
+2025-09-30 06:59:19 - app.services.telegram_service - INFO - Telegram bot initialized and polling started.
+2025-09-30 06:59:19 - root - INFO - Server starting on http://0.0.0.0:5000
+2025-09-30 06:59:50 - app.services.telegram_service - INFO - Admin 5135164547 changed setting MAX_SIGNALS_PER_DAY from 12 to 0
+2025-09-30 07:01:26 - root - INFO - Server shutting down...
+2025-09-30 07:01:29 - app.services.telegram_service - INFO - Telegram bot has been shut down.
+2025-09-30 07:01:29 - root - INFO - Shutdown complete.
+2025-09-30 07:01:45 - root - INFO - Starting Trading Signal Bot...
+2025-09-30 07:01:45 - app.db.database - INFO - Database initialized successfully
+2025-09-30 07:01:45 - app.core.config - INFO - Attempting to load and apply settings from the database...
+2025-09-30 07:01:45 - app.core.config - INFO - Successfully applied 2 settings from the database.
+2025-09-30 07:01:47 - app.services.telegram_service - INFO - Ensured default chat 'AskTheSage Customer Help' (-1002951925977) is in the database.
+2025-09-30 07:01:47 - app.services.telegram_service - INFO - Bot command menu has been set.
+2025-09-30 07:01:48 - app.services.telegram_service - INFO - Telegram bot initialized and polling started.
+2025-09-30 07:01:48 - root - INFO - Server starting on http://0.0.0.0:5000
+2025-09-30 07:03:16 - root - INFO - Server shutting down...
+2025-09-30 07:03:18 - app.services.telegram_service - INFO - Telegram bot has been shut down.
+2025-09-30 07:03:18 - root - INFO - Shutdown complete.
+2025-09-30 07:03:22 - root - INFO - Starting Trading Signal Bot...
+2025-09-30 07:03:22 - app.db.database - INFO - Database initialized successfully
+2025-09-30 07:03:22 - app.core.config - INFO - Attempting to load and apply settings from the database...
+2025-09-30 07:03:22 - app.core.config - INFO - Successfully applied 2 settings from the database.
+2025-09-30 07:03:24 - app.services.telegram_service - INFO - Ensured default chat 'AskTheSage Customer Help' (-1002951925977) is in the database.
+2025-09-30 07:03:24 - app.services.telegram_service - INFO - Bot command menu has been set.
+2025-09-30 07:03:25 - app.services.telegram_service - INFO - Telegram bot initialized and polling started.
+2025-09-30 07:03:25 - root - INFO - Server starting on http://0.0.0.0:5000
+2025-09-30 07:04:12 - app.services.telegram_service - INFO - Admin 5135164547 changed setting TRADING_START_TIME from 00:00:00 to 06:43:00
+2025-09-30 07:04:27 - root - INFO - Server shutting down...
+2025-09-30 07:04:28 - app.services.telegram_service - INFO - Telegram bot has been shut down.
+2025-09-30 07:04:28 - root - INFO - Shutdown complete.

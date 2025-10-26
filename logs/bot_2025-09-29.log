@@ -1,0 +1,2569 @@
+2025-09-29 18:37:42 - root - INFO - Starting Trading Signal Bot...
+2025-09-29 18:37:42 - app.db.database - INFO - Database initialized successfully
+2025-09-29 18:37:43 - watchfiles.main - INFO - 8 changes detected
+2025-09-29 18:37:44 - app.services.telegram_service - INFO - Telegram bot initialized and polling started.
+2025-09-29 18:37:44 - root - INFO - Server starting on http://0.0.0.0:5000
+2025-09-29 18:37:51 - root - INFO - Server shutting down...
+2025-09-29 18:37:51 - app.services.telegram_service - INFO - Telegram bot has been shut down.
+2025-09-29 18:37:51 - root - INFO - Shutdown complete.
+2025-09-29 18:38:01 - root - INFO - Starting Trading Signal Bot...
+2025-09-29 18:38:01 - app.db.database - INFO - Database initialized successfully
+2025-09-29 18:38:04 - app.services.telegram_service - INFO - Telegram bot initialized and polling started.
+2025-09-29 18:38:04 - root - INFO - Server starting on http://0.0.0.0:5000
+2025-09-29 18:38:06 - watchfiles.main - INFO - 4 changes detected
+2025-09-29 18:38:07 - watchfiles.main - INFO - 1 change detected
+2025-09-29 18:40:24 - watchfiles.main - INFO - 1 change detected
+2025-09-29 18:40:30 - watchfiles.main - INFO - 1 change detected
+2025-09-29 18:40:31 - watchfiles.main - INFO - 1 change detected
+2025-09-29 18:40:36 - root - INFO - Server shutting down...
+2025-09-29 18:40:36 - app.services.telegram_service - INFO - Telegram bot has been shut down.
+2025-09-29 18:40:36 - root - INFO - Shutdown complete.
+2025-09-29 18:40:37 - watchfiles.main - INFO - 1 change detected
+2025-09-29 18:40:38 - watchfiles.main - INFO - 5 changes detected
+2025-09-29 18:40:38 - root - INFO - Starting Trading Signal Bot...
+2025-09-29 18:40:38 - app.db.database - INFO - Database initialized successfully
+2025-09-29 18:40:38 - watchfiles.main - INFO - 1 change detected
+2025-09-29 18:40:40 - app.services.telegram_service - INFO - Telegram bot initialized and polling started.
+2025-09-29 18:40:40 - root - INFO - Server starting on http://0.0.0.0:5000
+2025-09-29 18:40:45 - watchfiles.main - INFO - 1 change detected
+2025-09-29 18:40:45 - telegram.ext.Updater - ERROR - Exception happened while polling for updates.
+Traceback (most recent call last):
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_utils\networkloop.py", line 134, in network_retry_loop
+    await do_action()
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_utils\networkloop.py", line 127, in do_action
+    action_cb_task.result()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_updater.py", line 340, in polling_action_cb
+    updates = await self.bot.get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_extbot.py", line 676, in get_updates
+    updates = await super().get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 4780, in get_updates
+    await self._post(
+    ^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    ),
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 703, in _post
+    return await self._do_post(
+           ^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_extbot.py", line 372, in _do_post
+    return await super()._do_post(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 732, in _do_post
+    result = await request.post(
+             ^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\request\_baserequest.py", line 198, in post
+    result = await self._request_wrapper(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\request\_baserequest.py", line 375, in _request_wrapper
+    raise exception
+telegram.error.Conflict: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-09-29 18:40:51 - telegram.ext.Updater - ERROR - Exception happened while polling for updates.
+Traceback (most recent call last):
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_utils\networkloop.py", line 134, in network_retry_loop
+    await do_action()
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_utils\networkloop.py", line 127, in do_action
+    action_cb_task.result()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_updater.py", line 340, in polling_action_cb
+    updates = await self.bot.get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_extbot.py", line 676, in get_updates
+    updates = await super().get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 4780, in get_updates
+    await self._post(
+    ^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    ),
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 703, in _post
+    return await self._do_post(
+           ^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_extbot.py", line 372, in _do_post
+    return await super()._do_post(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 732, in _do_post
+    result = await request.post(
+             ^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\request\_baserequest.py", line 198, in post
+    result = await self._request_wrapper(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\request\_baserequest.py", line 375, in _request_wrapper
+    raise exception
+telegram.error.Conflict: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-09-29 18:40:57 - watchfiles.main - INFO - 1 change detected
+2025-09-29 18:40:58 - telegram.ext.Updater - ERROR - Exception happened while polling for updates.
+Traceback (most recent call last):
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_utils\networkloop.py", line 134, in network_retry_loop
+    await do_action()
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_utils\networkloop.py", line 127, in do_action
+    action_cb_task.result()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_updater.py", line 340, in polling_action_cb
+    updates = await self.bot.get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_extbot.py", line 676, in get_updates
+    updates = await super().get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 4780, in get_updates
+    await self._post(
+    ^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    ),
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 703, in _post
+    return await self._do_post(
+           ^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_extbot.py", line 372, in _do_post
+    return await super()._do_post(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 732, in _do_post
+    result = await request.post(
+             ^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\request\_baserequest.py", line 198, in post
+    result = await self._request_wrapper(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\request\_baserequest.py", line 375, in _request_wrapper
+    raise exception
+telegram.error.Conflict: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-09-29 18:41:04 - telegram.ext.Updater - ERROR - Exception happened while polling for updates.
+Traceback (most recent call last):
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_utils\networkloop.py", line 134, in network_retry_loop
+    await do_action()
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_utils\networkloop.py", line 127, in do_action
+    action_cb_task.result()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_updater.py", line 340, in polling_action_cb
+    updates = await self.bot.get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_extbot.py", line 676, in get_updates
+    updates = await super().get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 4780, in get_updates
+    await self._post(
+    ^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    ),
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 703, in _post
+    return await self._do_post(
+           ^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_extbot.py", line 372, in _do_post
+    return await super()._do_post(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 732, in _do_post
+    result = await request.post(
+             ^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\request\_baserequest.py", line 198, in post
+    result = await self._request_wrapper(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\request\_baserequest.py", line 375, in _request_wrapper
+    raise exception
+telegram.error.Conflict: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-09-29 18:41:13 - telegram.ext.Updater - ERROR - Exception happened while polling for updates.
+Traceback (most recent call last):
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_utils\networkloop.py", line 134, in network_retry_loop
+    await do_action()
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_utils\networkloop.py", line 127, in do_action
+    action_cb_task.result()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_updater.py", line 340, in polling_action_cb
+    updates = await self.bot.get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_extbot.py", line 676, in get_updates
+    updates = await super().get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 4780, in get_updates
+    await self._post(
+    ^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    ),
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 703, in _post
+    return await self._do_post(
+           ^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_extbot.py", line 372, in _do_post
+    return await super()._do_post(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 732, in _do_post
+    result = await request.post(
+             ^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\request\_baserequest.py", line 198, in post
+    result = await self._request_wrapper(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\request\_baserequest.py", line 375, in _request_wrapper
+    raise exception
+telegram.error.Conflict: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-09-29 18:41:21 - watchfiles.main - INFO - 1 change detected
+2025-09-29 18:41:26 - telegram.ext.Updater - ERROR - Exception happened while polling for updates.
+Traceback (most recent call last):
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_utils\networkloop.py", line 134, in network_retry_loop
+    await do_action()
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_utils\networkloop.py", line 127, in do_action
+    action_cb_task.result()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_updater.py", line 340, in polling_action_cb
+    updates = await self.bot.get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_extbot.py", line 676, in get_updates
+    updates = await super().get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 4780, in get_updates
+    await self._post(
+    ^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    ),
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 703, in _post
+    return await self._do_post(
+           ^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_extbot.py", line 372, in _do_post
+    return await super()._do_post(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 732, in _do_post
+    result = await request.post(
+             ^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\request\_baserequest.py", line 198, in post
+    result = await self._request_wrapper(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\request\_baserequest.py", line 375, in _request_wrapper
+    raise exception
+telegram.error.Conflict: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-09-29 18:41:36 - watchfiles.main - INFO - 1 change detected
+2025-09-29 18:41:39 - watchfiles.main - INFO - 1 change detected
+2025-09-29 18:41:47 - telegram.ext.Updater - ERROR - Exception happened while polling for updates.
+Traceback (most recent call last):
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_utils\networkloop.py", line 134, in network_retry_loop
+    await do_action()
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_utils\networkloop.py", line 127, in do_action
+    action_cb_task.result()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_updater.py", line 340, in polling_action_cb
+    updates = await self.bot.get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_extbot.py", line 676, in get_updates
+    updates = await super().get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 4780, in get_updates
+    await self._post(
+    ^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    ),
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 703, in _post
+    return await self._do_post(
+           ^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_extbot.py", line 372, in _do_post
+    return await super()._do_post(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 732, in _do_post
+    result = await request.post(
+             ^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\request\_baserequest.py", line 198, in post
+    result = await self._request_wrapper(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\request\_baserequest.py", line 375, in _request_wrapper
+    raise exception
+telegram.error.Conflict: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-09-29 18:41:55 - root - INFO - Server shutting down...
+2025-09-29 18:41:56 - app.services.telegram_service - INFO - Telegram bot has been shut down.
+2025-09-29 18:41:56 - root - INFO - Shutdown complete.
+2025-09-29 18:42:13 - root - INFO - Starting Trading Signal Bot...
+2025-09-29 18:42:13 - app.db.database - INFO - Database initialized successfully
+2025-09-29 18:42:15 - app.services.telegram_service - INFO - Telegram bot initialized and polling started.
+2025-09-29 18:42:15 - root - INFO - Server starting on http://0.0.0.0:5000
+2025-09-29 18:45:07 - watchfiles.main - INFO - 1 change detected
+2025-09-29 18:45:17 - watchfiles.main - INFO - 1 change detected
+2025-09-29 18:45:23 - watchfiles.main - INFO - 1 change detected
+2025-09-29 18:45:42 - root - INFO - Server shutting down...
+2025-09-29 18:45:43 - app.services.telegram_service - INFO - Telegram bot has been shut down.
+2025-09-29 18:45:43 - root - INFO - Shutdown complete.
+2025-09-29 18:45:44 - watchfiles.main - INFO - 1 change detected
+2025-09-29 18:45:45 - watchfiles.main - INFO - 1 change detected
+2025-09-29 18:45:45 - root - INFO - Starting Trading Signal Bot...
+2025-09-29 18:45:45 - app.db.database - INFO - Database initialized successfully
+2025-09-29 18:45:46 - app.services.telegram_service - INFO - Telegram bot initialized and polling started.
+2025-09-29 18:45:46 - root - INFO - Server starting on http://0.0.0.0:5000
+2025-09-29 18:45:46 - watchfiles.main - INFO - 1 change detected
+2025-09-29 18:45:56 - root - INFO - Server shutting down...
+2025-09-29 18:45:56 - app.services.telegram_service - INFO - Telegram bot has been shut down.
+2025-09-29 18:45:56 - root - INFO - Shutdown complete.
+2025-09-29 18:46:01 - root - INFO - Starting Trading Signal Bot...
+2025-09-29 18:46:01 - app.db.database - INFO - Database initialized successfully
+2025-09-29 18:46:03 - app.services.telegram_service - INFO - Telegram bot initialized and polling started.
+2025-09-29 18:46:03 - root - INFO - Server starting on http://0.0.0.0:5000
+2025-09-29 18:47:45 - watchfiles.main - INFO - 1 change detected
+2025-09-29 18:47:50 - watchfiles.main - INFO - 1 change detected
+2025-09-29 18:48:30 - root - INFO - Server shutting down...
+2025-09-29 18:48:31 - app.services.telegram_service - INFO - Telegram bot has been shut down.
+2025-09-29 18:48:31 - root - INFO - Shutdown complete.
+2025-09-29 18:48:32 - watchfiles.main - INFO - 1 change detected
+2025-09-29 18:48:33 - watchfiles.main - INFO - 5 changes detected
+2025-09-29 18:48:33 - root - INFO - Starting Trading Signal Bot...
+2025-09-29 18:48:33 - app.db.database - INFO - Database initialized successfully
+2025-09-29 18:48:33 - watchfiles.main - INFO - 1 change detected
+2025-09-29 18:48:34 - app.services.telegram_service - INFO - Telegram bot initialized and polling started.
+2025-09-29 18:48:34 - root - INFO - Server starting on http://0.0.0.0:5000
+2025-09-29 18:48:40 - root - INFO - Starting Trading Signal Bot...
+2025-09-29 18:48:40 - app.db.database - INFO - Database initialized successfully
+2025-09-29 18:48:42 - app.services.telegram_service - INFO - Telegram bot initialized and polling started.
+2025-09-29 18:48:42 - root - INFO - Server starting on http://0.0.0.0:5000
+2025-09-29 18:49:00 - app.api.endpoints - INFO - Signal received from 127.0.0.1: BUY EURUSD @ 1.0845
+2025-09-29 18:49:00 - app.services.signal_service - INFO - Signal saved to DB: ID=1, BUY EURUSD @ 1.0845
+2025-09-29 18:49:00 - watchfiles.main - INFO - 3 changes detected
+2025-09-29 18:49:01 - app.services.telegram_service - INFO - Telegram alert sent to chat_id: -1002951925977
+2025-09-29 18:49:11 - app.api.endpoints - INFO - Signal received from 127.0.0.1: SELL GBPUSD @ 1.2635
+2025-09-29 18:49:11 - app.api.endpoints - WARNING - Signal rejected: Rate limit active. Please wait 50 more seconds.
+2025-09-29 18:49:11 - app.api.endpoints - ERROR - An unexpected error occurred while processing signal: 429: Rate limit active. Please wait 50 more seconds.
+2025-09-29 18:49:15 - app.api.endpoints - INFO - Signal received from 127.0.0.1: SELL GBPUSD @ 1.2635
+2025-09-29 18:49:15 - app.api.endpoints - WARNING - Signal rejected: Rate limit active. Please wait 46 more seconds.
+2025-09-29 18:49:15 - app.api.endpoints - ERROR - An unexpected error occurred while processing signal: 429: Rate limit active. Please wait 46 more seconds.
+2025-09-29 18:52:06 - watchfiles.main - INFO - 1 change detected
+2025-09-29 18:52:17 - watchfiles.main - INFO - 1 change detected
+2025-09-29 18:52:31 - watchfiles.main - INFO - 1 change detected
+2025-09-29 18:53:39 - root - INFO - Server shutting down...
+2025-09-29 18:53:43 - app.services.telegram_service - INFO - Telegram bot has been shut down.
+2025-09-29 18:53:43 - root - INFO - Shutdown complete.
+2025-09-29 18:53:44 - watchfiles.main - INFO - 2 changes detected
+2025-09-29 18:53:45 - root - INFO - Starting Trading Signal Bot...
+2025-09-29 18:53:45 - app.db.database - INFO - Database initialized successfully
+2025-09-29 18:53:46 - app.services.telegram_service - INFO - Telegram bot initialized and polling started.
+2025-09-29 18:53:46 - root - INFO - Server starting on http://0.0.0.0:5000
+2025-09-29 18:53:47 - watchfiles.main - INFO - 6 changes detected
+2025-09-29 18:53:47 - root - INFO - Starting Trading Signal Bot...
+2025-09-29 18:53:47 - app.db.database - INFO - Database initialized successfully
+2025-09-29 18:53:47 - watchfiles.main - INFO - 1 change detected
+2025-09-29 18:53:48 - watchfiles.main - INFO - 1 change detected
+2025-09-29 18:53:50 - app.services.telegram_service - INFO - Telegram bot initialized and polling started.
+2025-09-29 18:53:50 - root - INFO - Server starting on http://0.0.0.0:5000
+2025-09-29 18:54:02 - watchfiles.main - INFO - 1 change detected
+2025-09-29 18:54:17 - watchfiles.main - INFO - 1 change detected
+2025-09-29 18:54:32 - watchfiles.main - INFO - 1 change detected
+2025-09-29 18:54:37 - app.api.endpoints - INFO - Signal received from 127.0.0.1: BUY EURUSD @ 1.0845
+2025-09-29 18:54:37 - app.services.signal_service - INFO - Signal saved to DB: ID=2, BUY EURUSD @ 1.0845
+2025-09-29 18:54:37 - watchfiles.main - INFO - 3 changes detected
+2025-09-29 18:54:38 - app.services.telegram_service - INFO - Telegram alert sent to chat_id: -1002951925977
+2025-09-29 18:54:40 - app.api.endpoints - INFO - Signal received from 127.0.0.1: BUY EURUSD @ 1.0845
+2025-09-29 18:54:40 - app.api.endpoints - WARNING - Signal rejected: Rate limit active. Please wait 58 more seconds.
+2025-09-29 18:54:47 - watchfiles.main - INFO - 1 change detected
+2025-09-29 18:54:55 - app.api.endpoints - INFO - Signal received from 127.0.0.1: CLOSE EURUSD @ 1.5
+2025-09-29 18:54:55 - app.services.signal_service - INFO - Signal 1 closed: P&L=0.41550
+2025-09-29 18:54:55 - watchfiles.main - INFO - 3 changes detected
+2025-09-29 18:54:55 - app.services.telegram_service - INFO - Telegram alert sent to chat_id: -1002951925977
+2025-09-29 18:55:02 - watchfiles.main - INFO - 1 change detected
+2025-09-29 18:55:14 - app.api.endpoints - INFO - Signal received from 127.0.0.1: BUY EURUSD @ 1.0845
+2025-09-29 18:55:14 - app.api.endpoints - WARNING - Signal rejected: Rate limit active. Please wait 24 more seconds.
+2025-09-29 18:55:15 - app.api.endpoints - INFO - Signal received from 127.0.0.1: SELL GBPUSD @ 1.2635
+2025-09-29 18:55:15 - app.api.endpoints - WARNING - Signal rejected: Rate limit active. Please wait 23 more seconds.
+2025-09-29 18:55:16 - app.api.endpoints - INFO - Signal received from 127.0.0.1: CLOSE EURUSD @ 1.0855
+2025-09-29 18:55:16 - app.services.signal_service - INFO - Signal 1 closed: P&L=0.00100
+2025-09-29 18:55:16 - watchfiles.main - INFO - 3 changes detected
+2025-09-29 18:55:16 - app.services.telegram_service - INFO - Telegram alert sent to chat_id: -1002951925977
+2025-09-29 18:55:17 - watchfiles.main - INFO - 1 change detected
+2025-09-29 18:55:33 - watchfiles.main - INFO - 1 change detected
+2025-09-29 18:55:48 - watchfiles.main - INFO - 1 change detected
+2025-09-29 18:56:02 - watchfiles.main - INFO - 1 change detected
+2025-09-29 18:56:12 - app.api.endpoints - INFO - Signal received from 127.0.0.1: BUY EURUSD @ 1.0845
+2025-09-29 18:56:12 - app.services.signal_service - INFO - Signal saved to DB: ID=3, BUY EURUSD @ 1.0845
+2025-09-29 18:56:12 - watchfiles.main - INFO - 3 changes detected
+2025-09-29 18:56:13 - app.services.telegram_service - INFO - Telegram alert sent to chat_id: -1002951925977
+2025-09-29 18:56:14 - app.api.endpoints - INFO - Signal received from 127.0.0.1: SELL GBPUSD @ 1.2635
+2025-09-29 18:56:14 - app.api.endpoints - WARNING - Signal rejected: Rate limit active. Please wait 59 more seconds.
+2025-09-29 18:56:15 - app.api.endpoints - INFO - Signal received from 127.0.0.1: CLOSE EURUSD @ 1.0855
+2025-09-29 18:56:15 - app.services.signal_service - INFO - Signal 1 closed: P&L=0.00100
+2025-09-29 18:56:15 - watchfiles.main - INFO - 3 changes detected
+2025-09-29 18:56:15 - app.services.telegram_service - INFO - Telegram alert sent to chat_id: -1002951925977
+2025-09-29 18:56:18 - watchfiles.main - INFO - 1 change detected
+2025-09-29 18:56:27 - app.api.endpoints - INFO - Signal received from 127.0.0.1: BUY USDJPY @ 149.5
+2025-09-29 18:56:27 - app.api.endpoints - WARNING - Signal rejected: Rate limit active. Please wait 46 more seconds.
+2025-09-29 18:56:28 - app.api.endpoints - INFO - Signal received from 127.0.0.1: BUY USDJPY @ 149.55
+2025-09-29 18:56:28 - app.api.endpoints - WARNING - Signal rejected: Rate limit active. Please wait 45 more seconds.
+2025-09-29 18:56:33 - watchfiles.main - INFO - 1 change detected
+2025-09-29 18:56:37 - app.api.endpoints - INFO - Signal received from 127.0.0.1: BUY AUDUSD @ 0.65
+2025-09-29 18:56:37 - app.api.endpoints - WARNING - Unauthorized signal attempt from 127.0.0.1
+2025-09-29 18:56:48 - watchfiles.main - INFO - 1 change detected
+2025-09-29 18:57:03 - watchfiles.main - INFO - 1 change detected
+2025-09-29 18:57:18 - watchfiles.main - INFO - 1 change detected
+2025-09-29 18:57:33 - watchfiles.main - INFO - 1 change detected
+2025-09-29 18:57:48 - watchfiles.main - INFO - 1 change detected
+2025-09-29 18:58:03 - watchfiles.main - INFO - 1 change detected
+2025-09-29 18:58:18 - watchfiles.main - INFO - 1 change detected
+2025-09-29 18:58:33 - watchfiles.main - INFO - 1 change detected
+2025-09-29 18:58:48 - watchfiles.main - INFO - 1 change detected
+2025-09-29 18:59:03 - watchfiles.main - INFO - 1 change detected
+2025-09-29 18:59:18 - watchfiles.main - INFO - 1 change detected
+2025-09-29 18:59:33 - watchfiles.main - INFO - 1 change detected
+2025-09-29 18:59:48 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:00:03 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:00:18 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:00:33 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:00:48 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:01:03 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:01:18 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:01:33 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:01:48 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:02:03 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:02:18 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:02:33 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:02:50 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:03:04 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:03:20 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:03:21 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:03:36 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:03:51 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:04:06 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:04:21 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:04:36 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:04:51 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:04:51 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:05:07 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:05:21 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:05:36 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:05:51 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:06:07 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:06:21 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:06:35 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:06:36 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:06:51 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:06:51 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:07:03 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:07:07 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:08:06 - root - INFO - Server shutting down...
+2025-09-29 19:08:09 - app.services.telegram_service - INFO - Telegram bot has been shut down.
+2025-09-29 19:08:09 - root - INFO - Shutdown complete.
+2025-09-29 19:08:11 - watchfiles.main - INFO - 2 changes detected
+2025-09-29 19:08:13 - root - INFO - Starting Trading Signal Bot...
+2025-09-29 19:08:13 - app.db.database - INFO - Database initialized successfully
+2025-09-29 19:08:15 - app.services.telegram_service - INFO - Telegram bot initialized and polling started.
+2025-09-29 19:08:15 - root - INFO - Server starting on http://0.0.0.0:5000
+2025-09-29 19:08:16 - watchfiles.main - INFO - 6 changes detected
+2025-09-29 19:08:17 - root - INFO - Starting Trading Signal Bot...
+2025-09-29 19:08:17 - app.db.database - INFO - Database initialized successfully
+2025-09-29 19:08:17 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:08:19 - app.services.telegram_service - INFO - Telegram bot initialized and polling started.
+2025-09-29 19:08:19 - root - INFO - Server starting on http://0.0.0.0:5000
+2025-09-29 19:08:20 - telegram.ext.Application - ERROR - No error handlers are registered, logging exception.
+Traceback (most recent call last):
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_application.py", line 1315, in process_update
+    await coroutine
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_handlers\basehandler.py", line 159, in handle_update
+    return await self.callback(update, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\MORO\Project\EA\AutoSig\app\services\telegram_service.py", line 85, in cmd_stats
+    stats = repository.get_today_stats(conn)
+  File "C:\Users\MORO\Project\EA\AutoSig\app\db\repository.py", line 63, in get_today_stats
+    "total_signals": row["total"] or 0,
+                     ~~~^^^^^^^^^
+TypeError: tuple indices must be integers or slices, not str
+2025-09-29 19:08:56 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:09:11 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:09:13 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:09:15 - root - INFO - Server shutting down...
+2025-09-29 19:09:16 - app.services.telegram_service - INFO - Telegram bot has been shut down.
+2025-09-29 19:09:16 - root - INFO - Shutdown complete.
+2025-09-29 19:09:27 - root - INFO - Starting Trading Signal Bot...
+2025-09-29 19:09:27 - app.db.database - INFO - Database initialized successfully
+2025-09-29 19:09:29 - app.services.telegram_service - INFO - Telegram bot initialized and polling started.
+2025-09-29 19:09:29 - root - INFO - Server starting on http://0.0.0.0:5000
+2025-09-29 19:09:30 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:09:48 - root - INFO - Server shutting down...
+2025-09-29 19:09:49 - app.services.telegram_service - INFO - Telegram bot has been shut down.
+2025-09-29 19:09:49 - root - INFO - Shutdown complete.
+2025-09-29 19:09:49 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:09:51 - watchfiles.main - INFO - 5 changes detected
+2025-09-29 19:09:51 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:09:51 - root - INFO - Starting Trading Signal Bot...
+2025-09-29 19:09:51 - app.db.database - INFO - Database initialized successfully
+2025-09-29 19:09:52 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:09:53 - app.services.telegram_service - INFO - Telegram bot initialized and polling started.
+2025-09-29 19:09:53 - root - INFO - Server starting on http://0.0.0.0:5000
+2025-09-29 19:10:02 - root - INFO - Starting Trading Signal Bot...
+2025-09-29 19:10:02 - app.db.database - INFO - Database initialized successfully
+2025-09-29 19:10:04 - app.services.telegram_service - INFO - Telegram bot initialized and polling started.
+2025-09-29 19:10:04 - root - INFO - Server starting on http://0.0.0.0:5000
+2025-09-29 19:10:06 - telegram.ext.Application - ERROR - No error handlers are registered, logging exception.
+Traceback (most recent call last):
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_application.py", line 1315, in process_update
+    await coroutine
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_handlers\basehandler.py", line 159, in handle_update
+    return await self.callback(update, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\MORO\Project\EA\AutoSig\app\services\telegram_service.py", line 85, in cmd_stats
+    stats = repository.get_today_stats(conn)
+  File "C:\Users\MORO\Project\EA\AutoSig\app\db\repository.py", line 63, in get_today_stats
+    "total_signals": row["total"] or 0,
+                     ~~~^^^^^^^^^
+TypeError: tuple indices must be integers or slices, not str
+2025-09-29 19:10:19 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:10:33 - root - INFO - Server shutting down...
+2025-09-29 19:10:42 - root - INFO - Starting Trading Signal Bot...
+2025-09-29 19:10:42 - app.db.database - INFO - Database initialized successfully
+2025-09-29 19:10:44 - app.services.telegram_service - INFO - Telegram bot initialized and polling started.
+2025-09-29 19:10:44 - root - INFO - Server starting on http://0.0.0.0:5000
+2025-09-29 19:11:28 - watchfiles.main - INFO - 3 changes detected
+2025-09-29 19:11:29 - app.services.telegram_service - INFO - Bot resumed by admin 5135164547
+2025-09-29 19:11:33 - watchfiles.main - INFO - 3 changes detected
+2025-09-29 19:11:33 - app.services.telegram_service - INFO - Bot resumed by admin 5135164547
+2025-09-29 19:11:41 - watchfiles.main - INFO - 3 changes detected
+2025-09-29 19:11:41 - app.services.telegram_service - INFO - Bot paused by admin 5135164547
+2025-09-29 19:11:45 - watchfiles.main - INFO - 3 changes detected
+2025-09-29 19:11:45 - app.services.telegram_service - INFO - Bot resumed by admin 5135164547
+2025-09-29 19:13:08 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:13:08 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:13:12 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:13:16 - root - INFO - Server shutting down...
+2025-09-29 19:13:16 - app.services.telegram_service - INFO - Telegram bot has been shut down.
+2025-09-29 19:13:16 - root - INFO - Shutdown complete.
+2025-09-29 19:13:17 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:13:18 - watchfiles.main - INFO - 5 changes detected
+2025-09-29 19:13:19 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:13:19 - root - INFO - Starting Trading Signal Bot...
+2025-09-29 19:13:19 - app.db.database - INFO - Database initialized successfully
+2025-09-29 19:13:19 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:13:20 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:13:21 - app.services.telegram_service - INFO - Bot command menu has been set.
+2025-09-29 19:13:21 - app.services.telegram_service - INFO - Telegram bot initialized and polling started.
+2025-09-29 19:13:21 - root - INFO - Server starting on http://0.0.0.0:5000
+2025-09-29 19:13:24 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:14:16 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:14:30 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:14:46 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:15:00 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:15:16 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:15:31 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:15:44 - root - INFO - Server shutting down...
+2025-09-29 19:15:46 - app.services.telegram_service - INFO - Telegram bot has been shut down.
+2025-09-29 19:15:46 - root - INFO - Shutdown complete.
+2025-09-29 19:16:38 - root - INFO - Starting Trading Signal Bot...
+2025-09-29 19:16:38 - app.db.database - INFO - Database initialized successfully
+2025-09-29 19:16:40 - app.services.telegram_service - INFO - Bot command menu has been set.
+2025-09-29 19:16:40 - app.services.telegram_service - INFO - Telegram bot initialized and polling started.
+2025-09-29 19:16:40 - root - INFO - Server starting on http://0.0.0.0:5000
+2025-09-29 19:16:56 - app.services.telegram_service - INFO - Admin 5135164547 changed setting MAX_SIGNALS_PER_DAY from 10 to 20
+2025-09-29 19:18:02 - app.services.telegram_service - INFO - Admin 5135164547 changed setting MIN_SECONDS_BETWEEN_SIGNALS from 60 to 100
+2025-09-29 19:18:14 - app.services.telegram_service - INFO - Admin 5135164547 changed setting MIN_SECONDS_BETWEEN_SIGNALS from 100 to 10
+2025-09-29 19:21:08 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:21:09 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:21:34 - root - INFO - Server shutting down...
+2025-09-29 19:21:36 - app.services.telegram_service - INFO - Telegram bot has been shut down.
+2025-09-29 19:21:36 - root - INFO - Shutdown complete.
+2025-09-29 19:21:37 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:21:39 - watchfiles.main - INFO - 5 changes detected
+2025-09-29 19:21:39 - root - INFO - Starting Trading Signal Bot...
+2025-09-29 19:21:39 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:21:39 - app.db.database - INFO - Database initialized successfully
+2025-09-29 19:21:43 - app.services.telegram_service - INFO - Bot command menu has been set.
+2025-09-29 19:21:43 - app.services.telegram_service - INFO - Telegram bot initialized and polling started.
+2025-09-29 19:21:43 - root - INFO - Server starting on http://0.0.0.0:5000
+2025-09-29 19:21:51 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:22:06 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:22:21 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:22:21 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:22:22 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:22:46 - root - INFO - Server shutting down...
+2025-09-29 19:22:50 - app.services.telegram_service - INFO - Telegram bot has been shut down.
+2025-09-29 19:22:50 - root - INFO - Shutdown complete.
+2025-09-29 19:22:57 - root - INFO - Starting Trading Signal Bot...
+2025-09-29 19:22:57 - app.db.database - INFO - Database initialized successfully
+2025-09-29 19:22:59 - app.services.telegram_service - INFO - Bot command menu has been set.
+2025-09-29 19:22:59 - app.services.telegram_service - INFO - Telegram bot initialized and polling started.
+2025-09-29 19:22:59 - root - INFO - Server starting on http://0.0.0.0:5000
+2025-09-29 19:23:19 - telegram.ext.Application - ERROR - No error handlers are registered, logging exception.
+Traceback (most recent call last):
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_application.py", line 1315, in process_update
+    await coroutine
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_handlers\conversationhandler.py", line 843, in handle_update
+    new_state: object = await handler.handle_update(
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        update, application, handler_check_result, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_handlers\basehandler.py", line 159, in handle_update
+    return await self.callback(update, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\MORO\Project\EA\AutoSig\app\services\telegram_service.py", line 158, in handle_new_value
+    new_value = time(parts[0], parts[1])
+                ^^^^
+NameError: name 'time' is not defined. Did you forget to import 'time'?
+2025-09-29 19:36:00 - root - INFO - Starting Trading Signal Bot...
+2025-09-29 19:36:00 - app.db.database - INFO - Database initialized successfully
+2025-09-29 19:36:02 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:36:02 - app.services.telegram_service - INFO - Bot command menu has been set.
+2025-09-29 19:36:02 - app.services.telegram_service - INFO - Telegram bot initialized and polling started.
+2025-09-29 19:36:02 - root - INFO - Server starting on http://0.0.0.0:5000
+2025-09-29 19:36:02 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:36:06 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:36:06 - root - INFO - Server shutting down...
+2025-09-29 19:36:07 - app.services.telegram_service - INFO - Telegram bot has been shut down.
+2025-09-29 19:36:07 - root - INFO - Shutdown complete.
+2025-09-29 19:36:07 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:36:08 - watchfiles.main - INFO - 5 changes detected
+2025-09-29 19:36:09 - root - INFO - Starting Trading Signal Bot...
+2025-09-29 19:36:09 - app.db.database - INFO - Database initialized successfully
+2025-09-29 19:36:09 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:36:09 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:36:32 - root - INFO - Starting Trading Signal Bot...
+2025-09-29 19:36:32 - app.db.database - INFO - Database initialized successfully
+2025-09-29 19:36:32 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:36:32 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:36:45 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:37:00 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:37:15 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:37:27 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:37:27 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:37:30 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:37:35 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:37:45 - root - INFO - Starting Trading Signal Bot...
+2025-09-29 19:37:45 - app.db.database - INFO - Database initialized successfully
+2025-09-29 19:37:46 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:37:46 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:37:47 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:37:47 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:37:48 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:37:48 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:37:53 - app.services.telegram_service - INFO - Bot command menu has been set.
+2025-09-29 19:37:53 - app.services.telegram_service - INFO - Telegram bot initialized and polling started.
+2025-09-29 19:37:53 - root - INFO - Server starting on http://0.0.0.0:5000
+2025-09-29 19:38:01 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:38:03 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:38:03 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:38:16 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:38:20 - telegram.ext.Application - ERROR - No error handlers are registered, logging exception.
+Traceback (most recent call last):
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_application.py", line 1315, in process_update
+    await coroutine
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_handlers\conversationhandler.py", line 843, in handle_update
+    new_state: object = await handler.handle_update(
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        update, application, handler_check_result, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_handlers\basehandler.py", line 159, in handle_update
+    return await self.callback(update, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\MORO\Project\EA\AutoSig\app\services\telegram_service.py", line 168, in handle_new_value
+    new_value = time(parts[0], parts[1])
+TypeError: 'module' object is not callable. Did you mean: 'time.time(...)'?
+2025-09-29 19:38:31 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:38:35 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:38:36 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:38:46 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:38:53 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:39:02 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:39:16 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:39:31 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:39:46 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:40:02 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:40:16 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:40:31 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:40:47 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:41:01 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:41:07 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:41:08 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:41:11 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:41:11 - root - INFO - Server shutting down...
+2025-09-29 19:41:12 - app.services.telegram_service - INFO - Telegram bot has been shut down.
+2025-09-29 19:41:12 - root - INFO - Shutdown complete.
+2025-09-29 19:41:14 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:41:15 - watchfiles.main - INFO - 5 changes detected
+2025-09-29 19:41:16 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:41:16 - root - INFO - Starting Trading Signal Bot...
+2025-09-29 19:41:16 - app.db.database - INFO - Database initialized successfully
+2025-09-29 19:41:16 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:41:17 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:41:18 - app.services.telegram_service - INFO - Bot command menu has been set.
+2025-09-29 19:41:20 - app.services.telegram_service - INFO - Telegram bot initialized and polling started.
+2025-09-29 19:41:20 - root - INFO - Server starting on http://0.0.0.0:5000
+2025-09-29 19:41:25 - root - INFO - Server shutting down...
+2025-09-29 19:41:29 - app.services.telegram_service - INFO - Telegram bot has been shut down.
+2025-09-29 19:41:29 - root - INFO - Shutdown complete.
+2025-09-29 19:41:41 - root - INFO - Starting Trading Signal Bot...
+2025-09-29 19:41:41 - app.db.database - INFO - Database initialized successfully
+2025-09-29 19:41:44 - app.services.telegram_service - INFO - Bot command menu has been set.
+2025-09-29 19:41:45 - app.services.telegram_service - INFO - Telegram bot initialized and polling started.
+2025-09-29 19:41:45 - root - INFO - Server starting on http://0.0.0.0:5000
+2025-09-29 19:42:12 - app.services.telegram_service - INFO - Admin 5135164547 changed setting TRADING_START_TIME from 00:00:00 to 00:21:00
+2025-09-29 19:42:45 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:45:11 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:45:11 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:45:19 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:45:33 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:45:35 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:45:37 - root - INFO - Server shutting down...
+2025-09-29 19:45:38 - app.services.telegram_service - INFO - Telegram bot has been shut down.
+2025-09-29 19:45:38 - root - INFO - Shutdown complete.
+2025-09-29 19:45:42 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:45:45 - watchfiles.main - INFO - 5 changes detected
+2025-09-29 19:45:46 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:45:46 - root - INFO - Starting Trading Signal Bot...
+2025-09-29 19:45:46 - app.db.database - INFO - Database initialized successfully
+2025-09-29 19:45:47 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:45:49 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:45:49 - app.services.telegram_service - INFO - Bot command menu has been set.
+2025-09-29 19:45:50 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:46:03 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:46:19 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:46:34 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:46:49 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:46:49 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:47:04 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:47:19 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:47:34 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:47:49 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:48:04 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:48:19 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:48:34 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:48:49 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:49:04 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:49:19 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:49:34 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:49:50 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:50:05 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:50:20 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:50:35 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:50:50 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:51:05 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:51:05 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:51:20 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:51:35 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:51:50 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:52:05 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:52:20 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:52:35 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:52:50 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:53:05 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:53:20 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:53:35 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:53:50 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:54:05 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:54:20 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:54:35 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:54:50 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:55:05 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:55:21 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:55:35 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:55:51 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:56:06 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:56:21 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:56:36 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:56:51 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:57:06 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:57:21 - watchfiles.main - INFO - 1 change detected
+2025-09-29 19:57:36 - watchfiles.main - INFO - 1 change detected
+2025-09-29 20:05:49 - watchfiles.main - INFO - 1 change detected
+2025-09-29 20:05:50 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:04:52 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:04:55 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:05:07 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:05:22 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:05:37 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:05:40 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:05:55 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:05:56 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:09:41 - watchfiles.main - INFO - 4 changes detected
+2025-09-29 22:09:41 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:09:49 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:09:56 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:10:03 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:10:03 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:10:08 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:10:20 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:10:28 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:10:29 - watchfiles.main - INFO - 5 changes detected
+2025-09-29 22:10:29 - root - INFO - Starting Trading Signal Bot...
+2025-09-29 22:10:29 - app.db.database - INFO - Database initialized successfully
+2025-09-29 22:10:29 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:10:31 - app.services.telegram_service - INFO - Bot command menu has been set.
+2025-09-29 22:10:31 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:10:36 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:10:37 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:10:39 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:10:41 - watchfiles.main - INFO - 5 changes detected
+2025-09-29 22:10:41 - root - INFO - Starting Trading Signal Bot...
+2025-09-29 22:10:41 - app.db.database - INFO - Database initialized successfully
+2025-09-29 22:10:41 - watchfiles.main - INFO - 4 changes detected
+2025-09-29 22:10:42 - app.services.telegram_service - INFO - Bot command menu has been set.
+2025-09-29 22:10:42 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:10:48 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:10:57 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:10:58 - watchfiles.main - INFO - 5 changes detected
+2025-09-29 22:10:58 - root - INFO - Starting Trading Signal Bot...
+2025-09-29 22:10:58 - app.db.database - INFO - Database initialized successfully
+2025-09-29 22:10:58 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:10:59 - app.services.telegram_service - INFO - Bot command menu has been set.
+2025-09-29 22:11:00 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:11:20 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:11:31 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:11:32 - watchfiles.main - INFO - 5 changes detected
+2025-09-29 22:11:32 - root - INFO - Starting Trading Signal Bot...
+2025-09-29 22:11:32 - app.db.database - INFO - Database initialized successfully
+2025-09-29 22:11:32 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:11:34 - app.services.telegram_service - INFO - Ensured default chat 'AskTheSage Customer Help' (-1002951925977) is in the database.
+2025-09-29 22:11:34 - watchfiles.main - INFO - 3 changes detected
+2025-09-29 22:11:34 - app.services.telegram_service - INFO - Bot command menu has been set.
+2025-09-29 22:11:34 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:12:30 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:12:39 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:12:40 - watchfiles.main - INFO - 5 changes detected
+2025-09-29 22:12:40 - root - INFO - Starting Trading Signal Bot...
+2025-09-29 22:12:40 - app.db.database - INFO - Database initialized successfully
+2025-09-29 22:12:40 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:12:43 - app.services.telegram_service - INFO - Ensured default chat 'AskTheSage Customer Help' (-1002951925977) is in the database.
+2025-09-29 22:12:43 - watchfiles.main - INFO - 3 changes detected
+2025-09-29 22:12:43 - app.services.telegram_service - INFO - Bot command menu has been set.
+2025-09-29 22:12:44 - app.services.telegram_service - INFO - Telegram bot initialized and polling started.
+2025-09-29 22:12:44 - root - INFO - Server starting on http://0.0.0.0:5000
+2025-09-29 22:17:17 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:17:20 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:17:20 - root - INFO - Server shutting down...
+2025-09-29 22:17:22 - app.services.telegram_service - INFO - Telegram bot has been shut down.
+2025-09-29 22:17:22 - root - INFO - Shutdown complete.
+2025-09-29 22:17:23 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:17:24 - watchfiles.main - INFO - 5 changes detected
+2025-09-29 22:17:24 - root - INFO - Starting Trading Signal Bot...
+2025-09-29 22:17:24 - app.db.database - INFO - Database initialized successfully
+2025-09-29 22:17:24 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:17:26 - app.services.telegram_service - INFO - Ensured default chat 'AskTheSage Customer Help' (-1002951925977) is in the database.
+2025-09-29 22:17:26 - watchfiles.main - INFO - 3 changes detected
+2025-09-29 22:17:27 - app.services.telegram_service - INFO - Bot command menu has been set.
+2025-09-29 22:17:27 - app.services.telegram_service - INFO - Telegram bot initialized and polling started.
+2025-09-29 22:17:27 - root - INFO - Server starting on http://0.0.0.0:5000
+2025-09-29 22:17:57 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:18:03 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:18:04 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:18:04 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:18:04 - root - INFO - Starting Trading Signal Bot...
+2025-09-29 22:18:04 - app.db.database - INFO - Database initialized successfully
+2025-09-29 22:18:04 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:18:06 - app.services.telegram_service - INFO - Ensured default chat 'AskTheSage Customer Help' (-1002951925977) is in the database.
+2025-09-29 22:18:06 - watchfiles.main - INFO - 3 changes detected
+2025-09-29 22:18:06 - watchfiles.main - INFO - 3 changes detected
+2025-09-29 22:18:06 - app.services.telegram_service - INFO - Bot command menu has been set.
+2025-09-29 22:18:06 - app.services.telegram_service - INFO - Telegram bot initialized and polling started.
+2025-09-29 22:18:06 - root - INFO - Server starting on http://0.0.0.0:5000
+2025-09-29 22:18:07 - telegram.ext.Updater - ERROR - Exception happened while polling for updates.
+Traceback (most recent call last):
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_utils\networkloop.py", line 134, in network_retry_loop
+    await do_action()
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_utils\networkloop.py", line 127, in do_action
+    action_cb_task.result()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_updater.py", line 340, in polling_action_cb
+    updates = await self.bot.get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_extbot.py", line 676, in get_updates
+    updates = await super().get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 4780, in get_updates
+    await self._post(
+    ^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    ),
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 703, in _post
+    return await self._do_post(
+           ^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_extbot.py", line 372, in _do_post
+    return await super()._do_post(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 732, in _do_post
+    result = await request.post(
+             ^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\request\_baserequest.py", line 198, in post
+    result = await self._request_wrapper(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\request\_baserequest.py", line 375, in _request_wrapper
+    raise exception
+telegram.error.Conflict: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-09-29 22:18:12 - telegram.ext.Updater - ERROR - Exception happened while polling for updates.
+Traceback (most recent call last):
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_utils\networkloop.py", line 134, in network_retry_loop
+    await do_action()
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_utils\networkloop.py", line 127, in do_action
+    action_cb_task.result()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_updater.py", line 340, in polling_action_cb
+    updates = await self.bot.get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_extbot.py", line 676, in get_updates
+    updates = await super().get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 4780, in get_updates
+    await self._post(
+    ^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    ),
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 703, in _post
+    return await self._do_post(
+           ^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_extbot.py", line 372, in _do_post
+    return await super()._do_post(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 732, in _do_post
+    result = await request.post(
+             ^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\request\_baserequest.py", line 198, in post
+    result = await self._request_wrapper(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\request\_baserequest.py", line 375, in _request_wrapper
+    raise exception
+telegram.error.Conflict: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-09-29 22:18:13 - telegram.ext.Updater - ERROR - Exception happened while polling for updates.
+Traceback (most recent call last):
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_utils\networkloop.py", line 134, in network_retry_loop
+    await do_action()
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_utils\networkloop.py", line 127, in do_action
+    action_cb_task.result()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_updater.py", line 340, in polling_action_cb
+    updates = await self.bot.get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_extbot.py", line 676, in get_updates
+    updates = await super().get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 4780, in get_updates
+    await self._post(
+    ^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    ),
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 703, in _post
+    return await self._do_post(
+           ^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_extbot.py", line 372, in _do_post
+    return await super()._do_post(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 732, in _do_post
+    result = await request.post(
+             ^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\request\_baserequest.py", line 198, in post
+    result = await self._request_wrapper(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\request\_baserequest.py", line 375, in _request_wrapper
+    raise exception
+telegram.error.Conflict: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-09-29 22:18:17 - telegram.ext.Updater - ERROR - Exception happened while polling for updates.
+Traceback (most recent call last):
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_utils\networkloop.py", line 134, in network_retry_loop
+    await do_action()
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_utils\networkloop.py", line 127, in do_action
+    action_cb_task.result()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_updater.py", line 340, in polling_action_cb
+    updates = await self.bot.get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_extbot.py", line 676, in get_updates
+    updates = await super().get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 4780, in get_updates
+    await self._post(
+    ^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    ),
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 703, in _post
+    return await self._do_post(
+           ^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_extbot.py", line 372, in _do_post
+    return await super()._do_post(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 732, in _do_post
+    result = await request.post(
+             ^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\request\_baserequest.py", line 198, in post
+    result = await self._request_wrapper(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\request\_baserequest.py", line 375, in _request_wrapper
+    raise exception
+telegram.error.Conflict: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-09-29 22:18:20 - telegram.ext.Updater - ERROR - Exception happened while polling for updates.
+Traceback (most recent call last):
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_utils\networkloop.py", line 134, in network_retry_loop
+    await do_action()
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_utils\networkloop.py", line 127, in do_action
+    action_cb_task.result()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_updater.py", line 340, in polling_action_cb
+    updates = await self.bot.get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_extbot.py", line 676, in get_updates
+    updates = await super().get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 4780, in get_updates
+    await self._post(
+    ^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    ),
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 703, in _post
+    return await self._do_post(
+           ^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_extbot.py", line 372, in _do_post
+    return await super()._do_post(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 732, in _do_post
+    result = await request.post(
+             ^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\request\_baserequest.py", line 198, in post
+    result = await self._request_wrapper(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\request\_baserequest.py", line 375, in _request_wrapper
+    raise exception
+telegram.error.Conflict: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-09-29 22:18:24 - telegram.ext.Updater - ERROR - Exception happened while polling for updates.
+Traceback (most recent call last):
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_utils\networkloop.py", line 134, in network_retry_loop
+    await do_action()
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_utils\networkloop.py", line 127, in do_action
+    action_cb_task.result()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_updater.py", line 340, in polling_action_cb
+    updates = await self.bot.get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_extbot.py", line 676, in get_updates
+    updates = await super().get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 4780, in get_updates
+    await self._post(
+    ^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    ),
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 703, in _post
+    return await self._do_post(
+           ^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_extbot.py", line 372, in _do_post
+    return await super()._do_post(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 732, in _do_post
+    result = await request.post(
+             ^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\request\_baserequest.py", line 198, in post
+    result = await self._request_wrapper(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\request\_baserequest.py", line 375, in _request_wrapper
+    raise exception
+telegram.error.Conflict: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-09-29 22:18:26 - telegram.ext.Updater - ERROR - Exception happened while polling for updates.
+Traceback (most recent call last):
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_utils\networkloop.py", line 134, in network_retry_loop
+    await do_action()
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_utils\networkloop.py", line 127, in do_action
+    action_cb_task.result()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_updater.py", line 340, in polling_action_cb
+    updates = await self.bot.get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_extbot.py", line 676, in get_updates
+    updates = await super().get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 4780, in get_updates
+    await self._post(
+    ^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    ),
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 703, in _post
+    return await self._do_post(
+           ^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_extbot.py", line 372, in _do_post
+    return await super()._do_post(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 732, in _do_post
+    result = await request.post(
+             ^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\request\_baserequest.py", line 198, in post
+    result = await self._request_wrapper(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\request\_baserequest.py", line 375, in _request_wrapper
+    raise exception
+telegram.error.Conflict: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-09-29 22:18:30 - telegram.ext.Updater - ERROR - Exception happened while polling for updates.
+Traceback (most recent call last):
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_utils\networkloop.py", line 134, in network_retry_loop
+    await do_action()
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_utils\networkloop.py", line 127, in do_action
+    action_cb_task.result()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_updater.py", line 340, in polling_action_cb
+    updates = await self.bot.get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_extbot.py", line 676, in get_updates
+    updates = await super().get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 4780, in get_updates
+    await self._post(
+    ^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    ),
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 703, in _post
+    return await self._do_post(
+           ^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_extbot.py", line 372, in _do_post
+    return await super()._do_post(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 732, in _do_post
+    result = await request.post(
+             ^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\request\_baserequest.py", line 198, in post
+    result = await self._request_wrapper(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\request\_baserequest.py", line 375, in _request_wrapper
+    raise exception
+telegram.error.Conflict: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-09-29 22:18:32 - telegram.ext.Updater - ERROR - Exception happened while polling for updates.
+Traceback (most recent call last):
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_utils\networkloop.py", line 134, in network_retry_loop
+    await do_action()
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_utils\networkloop.py", line 127, in do_action
+    action_cb_task.result()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_updater.py", line 340, in polling_action_cb
+    updates = await self.bot.get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_extbot.py", line 676, in get_updates
+    updates = await super().get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 4780, in get_updates
+    await self._post(
+    ^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    ),
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 703, in _post
+    return await self._do_post(
+           ^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_extbot.py", line 372, in _do_post
+    return await super()._do_post(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 732, in _do_post
+    result = await request.post(
+             ^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\request\_baserequest.py", line 198, in post
+    result = await self._request_wrapper(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\request\_baserequest.py", line 375, in _request_wrapper
+    raise exception
+telegram.error.Conflict: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-09-29 22:18:38 - telegram.ext.Updater - ERROR - Exception happened while polling for updates.
+Traceback (most recent call last):
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_utils\networkloop.py", line 134, in network_retry_loop
+    await do_action()
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_utils\networkloop.py", line 127, in do_action
+    action_cb_task.result()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_updater.py", line 340, in polling_action_cb
+    updates = await self.bot.get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_extbot.py", line 676, in get_updates
+    updates = await super().get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 4780, in get_updates
+    await self._post(
+    ^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    ),
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 703, in _post
+    return await self._do_post(
+           ^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_extbot.py", line 372, in _do_post
+    return await super()._do_post(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 732, in _do_post
+    result = await request.post(
+             ^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\request\_baserequest.py", line 198, in post
+    result = await self._request_wrapper(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\request\_baserequest.py", line 375, in _request_wrapper
+    raise exception
+telegram.error.Conflict: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-09-29 22:18:40 - telegram.ext.Updater - ERROR - Exception happened while polling for updates.
+Traceback (most recent call last):
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_utils\networkloop.py", line 134, in network_retry_loop
+    await do_action()
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_utils\networkloop.py", line 127, in do_action
+    action_cb_task.result()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_updater.py", line 340, in polling_action_cb
+    updates = await self.bot.get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_extbot.py", line 676, in get_updates
+    updates = await super().get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 4780, in get_updates
+    await self._post(
+    ^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    ),
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 703, in _post
+    return await self._do_post(
+           ^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_extbot.py", line 372, in _do_post
+    return await super()._do_post(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 732, in _do_post
+    result = await request.post(
+             ^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\request\_baserequest.py", line 198, in post
+    result = await self._request_wrapper(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\request\_baserequest.py", line 375, in _request_wrapper
+    raise exception
+telegram.error.Conflict: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-09-29 22:18:44 - telegram.ext.Updater - ERROR - Exception happened while polling for updates.
+Traceback (most recent call last):
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_utils\networkloop.py", line 134, in network_retry_loop
+    await do_action()
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_utils\networkloop.py", line 127, in do_action
+    action_cb_task.result()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_updater.py", line 340, in polling_action_cb
+    updates = await self.bot.get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_extbot.py", line 676, in get_updates
+    updates = await super().get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 4780, in get_updates
+    await self._post(
+    ^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    ),
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 703, in _post
+    return await self._do_post(
+           ^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_extbot.py", line 372, in _do_post
+    return await super()._do_post(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 732, in _do_post
+    result = await request.post(
+             ^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\request\_baserequest.py", line 198, in post
+    result = await self._request_wrapper(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\request\_baserequest.py", line 375, in _request_wrapper
+    raise exception
+telegram.error.Conflict: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-09-29 22:18:48 - telegram.ext.Updater - ERROR - Exception happened while polling for updates.
+Traceback (most recent call last):
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_utils\networkloop.py", line 134, in network_retry_loop
+    await do_action()
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_utils\networkloop.py", line 127, in do_action
+    action_cb_task.result()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_updater.py", line 340, in polling_action_cb
+    updates = await self.bot.get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_extbot.py", line 676, in get_updates
+    updates = await super().get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 4780, in get_updates
+    await self._post(
+    ^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    ),
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 703, in _post
+    return await self._do_post(
+           ^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_extbot.py", line 372, in _do_post
+    return await super()._do_post(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 732, in _do_post
+    result = await request.post(
+             ^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\request\_baserequest.py", line 198, in post
+    result = await self._request_wrapper(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\request\_baserequest.py", line 375, in _request_wrapper
+    raise exception
+telegram.error.Conflict: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-09-29 22:18:53 - telegram.ext.Updater - ERROR - Exception happened while polling for updates.
+Traceback (most recent call last):
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_utils\networkloop.py", line 134, in network_retry_loop
+    await do_action()
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_utils\networkloop.py", line 127, in do_action
+    action_cb_task.result()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_updater.py", line 340, in polling_action_cb
+    updates = await self.bot.get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_extbot.py", line 676, in get_updates
+    updates = await super().get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 4780, in get_updates
+    await self._post(
+    ^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    ),
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 703, in _post
+    return await self._do_post(
+           ^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_extbot.py", line 372, in _do_post
+    return await super()._do_post(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 732, in _do_post
+    result = await request.post(
+             ^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\request\_baserequest.py", line 198, in post
+    result = await self._request_wrapper(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\request\_baserequest.py", line 375, in _request_wrapper
+    raise exception
+telegram.error.Conflict: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-09-29 22:18:55 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:18:55 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:18:59 - telegram.ext.Updater - ERROR - Exception happened while polling for updates.
+Traceback (most recent call last):
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_utils\networkloop.py", line 134, in network_retry_loop
+    await do_action()
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_utils\networkloop.py", line 127, in do_action
+    action_cb_task.result()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_updater.py", line 340, in polling_action_cb
+    updates = await self.bot.get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_extbot.py", line 676, in get_updates
+    updates = await super().get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 4780, in get_updates
+    await self._post(
+    ^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    ),
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 703, in _post
+    return await self._do_post(
+           ^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_extbot.py", line 372, in _do_post
+    return await super()._do_post(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 732, in _do_post
+    result = await request.post(
+             ^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\request\_baserequest.py", line 198, in post
+    result = await self._request_wrapper(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\request\_baserequest.py", line 375, in _request_wrapper
+    raise exception
+telegram.error.Conflict: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-09-29 22:19:03 - telegram.ext.Updater - ERROR - Exception happened while polling for updates.
+Traceback (most recent call last):
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_utils\networkloop.py", line 134, in network_retry_loop
+    await do_action()
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_utils\networkloop.py", line 127, in do_action
+    action_cb_task.result()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_updater.py", line 340, in polling_action_cb
+    updates = await self.bot.get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_extbot.py", line 676, in get_updates
+    updates = await super().get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 4780, in get_updates
+    await self._post(
+    ^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    ),
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 703, in _post
+    return await self._do_post(
+           ^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_extbot.py", line 372, in _do_post
+    return await super()._do_post(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 732, in _do_post
+    result = await request.post(
+             ^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\request\_baserequest.py", line 198, in post
+    result = await self._request_wrapper(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\request\_baserequest.py", line 375, in _request_wrapper
+    raise exception
+telegram.error.Conflict: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-09-29 22:19:10 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:19:10 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:19:12 - telegram.ext.Updater - ERROR - Exception happened while polling for updates.
+Traceback (most recent call last):
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_utils\networkloop.py", line 134, in network_retry_loop
+    await do_action()
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_utils\networkloop.py", line 127, in do_action
+    action_cb_task.result()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_updater.py", line 340, in polling_action_cb
+    updates = await self.bot.get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_extbot.py", line 676, in get_updates
+    updates = await super().get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 4780, in get_updates
+    await self._post(
+    ^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    ),
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 703, in _post
+    return await self._do_post(
+           ^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_extbot.py", line 372, in _do_post
+    return await super()._do_post(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 732, in _do_post
+    result = await request.post(
+             ^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\request\_baserequest.py", line 198, in post
+    result = await self._request_wrapper(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\request\_baserequest.py", line 375, in _request_wrapper
+    raise exception
+telegram.error.Conflict: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-09-29 22:19:17 - telegram.ext.Updater - ERROR - Exception happened while polling for updates.
+Traceback (most recent call last):
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_utils\networkloop.py", line 134, in network_retry_loop
+    await do_action()
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_utils\networkloop.py", line 127, in do_action
+    action_cb_task.result()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_updater.py", line 340, in polling_action_cb
+    updates = await self.bot.get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_extbot.py", line 676, in get_updates
+    updates = await super().get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 4780, in get_updates
+    await self._post(
+    ^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    ),
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 703, in _post
+    return await self._do_post(
+           ^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_extbot.py", line 372, in _do_post
+    return await super()._do_post(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 732, in _do_post
+    result = await request.post(
+             ^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\request\_baserequest.py", line 198, in post
+    result = await self._request_wrapper(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\request\_baserequest.py", line 375, in _request_wrapper
+    raise exception
+telegram.error.Conflict: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-09-29 22:19:25 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:19:25 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:19:29 - telegram.ext.Updater - ERROR - Exception happened while polling for updates.
+Traceback (most recent call last):
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_utils\networkloop.py", line 134, in network_retry_loop
+    await do_action()
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_utils\networkloop.py", line 127, in do_action
+    action_cb_task.result()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_updater.py", line 340, in polling_action_cb
+    updates = await self.bot.get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_extbot.py", line 676, in get_updates
+    updates = await super().get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 4780, in get_updates
+    await self._post(
+    ^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    ),
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 703, in _post
+    return await self._do_post(
+           ^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_extbot.py", line 372, in _do_post
+    return await super()._do_post(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 732, in _do_post
+    result = await request.post(
+             ^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\request\_baserequest.py", line 198, in post
+    result = await self._request_wrapper(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\request\_baserequest.py", line 375, in _request_wrapper
+    raise exception
+telegram.error.Conflict: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-09-29 22:19:33 - watchfiles.main - INFO - 2 changes detected
+2025-09-29 22:19:33 - watchfiles.main - INFO - 2 changes detected
+2025-09-29 22:19:33 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:19:33 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:19:33 - telegram.ext.Updater - ERROR - Exception happened while polling for updates.
+Traceback (most recent call last):
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_utils\networkloop.py", line 134, in network_retry_loop
+    await do_action()
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_utils\networkloop.py", line 127, in do_action
+    action_cb_task.result()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_updater.py", line 340, in polling_action_cb
+    updates = await self.bot.get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_extbot.py", line 676, in get_updates
+    updates = await super().get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 4780, in get_updates
+    await self._post(
+    ^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    ),
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 703, in _post
+    return await self._do_post(
+           ^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_extbot.py", line 372, in _do_post
+    return await super()._do_post(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 732, in _do_post
+    result = await request.post(
+             ^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\request\_baserequest.py", line 198, in post
+    result = await self._request_wrapper(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\request\_baserequest.py", line 375, in _request_wrapper
+    raise exception
+telegram.error.Conflict: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-09-29 22:19:40 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:19:40 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:19:51 - telegram.ext.Updater - ERROR - Exception happened while polling for updates.
+Traceback (most recent call last):
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_utils\networkloop.py", line 134, in network_retry_loop
+    await do_action()
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_utils\networkloop.py", line 127, in do_action
+    action_cb_task.result()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_updater.py", line 340, in polling_action_cb
+    updates = await self.bot.get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_extbot.py", line 676, in get_updates
+    updates = await super().get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 4780, in get_updates
+    await self._post(
+    ^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    ),
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 703, in _post
+    return await self._do_post(
+           ^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_extbot.py", line 372, in _do_post
+    return await super()._do_post(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 732, in _do_post
+    result = await request.post(
+             ^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\request\_baserequest.py", line 198, in post
+    result = await self._request_wrapper(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\request\_baserequest.py", line 375, in _request_wrapper
+    raise exception
+telegram.error.Conflict: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-09-29 22:19:55 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:19:55 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:19:55 - telegram.ext.Updater - ERROR - Exception happened while polling for updates.
+Traceback (most recent call last):
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_utils\networkloop.py", line 134, in network_retry_loop
+    await do_action()
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_utils\networkloop.py", line 127, in do_action
+    action_cb_task.result()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_updater.py", line 340, in polling_action_cb
+    updates = await self.bot.get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_extbot.py", line 676, in get_updates
+    updates = await super().get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 4780, in get_updates
+    await self._post(
+    ^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    ),
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 703, in _post
+    return await self._do_post(
+           ^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_extbot.py", line 372, in _do_post
+    return await super()._do_post(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 732, in _do_post
+    result = await request.post(
+             ^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\request\_baserequest.py", line 198, in post
+    result = await self._request_wrapper(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\request\_baserequest.py", line 375, in _request_wrapper
+    raise exception
+telegram.error.Conflict: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-09-29 22:20:10 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:20:10 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:20:22 - telegram.ext.Updater - ERROR - Exception happened while polling for updates.
+Traceback (most recent call last):
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_utils\networkloop.py", line 134, in network_retry_loop
+    await do_action()
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_utils\networkloop.py", line 127, in do_action
+    action_cb_task.result()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_updater.py", line 340, in polling_action_cb
+    updates = await self.bot.get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_extbot.py", line 676, in get_updates
+    updates = await super().get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 4780, in get_updates
+    await self._post(
+    ^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    ),
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 703, in _post
+    return await self._do_post(
+           ^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_extbot.py", line 372, in _do_post
+    return await super()._do_post(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 732, in _do_post
+    result = await request.post(
+             ^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\request\_baserequest.py", line 198, in post
+    result = await self._request_wrapper(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\request\_baserequest.py", line 375, in _request_wrapper
+    raise exception
+telegram.error.Conflict: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-09-29 22:20:25 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:20:25 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:20:27 - telegram.ext.Updater - ERROR - Exception happened while polling for updates.
+Traceback (most recent call last):
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_utils\networkloop.py", line 134, in network_retry_loop
+    await do_action()
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_utils\networkloop.py", line 127, in do_action
+    action_cb_task.result()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_updater.py", line 340, in polling_action_cb
+    updates = await self.bot.get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_extbot.py", line 676, in get_updates
+    updates = await super().get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 4780, in get_updates
+    await self._post(
+    ^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    ),
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 703, in _post
+    return await self._do_post(
+           ^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_extbot.py", line 372, in _do_post
+    return await super()._do_post(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 732, in _do_post
+    result = await request.post(
+             ^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\request\_baserequest.py", line 198, in post
+    result = await self._request_wrapper(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\request\_baserequest.py", line 375, in _request_wrapper
+    raise exception
+telegram.error.Conflict: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-09-29 22:20:40 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:20:40 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:20:55 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:20:55 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:20:58 - telegram.ext.Updater - ERROR - Exception happened while polling for updates.
+Traceback (most recent call last):
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_utils\networkloop.py", line 134, in network_retry_loop
+    await do_action()
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_utils\networkloop.py", line 127, in do_action
+    action_cb_task.result()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_updater.py", line 340, in polling_action_cb
+    updates = await self.bot.get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_extbot.py", line 676, in get_updates
+    updates = await super().get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 4780, in get_updates
+    await self._post(
+    ^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    ),
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 703, in _post
+    return await self._do_post(
+           ^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_extbot.py", line 372, in _do_post
+    return await super()._do_post(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 732, in _do_post
+    result = await request.post(
+             ^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\request\_baserequest.py", line 198, in post
+    result = await self._request_wrapper(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\request\_baserequest.py", line 375, in _request_wrapper
+    raise exception
+telegram.error.Conflict: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-09-29 22:21:02 - telegram.ext.Updater - ERROR - Exception happened while polling for updates.
+Traceback (most recent call last):
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_utils\networkloop.py", line 134, in network_retry_loop
+    await do_action()
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_utils\networkloop.py", line 127, in do_action
+    action_cb_task.result()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_updater.py", line 340, in polling_action_cb
+    updates = await self.bot.get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_extbot.py", line 676, in get_updates
+    updates = await super().get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 4780, in get_updates
+    await self._post(
+    ^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    ),
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 703, in _post
+    return await self._do_post(
+           ^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_extbot.py", line 372, in _do_post
+    return await super()._do_post(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 732, in _do_post
+    result = await request.post(
+             ^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\request\_baserequest.py", line 198, in post
+    result = await self._request_wrapper(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\request\_baserequest.py", line 375, in _request_wrapper
+    raise exception
+telegram.error.Conflict: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-09-29 22:21:10 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:21:10 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:21:25 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:21:25 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:21:33 - telegram.ext.Updater - ERROR - Exception happened while polling for updates.
+Traceback (most recent call last):
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_utils\networkloop.py", line 134, in network_retry_loop
+    await do_action()
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_utils\networkloop.py", line 127, in do_action
+    action_cb_task.result()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_updater.py", line 340, in polling_action_cb
+    updates = await self.bot.get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_extbot.py", line 676, in get_updates
+    updates = await super().get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 4780, in get_updates
+    await self._post(
+    ^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    ),
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 703, in _post
+    return await self._do_post(
+           ^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_extbot.py", line 372, in _do_post
+    return await super()._do_post(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 732, in _do_post
+    result = await request.post(
+             ^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\request\_baserequest.py", line 198, in post
+    result = await self._request_wrapper(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\request\_baserequest.py", line 375, in _request_wrapper
+    raise exception
+telegram.error.Conflict: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-09-29 22:21:38 - telegram.ext.Updater - ERROR - Exception happened while polling for updates.
+Traceback (most recent call last):
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_utils\networkloop.py", line 134, in network_retry_loop
+    await do_action()
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_utils\networkloop.py", line 127, in do_action
+    action_cb_task.result()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_updater.py", line 340, in polling_action_cb
+    updates = await self.bot.get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_extbot.py", line 676, in get_updates
+    updates = await super().get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 4780, in get_updates
+    await self._post(
+    ^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    ),
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 703, in _post
+    return await self._do_post(
+           ^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\ext\_extbot.py", line 372, in _do_post
+    return await super()._do_post(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\_bot.py", line 732, in _do_post
+    result = await request.post(
+             ^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\request\_baserequest.py", line 198, in post
+    result = await self._request_wrapper(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\telegram\request\_baserequest.py", line 375, in _request_wrapper
+    raise exception
+telegram.error.Conflict: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-09-29 22:21:40 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:21:40 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:21:49 - app.services.telegram_service - INFO - Admin 5135164547 changed setting MAX_SIGNALS_PER_DAY from 10 to 20
+2025-09-29 22:21:55 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:21:55 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:21:58 - root - INFO - Server shutting down...
+2025-09-29 22:21:59 - app.services.telegram_service - INFO - Telegram bot has been shut down.
+2025-09-29 22:21:59 - root - INFO - Shutdown complete.
+2025-09-29 22:22:00 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:22:00 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:22:00 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:22:08 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:22:26 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:22:32 - app.services.telegram_service - INFO - Admin 5135164547 changed setting MIN_SECONDS_BETWEEN_SIGNALS from 60 to 1
+2025-09-29 22:22:36 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:22:39 - app.api.endpoints - INFO - Signal received from 127.0.0.1: BUY EURUSD @ 1.0845
+2025-09-29 22:22:39 - app.services.signal_service - INFO - Signal saved to DB: ID=4, BUY EURUSD @ 1.0845
+2025-09-29 22:22:39 - watchfiles.main - INFO - 3 changes detected
+2025-09-29 22:22:40 - app.services.telegram_service - INFO - Telegram alert sent to chat: AskTheSage Customer Help (-1002951925977)
+2025-09-29 22:22:44 - app.api.endpoints - INFO - Signal received from 127.0.0.1: SELL GBPUSD @ 1.2635
+2025-09-29 22:22:44 - app.services.signal_service - INFO - Signal saved to DB: ID=5, SELL GBPUSD @ 1.2635
+2025-09-29 22:22:44 - watchfiles.main - INFO - 3 changes detected
+2025-09-29 22:22:44 - app.services.telegram_service - INFO - Telegram alert sent to chat: AskTheSage Customer Help (-1002951925977)
+2025-09-29 22:22:48 - app.api.endpoints - INFO - Signal received from 127.0.0.1: BUY EURUSD @ 1.0845
+2025-09-29 22:22:48 - app.services.signal_service - INFO - Signal saved to DB: ID=6, BUY EURUSD @ 1.0845
+2025-09-29 22:22:49 - watchfiles.main - INFO - 3 changes detected
+2025-09-29 22:22:49 - app.services.telegram_service - INFO - Telegram alert sent to chat: AskTheSage Customer Help (-1002951925977)
+2025-09-29 22:22:50 - app.api.endpoints - INFO - Signal received from 127.0.0.1: SELL GBPUSD @ 1.2635
+2025-09-29 22:22:50 - app.services.signal_service - INFO - Signal saved to DB: ID=7, SELL GBPUSD @ 1.2635
+2025-09-29 22:22:50 - watchfiles.main - INFO - 3 changes detected
+2025-09-29 22:22:50 - app.services.telegram_service - INFO - Telegram alert sent to chat: AskTheSage Customer Help (-1002951925977)
+2025-09-29 22:22:52 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:23:01 - app.api.endpoints - INFO - Signal received from 127.0.0.1: CLOSE EURUSD @ 1.6
+2025-09-29 22:23:01 - app.services.signal_service - INFO - Signal 3 closed: P&L=0.51550
+2025-09-29 22:23:01 - watchfiles.main - INFO - 3 changes detected
+2025-09-29 22:23:02 - app.services.telegram_service - INFO - Telegram alert sent to chat: AskTheSage Customer Help (-1002951925977)
+2025-09-29 22:23:07 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:23:10 - app.api.endpoints - INFO - Signal received from 127.0.0.1: BUY USDJPY @ 149.5
+2025-09-29 22:23:10 - app.services.signal_service - INFO - Signal saved to DB: ID=8, BUY USDJPY @ 149.5
+2025-09-29 22:23:10 - watchfiles.main - INFO - 3 changes detected
+2025-09-29 22:23:11 - app.services.telegram_service - INFO - Telegram alert sent to chat: AskTheSage Customer Help (-1002951925977)
+2025-09-29 22:23:12 - app.api.endpoints - INFO - Signal received from 127.0.0.1: BUY USDJPY @ 149.55
+2025-09-29 22:23:12 - app.services.signal_service - INFO - Signal saved to DB: ID=9, BUY USDJPY @ 149.55
+2025-09-29 22:23:12 - watchfiles.main - INFO - 3 changes detected
+2025-09-29 22:23:13 - app.services.telegram_service - INFO - Telegram alert sent to chat: AskTheSage Customer Help (-1002951925977)
+2025-09-29 22:23:22 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:23:37 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:23:52 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:24:01 - app.api.endpoints - INFO - Signal received from 127.0.0.1: CLOSE EURUSD @ 2.78
+2025-09-29 22:24:01 - app.services.signal_service - INFO - Signal 2 closed: P&L=1.69550
+2025-09-29 22:24:01 - watchfiles.main - INFO - 3 changes detected
+2025-09-29 22:24:01 - app.services.telegram_service - INFO - Telegram alert sent to chat: AskTheSage Customer Help (-1002951925977)
+2025-09-29 22:24:07 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:24:22 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:24:37 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:24:52 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:25:07 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:25:22 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:25:37 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:25:52 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:26:07 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:26:22 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:26:37 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:26:52 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:27:08 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:27:22 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:27:37 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:27:53 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:28:07 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:28:08 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:28:23 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:28:38 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:28:53 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:29:08 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:29:23 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:29:38 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:29:51 - app.api.endpoints - INFO - Signal received from 127.0.0.1: CLOSE EURUSD @ 7.99
+2025-09-29 22:29:51 - app.services.signal_service - INFO - Signal 5 closed: P&L=-6.72650
+2025-09-29 22:29:51 - watchfiles.main - INFO - 3 changes detected
+2025-09-29 22:29:53 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:29:53 - app.services.telegram_service - INFO - Telegram alert sent to chat: AskTheSage Customer Help (-1002951925977)
+2025-09-29 22:30:08 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:30:09 - app.api.endpoints - INFO - Signal received from 127.0.0.1: SELL GBPUSD @ 1.2635
+2025-09-29 22:30:09 - app.services.signal_service - INFO - Signal saved to DB: ID=10, SELL GBPUSD @ 1.2635
+2025-09-29 22:30:09 - watchfiles.main - INFO - 3 changes detected
+2025-09-29 22:30:10 - app.services.telegram_service - INFO - Telegram alert sent to chat: AskTheSage Customer Help (-1002951925977)
+2025-09-29 22:30:23 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:30:26 - app.api.endpoints - INFO - Signal received from 127.0.0.1: CLOSE EURUSD @ 0.001
+2025-09-29 22:30:26 - app.services.signal_service - INFO - Signal 10 closed: P&L=1.26250
+2025-09-29 22:30:26 - watchfiles.main - INFO - 3 changes detected
+2025-09-29 22:30:28 - app.services.telegram_service - INFO - Telegram alert sent to chat: AskTheSage Customer Help (-1002951925977)
+2025-09-29 22:30:38 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:30:53 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:31:04 - app.api.endpoints - INFO - Signal received from 127.0.0.1: CLOSE EURUSD @ 21.0
+2025-09-29 22:31:04 - app.services.signal_service - INFO - Signal 4 closed: P&L=19.91550
+2025-09-29 22:31:04 - watchfiles.main - INFO - 3 changes detected
+2025-09-29 22:31:05 - app.services.telegram_service - INFO - Telegram alert sent to chat: AskTheSage Customer Help (-1002951925977)
+2025-09-29 22:31:08 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:31:23 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:31:38 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:31:53 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:32:08 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:32:23 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:32:38 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:32:53 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:33:08 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:33:23 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:33:38 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:33:53 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:33:55 - watchfiles.main - INFO - 1 change detected
+2025-09-29 22:38:07 - root - INFO - Server shutting down...
+2025-09-29 22:38:08 - app.services.telegram_service - INFO - Telegram bot has been shut down.
+2025-09-29 22:38:08 - root - INFO - Shutdown complete.

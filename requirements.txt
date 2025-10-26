@@ -1,0 +1,8 @@
+fastapi
+uvicorn[standard]
+python-telegram-bot
+pydantic
+python-multipart
+pydantic-settings
+requests
+python-dotenv
