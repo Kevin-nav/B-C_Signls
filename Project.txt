@@ -1,0 +1,1798 @@
+"""
+Trading Signal to Telegram Notification System
+FastAPI-based webhook server with monitoring, rate limiting, and admin controls
+"""
+
+import asyncio
+import logging
+from datetime import datetime, time, timedelta
+from pathlib import Path
+from typing import Optional, List
+import secrets
+
+from fastapi import FastAPI, HTTPException, BackgroundTasks, Request
+from fastapi.responses import JSONResponse
+from pydantic import BaseModel, Field
+import uvicorn
+from telegram import Bot, Update
+from telegram.ext import Application, CommandHandler, ContextTypes
+import sqlite3
+from contextlib import asynccontextmanager
+import json
+
+# =====================================================================
+# CONFIGURATION - EDIT THESE VALUES
+# =====================================================================
+
+class Config:
+    # Telegram Configuration
+    TELEGRAM_BOT_TOKEN = "YOUR_BOT_TOKEN_HERE"  # Get from @BotFather
+    TELEGRAM_CHAT_ID = "YOUR_CHAT_ID_HERE"  # Channel/Group ID
+    
+    # Security
+    WEBHOOK_SECRET_KEY = "YOUR_SECURE_SECRET_KEY_HERE"  # Use secrets.token_urlsafe(32)
+    ADMIN_USER_IDS = [123456789, 987654321]  # Telegram user IDs who can use admin commands
+    
+    # Rate Limiting & Controls
+    MAX_SIGNALS_PER_DAY = 10
+    MIN_SECONDS_BETWEEN_SIGNALS = 60  # 1 minute
+    
+    # Trading Hours (UTC time) - Set to None to disable
+    TRADING_START_TIME = time(0, 0)   # 00:00 UTC (adjust for your market)
+    TRADING_END_TIME = time(23, 59)   # 23:59 UTC
+    
+    # Server Configuration
+    HOST = "0.0.0.0"
+    PORT = 5000
+    
+    # Paths
+    DB_PATH = "trading_signals.db"
+    LOG_DIR = "logs"
+
+# =====================================================================
+# LOGGING SETUP - Daily rotating log files
+# =====================================================================
+
+Path(Config.LOG_DIR).mkdir(exist_ok=True)
+
+def get_logger():
+    """Create logger with daily rotating file handler"""
+    logger = logging.getLogger("TradingBot")
+    logger.setLevel(logging.INFO)
+    logger.handlers.clear()
+    
+    # Daily log file
+    log_filename = Path(Config.LOG_DIR) / f"bot_{datetime.now().strftime('%Y-%m-%d')}.log"
+    
+    file_handler = logging.FileHandler(log_filename)
+    file_handler.setLevel(logging.INFO)
+    
+    console_handler = logging.StreamHandler()
+    console_handler.setLevel(logging.INFO)
+    
+    formatter = logging.Formatter(
+        '%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+        datefmt='%Y-%m-%d %H:%M:%S'
+    )
+    
+    file_handler.setFormatter(formatter)
+    console_handler.setFormatter(formatter)
+    
+    logger.addHandler(file_handler)
+    logger.addHandler(console_handler)
+    
+    return logger
+
+logger = get_logger()
+
+# =====================================================================
+# DATABASE SETUP
+# =====================================================================
+
+def init_database():
+    """Initialize SQLite database with required tables"""
+    conn = sqlite3.connect(Config.DB_PATH)
+    cursor = conn.cursor()
+    
+    # Signals table
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS signals (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+            action TEXT NOT NULL,
+            symbol TEXT NOT NULL,
+            price REAL NOT NULL,
+            sent_to_telegram BOOLEAN DEFAULT FALSE,
+            telegram_message_id INTEGER,
+            closed BOOLEAN DEFAULT FALSE,
+            close_price REAL,
+            close_timestamp DATETIME,
+            profit_loss REAL
+        )
+    """)
+    
+    # System state table (for bot pause/resume)
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS system_state (
+            key TEXT PRIMARY KEY,
+            value TEXT NOT NULL,
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+    """)
+    
+    # Initialize system state
+    cursor.execute("""
+        INSERT OR IGNORE INTO system_state (key, value) 
+        VALUES ('bot_active', 'true')
+    """)
+    
+    conn.commit()
+    conn.close()
+    logger.info("Database initialized successfully")
+
+# =====================================================================
+# DATA MODELS
+# =====================================================================
+
+class SignalData(BaseModel):
+    secret_key: str = Field(..., description="Authentication secret key")
+    action: str = Field(..., description="Trade action: BUY, SELL, or CLOSE")
+    symbol: str = Field(..., description="Trading symbol (e.g., EURUSD)")
+    price: float = Field(..., gt=0, description="Trade price")
+    
+    # Optional fields for CLOSE action
+    open_signal_id: Optional[int] = Field(None, description="ID of the signal being closed")
+
+class SignalResponse(BaseModel):
+    status: str
+    message: str
+    signal_id: Optional[int] = None
+    signals_today: Optional[int] = None
+
+# =====================================================================
+# BOT STATE & RATE LIMITING
+# =====================================================================
+
+class BotState:
+    def __init__(self):
+        self.last_signal_time: Optional[datetime] = None
+        self.paused = False
+        self._load_state()
+    
+    def _load_state(self):
+        """Load bot state from database"""
+        conn = sqlite3.connect(Config.DB_PATH)
+        cursor = conn.cursor()
+        cursor.execute("SELECT value FROM system_state WHERE key = 'bot_active'")
+        result = cursor.fetchone()
+        conn.close()
+        
+        if result:
+            self.paused = result[0] == 'false'
+    
+    def is_paused(self) -> bool:
+        return self.paused
+    
+    def pause(self):
+        self.paused = True
+        self._update_db('false')
+        logger.info("Bot paused by admin")
+    
+    def resume(self):
+        self.paused = False
+        self._update_db('true')
+        logger.info("Bot resumed by admin")
+    
+    def _update_db(self, value: str):
+        conn = sqlite3.connect(Config.DB_PATH)
+        cursor = conn.cursor()
+        cursor.execute(
+            "UPDATE system_state SET value = ?, updated_at = CURRENT_TIMESTAMP WHERE key = 'bot_active'",
+            (value,)
+        )
+        conn.commit()
+        conn.close()
+    
+    def can_send_signal(self) -> tuple[bool, str]:
+        """Check if signal can be sent based on rate limiting and daily limits"""
+        
+        # Check if bot is paused
+        if self.is_paused():
+            return False, "Bot is currently paused"
+        
+        # Check trading hours
+        if Config.TRADING_START_TIME and Config.TRADING_END_TIME:
+            now_time = datetime.utcnow().time()
+            if not (Config.TRADING_START_TIME <= now_time <= Config.TRADING_END_TIME):
+                return False, "Outside trading hours"
+        
+        # Check rate limiting
+        if self.last_signal_time:
+            time_since_last = (datetime.now() - self.last_signal_time).total_seconds()
+            if time_since_last < Config.MIN_SECONDS_BETWEEN_SIGNALS:
+                return False, f"Rate limit: {Config.MIN_SECONDS_BETWEEN_SIGNALS - time_since_last:.0f}s remaining"
+        
+        # Check daily limit
+        conn = sqlite3.connect(Config.DB_PATH)
+        cursor = conn.cursor()
+        cursor.execute("""
+            SELECT COUNT(*) FROM signals 
+            WHERE DATE(timestamp) = DATE('now')
+        """)
+        count = cursor.fetchone()[0]
+        conn.close()
+        
+        if count >= Config.MAX_SIGNALS_PER_DAY:
+            return False, f"Daily limit reached ({Config.MAX_SIGNALS_PER_DAY} signals)"
+        
+        return True, "OK"
+    
+    def update_last_signal_time(self):
+        self.last_signal_time = datetime.now()
+
+bot_state = BotState()
+
+# =====================================================================
+# DATABASE OPERATIONS
+# =====================================================================
+
+def save_signal_to_db(action: str, symbol: str, price: float) -> int:
+    """Save signal to database (called AFTER Telegram send)"""
+    conn = sqlite3.connect(Config.DB_PATH)
+    cursor = conn.cursor()
+    
+    cursor.execute("""
+        INSERT INTO signals (action, symbol, price, sent_to_telegram)
+        VALUES (?, ?, ?, TRUE)
+    """, (action, symbol, price))
+    
+    signal_id = cursor.lastrowid
+    conn.commit()
+    conn.close()
+    
+    logger.info(f"Signal saved to DB: ID={signal_id}, {action} {symbol} @ {price}")
+    return signal_id
+
+def close_signal_in_db(signal_id: int, close_price: float):
+    """Update signal with close information and calculate P&L"""
+    conn = sqlite3.connect(Config.DB_PATH)
+    cursor = conn.cursor()
+    
+    # Get original signal
+    cursor.execute("SELECT action, price FROM signals WHERE id = ?", (signal_id,))
+    result = cursor.fetchone()
+    
+    if not result:
+        conn.close()
+        return
+    
+    action, open_price = result
+    
+    # Calculate profit/loss (simplified - actual calculation depends on position size)
+    if action == "BUY":
+        pl = close_price - open_price
+    else:  # SELL
+        pl = open_price - close_price
+    
+    cursor.execute("""
+        UPDATE signals 
+        SET closed = TRUE, close_price = ?, close_timestamp = CURRENT_TIMESTAMP, profit_loss = ?
+        WHERE id = ?
+    """, (close_price, pl, signal_id))
+    
+    conn.commit()
+    conn.close()
+    
+    logger.info(f"Signal {signal_id} closed: P&L={pl:.5f}")
+
+def get_today_stats() -> dict:
+    """Get statistics for today"""
+    conn = sqlite3.connect(Config.DB_PATH)
+    cursor = conn.cursor()
+    
+    cursor.execute("""
+        SELECT 
+            COUNT(*) as total,
+            SUM(CASE WHEN action = 'BUY' THEN 1 ELSE 0 END) as buys,
+            SUM(CASE WHEN action = 'SELL' THEN 1 ELSE 0 END) as sells,
+            SUM(CASE WHEN closed = TRUE THEN 1 ELSE 0 END) as closed,
+            SUM(CASE WHEN profit_loss > 0 THEN 1 ELSE 0 END) as wins,
+            SUM(CASE WHEN profit_loss < 0 THEN 1 ELSE 0 END) as losses,
+            SUM(profit_loss) as total_pl
+        FROM signals 
+        WHERE DATE(timestamp) = DATE('now')
+    """)
+    
+    result = cursor.fetchone()
+    conn.close()
+    
+    return {
+        "total_signals": result[0] or 0,
+        "buys": result[1] or 0,
+        "sells": result[2] or 0,
+        "closed": result[3] or 0,
+        "wins": result[4] or 0,
+        "losses": result[5] or 0,
+        "total_pl": result[6] or 0.0
+    }
+
+# =====================================================================
+# TELEGRAM FUNCTIONS
+# =====================================================================
+
+telegram_bot: Optional[Bot] = None
+
+async def send_telegram_alert(action: str, symbol: str, price: float, signal_id: int):
+    """Send formatted alert to Telegram channel"""
+    global telegram_bot
+    
+    if not telegram_bot:
+        telegram_bot = Bot(token=Config.TELEGRAM_BOT_TOKEN)
+    
+    # Get today's stats
+    stats = get_today_stats()
+    
+    # Format message
+    emoji = "🟢" if action == "BUY" else "🔴" if action == "SELL" else ⚪️"
+    
+    message = f"""
+{emoji} <b>{action} SIGNAL</b> {emoji}
+
+📊 <b>Symbol:</b> {symbol}
+💰 <b>Price:</b> {price:.5f}
+🕐 <b>Time:</b> {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} UTC
+📝 <b>Signal ID:</b> #{signal_id}
+
+📈 <b>Today's Stats:</b>
+   • Signals: {stats['total_signals']}/{Config.MAX_SIGNALS_PER_DAY}
+   • Buys: {stats['buys']} | Sells: {stats['sells']}
+   • Closed: {stats['closed']} (W:{stats['wins']} L:{stats['losses']})
+"""
+    
+    if stats['total_pl'] != 0:
+        message += f"   • Total P&L: {stats['total_pl']:+.5f}\n"
+    
+    try:
+        await telegram_bot.send_message(
+            chat_id=Config.TELEGRAM_CHAT_ID,
+            text=message,
+            parse_mode='HTML'
+        )
+        logger.info(f"Telegram alert sent successfully for signal #{signal_id}")
+    except Exception as e:
+        logger.error(f"Failed to send Telegram alert: {e}")
+        raise
+
+# =====================================================================
+# TELEGRAM ADMIN COMMANDS
+# =====================================================================
+
+async def cmd_stats(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Handle /stats command"""
+    user_id = update.effective_user.id
+    
+    if user_id not in Config.ADMIN_USER_IDS:
+        await update.message.reply_text("⛔️ Unauthorized")
+        return
+    
+    stats = get_today_stats()
+    
+    message = f"""
+📊 <b>Trading Bot Statistics (Today)</b>
+
+🔔 Signals: {stats['total_signals']}/{Config.MAX_SIGNALS_PER_DAY}
+📈 Buys: {stats['buys']}
+📉 Sells: {stats['sells']}
+✅ Closed: {stats['closed']}
+🏆 Wins: {stats['wins']}
+❌ Losses: {stats['losses']}
+💵 Total P&L: {stats['total_pl']:+.5f}
+
+🤖 Bot Status: {'🟢 Active' if not bot_state.is_paused() else '🔴 Paused'}
+"""
+    
+    await update.message.reply_text(message, parse_mode='HTML')
+    logger.info(f"Stats requested by user {user_id}")
+
+async def cmd_pause(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Handle /pause command"""
+    user_id = update.effective_user.id
+    
+    if user_id not in Config.ADMIN_USER_IDS:
+        await update.message.reply_text("⛔️ Unauthorized")
+        return
+    
+    bot_state.pause()
+    await update.message.reply_text("⏸️ Bot paused. No new signals will be processed.")
+    logger.info(f"Bot paused by user {user_id}")
+
+async def cmd_resume(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Handle /resume command"""
+    user_id = update.effective_user.id
+    
+    if user_id not in Config.ADMIN_USER_IDS:
+        await update.message.reply_text("⛔️ Unauthorized")
+        return
+    
+    bot_state.resume()
+    await update.message.reply_text("▶️ Bot resumed. Signals will be processed.")
+    logger.info(f"Bot resumed by user {user_id}")
+
+async def cmd_help(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Handle /help command"""
+    user_id = update.effective_user.id
+    
+    if user_id not in Config.ADMIN_USER_IDS:
+        await update.message.reply_text("⛔️ Unauthorized")
+        return
+    
+    help_text = """
+🤖 <b>Trading Bot Admin Commands</b>
+
+/stats - View today's statistics
+/pause - Pause signal processing
+/resume - Resume signal processing
+/help - Show this help message
+
+<b>Rate Limits:</b>
+• Max signals per day: {max_signals}
+• Min time between signals: {min_seconds}s
+
+<b>Trading Hours:</b> {trading_hours}
+""".format(
+        max_signals=Config.MAX_SIGNALS_PER_DAY,
+        min_seconds=Config.MIN_SECONDS_BETWEEN_SIGNALS,
+        trading_hours=f"{Config.TRADING_START_TIME} - {Config.TRADING_END_TIME} UTC" if Config.TRADING_START_TIME else "24/7"
+    )
+    
+    await update.message.reply_text(help_text, parse_mode='HTML')
+
+# =====================================================================
+# FASTAPI APPLICATION
+# =====================================================================
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Startup and shutdown events"""
+    # Startup
+    logger.info("Starting Trading Signal Bot...")
+    init_database()
+    
+    # Initialize Telegram bot with commands
+    telegram_app = Application.builder().token(Config.TELEGRAM_BOT_TOKEN).build()
+    telegram_app.add_handler(CommandHandler("stats", cmd_stats))
+    telegram_app.add_handler(CommandHandler("pause", cmd_pause))
+    telegram_app.add_handler(CommandHandler("resume", cmd_resume))
+    telegram_app.add_handler(CommandHandler("help", cmd_help))
+    
+    # Start polling in background
+    await telegram_app.initialize()
+    await telegram_app.start()
+    asyncio.create_task(telegram_app.updater.start_polling())
+    
+    logger.info(f"Server started on {Config.HOST}:{Config.PORT}")
+    
+    yield
+    
+    # Shutdown
+    await telegram_app.stop()
+    logger.info("Server shutting down...")
+
+app = FastAPI(
+    title="Trading Signal Webhook",
+    description="Receives trading signals from MQL5 and sends to Telegram",
+    version="1.0.0",
+    lifespan=lifespan
+)
+
+# =====================================================================
+# API ENDPOINTS
+# =====================================================================
+
+@app.post("/signal", response_model=SignalResponse)
+async def receive_signal(signal: SignalData, background_tasks: BackgroundTasks, request: Request):
+    """
+    Main endpoint to receive trading signals from MQL5
+    Priority: Send to Telegram FIRST, then save to DB
+    """
+    client_ip = request.client.host
+    logger.info(f"Signal received from {client_ip}: {signal.action} {signal.symbol} @ {signal.price}")
+    
+    # 1. AUTHENTICATION - First line of defense
+    if signal.secret_key != Config.WEBHOOK_SECRET_KEY:
+        logger.warning(f"Unauthorized signal attempt from {client_ip}")
+        raise HTTPException(status_code=401, detail="Invalid secret key")
+    
+    # 2. VALIDATION - Check action type
+    if signal.action not in ["BUY", "SELL", "CLOSE"]:
+        logger.warning(f"Invalid action received: {signal.action}")
+        raise HTTPException(status_code=400, detail="Action must be BUY, SELL, or CLOSE")
+    
+    # 3. RATE LIMITING & CHECKS (only for BUY/SELL, not CLOSE)
+    if signal.action in ["BUY", "SELL"]:
+        can_send, reason = bot_state.can_send_signal()
+        if not can_send:
+            logger.warning(f"Signal rejected: {reason}")
+            raise HTTPException(status_code=429, detail=reason)
+    
+    # 4. SEND TO TELEGRAM IMMEDIATELY (Priority #1)
+    try:
+        # For CLOSE signals, we need to get signal_id first
+        if signal.action == "CLOSE":
+            if signal.open_signal_id:
+                close_signal_in_db(signal.open_signal_id, signal.price)
+            signal_id = 0  # Placeholder for close signals
+        else:
+            signal_id = 0  # Will be updated after DB save
+        
+        # Send telegram alert
+        await send_telegram_alert(signal.action, signal.symbol, signal.price, signal_id)
+        
+        # Update rate limiting
+        if signal.action in ["BUY", "SELL"]:
+            bot_state.update_last_signal_time()
+        
+    except Exception as e:
+        logger.error(f"Failed to send Telegram alert: {e}")
+        raise HTTPException(status_code=500, detail="Failed to send Telegram notification")
+    
+    # 5. SAVE TO DATABASE (Background task - lower priority)
+    if signal.action in ["BUY", "SELL"]:
+        background_tasks.add_task(save_signal_to_db, signal.action, signal.symbol, signal.price)
+    
+    # 6. GET TODAY'S COUNT
+    stats = get_today_stats()
+    
+    return SignalResponse(
+        status="success",
+        message=f"Signal {signal.action} processed successfully",
+        signal_id=signal_id,
+        signals_today=stats['total_signals']
+    )
+
+@app.get("/health")
+async def health_check():
+    """Health check endpoint"""
+    return {
+        "status": "healthy",
+        "bot_active": not bot_state.is_paused(),
+        "timestamp": datetime.now().isoformat()
+    }
+
+@app.get("/stats")
+async def get_stats():
+    """Public stats endpoint"""
+    stats = get_today_stats()
+    return {
+        "date": datetime.now().strftime('%Y-%m-%d'),
+        "stats": stats,
+        "bot_active": not bot_state.is_paused(),
+        "limits": {
+            "max_signals_per_day": Config.MAX_SIGNALS_PER_DAY,
+            "min_seconds_between_signals": Config.MIN_SECONDS_BETWEEN_SIGNALS
+        }
+    }
+
+# =====================================================================
+# MAIN ENTRY POINT
+# =====================================================================
+
+if __name__ == "__main__":
+    uvicorn.run(
+        app,
+        host=Config.HOST,
+        port=Config.PORT,
+        log_level="info"
+    )
+
+
+
+fastapi==0.109.0
+uvicorn[standard]==0.27.0
+python-telegram-bot==21.0
+pydantic==2.5.3
+python-multipart==0.0.6
+
+
+
+
+# 🚀 Trading Signal Bot - Complete Setup Guide
+
+## Prerequisites Checklist
+
+Before starting, ensure you have:
+- ✅ SSH access to your VPS (51.20.32.51)
+- ✅ Ubuntu/Debian Linux server
+- ✅ Python 3.8+ installed
+- ✅ Root or sudo access
+
+---
+
+## Step 1: Create Your Telegram Bot
+
+### 1.1 Get Bot Token from BotFather
+
+1. Open Telegram and search for `@BotFather`
+2. Start a chat and send: `/newbot`
+3. Choose a name: `My Trading Signals Bot`
+4. Choose a username: `YourTrading_bot` (must end with 'bot')
+5. **Copy the bot token** - it looks like: `1234567890:ABCdefGHIjklMNOpqrsTUVwxyz`
+
+### 1.2 Get Your Channel/Group Chat ID
+
+**Method 1: Using a Bot**
+1. Add your bot to your channel/group as an admin
+2. Forward a message from your channel to `@userinfobot`
+3. It will show you the Chat ID (e.g., `-1001234567890`)
+
+**Method 2: Using Telegram API**
+1. Send a message in your channel/group
+2. Visit: `https://api.telegram.org/bot<YOUR_BOT_TOKEN>/getUpdates`
+3. Look for `"chat":{"id":-1001234567890}` in the response
+
+### 1.3 Get Your Personal User ID (for Admin Commands)
+
+1. Send a message to `@userinfobot` in Telegram
+2. It will reply with your User ID (e.g., `123456789`)
+3. Add any other admin user IDs you want to grant access
+
+---
+
+## Step 2: Generate Secure Secret Key
+
+Run this Python command to generate a cryptographically secure key:
+
+```bash
+python3 -c "import secrets; print(secrets.token_urlsafe(32))"
+```
+
+**Copy this key** - you'll need it for both MQL5 and Python configuration.
+
+Example output: `xK9mP2vL8nQ4wR7tY6uI3oP5aS1dF0gH2jK4lM6nB8vC`
+
+---
+
+## Step 3: Server Setup
+
+### 3.1 SSH into Your VPS
+
+```bash
+ssh -i "adaptive-bot-v3-key.pem" ubuntu@51.20.32.51
+```
+
+### 3.2 Update System
+
+```bash
+sudo apt update && sudo apt upgrade -y
+```
+
+### 3.3 Install Python and Required Packages
+
+```bash
+sudo apt install python3 python3-pip python3-venv -y
+```
+
+### 3.4 Create Project Directory
+
+```bash
+cd ~
+mkdir trading-bot
+cd trading-bot
+```
+
+### 3.5 Create Python Virtual Environment
+
+```bash
+python3 -m venv venv
+source venv/bin/activate
+```
+
+### 3.6 Upload Files
+
+Create the files in your project directory:
+
+1. **Create main.py**
+```bash
+nano main.py
+# Paste the main application code here
+# Save with Ctrl+X, then Y, then Enter
+```
+
+2. **Create requirements.txt**
+```bash
+nano requirements.txt
+# Paste the requirements content
+# Save with Ctrl+X, then Y, then Enter
+```
+
+### 3.7 Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+---
+
+## Step 4: Configure the Bot
+
+Edit the configuration in `main.py`:
+
+```bash
+nano main.py
+```
+
+Find the `Config` class (around line 27) and update:
+
+```python
+class Config:
+    # Telegram Configuration
+    TELEGRAM_BOT_TOKEN = "1234567890:ABCdefGHIjklMNOpqrsTUVwxyz"  # From BotFather
+    TELEGRAM_CHAT_ID = "-1001234567890"  # Your channel/group ID
+    
+    # Security
+    WEBHOOK_SECRET_KEY = "xK9mP2vL8nQ4wR7tY6uI3oP5aS1dF0gH2jK4lM6nB8vC"  # Generated key
+    ADMIN_USER_IDS = [123456789, 987654321]  # Your Telegram user IDs
+    
+    # Rate Limiting & Controls
+    MAX_SIGNALS_PER_DAY = 10
+    MIN_SECONDS_BETWEEN_SIGNALS = 60  # 1 minute
+    
+    # Trading Hours (UTC time) - Adjust for your market
+    TRADING_START_TIME = time(0, 0)   # 00:00 UTC
+    TRADING_END_TIME = time(23, 59)   # 23:59 UTC
+```
+
+Save the file (Ctrl+X, Y, Enter).
+
+---
+
+## Step 5: Test the Bot Manually
+
+### 5.1 Create Logs Directory
+
+```bash
+mkdir logs
+```
+
+### 5.2 Run the Bot
+
+```bash
+python main.py
+```
+
+You should see:
+```
+INFO: Starting Trading Signal Bot...
+INFO: Database initialized successfully
+INFO: Server started on 0.0.0.0:5000
+INFO: Uvicorn running on http://0.0.0.0:5000
+```
+
+### 5.3 Test Health Check
+
+Open a new terminal and SSH again, then:
+
+```bash
+curl http://localhost:5000/health
+```
+
+Expected response:
+```json
+{"status":"healthy","bot_active":true,"timestamp":"2025-09-29T..."}
+```
+
+### 5.4 Test Telegram Commands
+
+Go to Telegram and try:
+- `/help` - Should show available commands
+- `/stats` - Should show today's statistics
+- `/pause` - Should pause the bot
+- `/resume` - Should resume the bot
+
+If commands work, **the bot is successfully configured!**
+
+Stop the test by pressing `Ctrl+C` in the terminal running the bot.
+
+---
+
+## Step 6: Setup as Systemd Service (Auto-start on Boot)
+
+### 6.1 Create Service File
+
+```bash
+sudo nano /etc/systemd/system/trading-bot.service
+```
+
+Paste the systemd service configuration and adjust paths if needed.
+
+### 6.2 Reload Systemd
+
+```bash
+sudo systemctl daemon-reload
+```
+
+### 6.3 Enable and Start Service
+
+```bash
+sudo systemctl enable trading-bot
+sudo systemctl start trading-bot
+```
+
+### 6.4 Check Service Status
+
+```bash
+sudo systemctl status trading-bot
+```
+
+You should see **active (running)** in green.
+
+### 6.5 View Live Logs
+
+```bash
+# View service logs
+sudo journalctl -u trading-bot -f
+
+# Or view application logs
+tail -f ~/trading-bot/logs/bot_$(date +%Y-%m-%d).log
+```
+
+---
+
+## Step 7: Configure Firewall
+
+### 7.1 Allow Port 5000
+
+```bash
+sudo ufw allow 5000/tcp
+sudo ufw status
+```
+
+### 7.2 Security Note
+⚠️ **Currently using HTTP (unencrypted)**. For production, consider:
+- Setting up HTTPS with Let's Encrypt
+- Using Nginx as a reverse proxy
+- Restricting access to MT5 server IP only
+
+---
+
+## Step 8: Configure MQL5 Expert Advisor
+
+### 8.1 Update MQL5 Code
+
+In your MQL5 EA, update these constants:
+
+```mql5
+#define WEBHOOK_URL "http://51.20.32.51:5000/signal"
+#define SECRET_KEY  "xK9mP2vL8nQ4wR7tY6uI3oP5aS1dF0gH2jK4lM6nB8vC"  // Same as Python
+```
+
+### 8.2 Whitelist URL in MT5
+
+1. Open MetaTrader 5
+2. Go to **Tools** → **Options** → **Expert Advisors** tab
+3. Check **"Allow WebRequest for listed URLs"**
+4. Add: `http://51.20.32.51:5000`
+5. Click **OK**
+
+### 8.3 Test Signal from MT5
+
+Use the provided `SendTradeSignal()` function in your EA:
+
+```mql5
+SendTradeSignal("BUY", "EURUSD", 1.08450);
+```
+
+You should receive a Telegram notification immediately!
+
+---
+
+## Step 9: Daily Operations & Monitoring
+
+### 9.1 Useful Commands
+
+```bash
+# Check if bot is running
+sudo systemctl status trading-bot
+
+# Restart bot
+sudo systemctl restart trading-bot
+
+# Stop bot
+sudo systemctl stop trading-bot
+
+# View today's log
+cat ~/trading-bot/logs/bot_$(date +%Y-%m-%d).log
+
+# View real-time logs
+tail -f ~/trading-bot/logs/bot_$(date +%Y-%m-%d).log
+
+# Check database size
+ls -lh ~/trading-bot/trading_signals.db
+```
+
+### 9.2 Telegram Admin Commands
+
+From your Telegram account:
+
+- **`/stats`** - View today's trading statistics
+  - Shows: signals sent, buys, sells, closed trades, wins, losses, P&L
+  
+- **`/pause`** - Temporarily pause signal processing
+  - Bot will reject all new signals until resumed
+  
+- **`/resume`** - Resume signal processing
+  - Bot will start accepting signals again
+  
+- **`/help`** - Show available commands and current limits
+
+### 9.3 Check Stats via API
+
+```bash
+curl http://51.20.32.51:5000/stats
+```
+
+Returns JSON with today's statistics.
+
+---
+
+## Step 10: Backup & Maintenance
+
+### 10.1 Setup Automated Database Backup
+
+Create a backup script:
+
+```bash
+nano ~/trading-bot/backup.sh
+```
+
+Paste:
+
+```bash
+#!/bin/bash
+BACKUP_DIR="/home/ubuntu/trading-bot/backups"
+mkdir -p $BACKUP_DIR
+DATE=$(date +%Y-%m-%d_%H-%M-%S)
+cp /home/ubuntu/trading-bot/trading_signals.db $BACKUP_DIR/signals_$DATE.db
+# Keep only last 30 days
+find $BACKUP_DIR -name "signals_*.db" -mtime +30 -delete
+```
+
+Make executable:
+
+```bash
+chmod +x ~/trading-bot/backup.sh
+```
+
+Add to crontab (daily at 2 AM):
+
+```bash
+crontab -e
+```
+
+Add this line:
+
+```
+0 2 * * * /home/ubuntu/trading-bot/backup.sh
+```
+
+### 10.2 Log Rotation
+
+Logs are automatically created daily. To clean old logs (older than 30 days):
+
+```bash
+find ~/trading-bot/logs -name "bot_*.log" -mtime +30 -delete
+```
+
+Add to crontab (weekly cleanup):
+
+```
+0 3 * * 0 find /home/ubuntu/trading-bot/logs -name "bot_*.log" -mtime +30 -delete
+```
+
+---
+
+## Step 11: Advanced Configuration (Optional)
+
+### 11.1 Adjust Rate Limits
+
+Edit `main.py` Config class:
+
+```python
+MAX_SIGNALS_PER_DAY = 20  # Increase daily limit
+MIN_SECONDS_BETWEEN_SIGNALS = 30  # Faster signals (30s instead of 60s)
+```
+
+Restart service:
+```bash
+sudo systemctl restart trading-bot
+```
+
+### 11.2 Adjust Trading Hours
+
+For Forex (24/5 market), you might want to block weekend signals:
+
+```python
+# In main.py, add to can_send_signal method:
+now = datetime.utcnow()
+if now.weekday() >= 5:  # Saturday = 5, Sunday = 6
+    return False, "Weekend - market closed"
+```
+
+### 11.3 Multiple Telegram Channels
+
+To send signals to multiple channels, modify the `send_telegram_alert` function:
+
+```python
+TELEGRAM_CHAT_IDS = ["-1001234567890", "-1009876543210"]  # Multiple channels
+
+for chat_id in TELEGRAM_CHAT_IDS:
+    await telegram_bot.send_message(
+        chat_id=chat_id,
+        text=message,
+        parse_mode='HTML'
+    )
+```
+
+---
+
+## Step 12: Setting Up HTTPS (Recommended)
+
+### 12.1 Install Nginx
+
+```bash
+sudo apt install nginx certbot python3-certbot-nginx -y
+```
+
+### 12.2 Configure Nginx as Reverse Proxy
+
+```bash
+sudo nano /etc/nginx/sites-available/trading-bot
+```
+
+Paste:
+
+```nginx
+server {
+    listen 80;
+    server_name 51.20.32.51;  # Or your domain if you have one
+
+    location / {
+        proxy_pass http://127.0.0.1:5000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+}
+```
+
+Enable site:
+
+```bash
+sudo ln -s /etc/nginx/sites-available/trading-bot /etc/nginx/sites-enabled/
+sudo nginx -t
+sudo systemctl restart nginx
+```
+
+### 12.3 Get SSL Certificate (If using domain)
+
+If you have a domain pointing to your VPS:
+
+```bash
+sudo certbot --nginx -d yourdomain.com
+```
+
+Update MQL5 URL to: `https://yourdomain.com/signal`
+
+### 12.4 IP Whitelist (Extra Security)
+
+In Nginx config, restrict to MT5 server IP only:
+
+```nginx
+location /signal {
+    allow YOUR_MT5_SERVER_IP;
+    deny all;
+    
+    proxy_pass http://127.0.0.1:5000;
+    # ... rest of proxy settings
+}
+```
+
+---
+
+## Troubleshooting Guide
+
+### Problem: Bot not receiving signals
+
+**Check 1: Is the service running?**
+```bash
+sudo systemctl status trading-bot
+```
+
+**Check 2: Can MT5 reach the server?**
+```bash
+# On your local machine
+curl -X POST http://51.20.32.51:5000/signal \
+  -H "Content-Type: application/json" \
+  -d '{"secret_key":"YOUR_KEY","action":"BUY","symbol":"TEST","price":1.0}'
+```
+
+**Check 3: Is the firewall blocking?**
+```bash
+sudo ufw status
+```
+
+**Check 4: View recent logs**
+```bash
+tail -n 50 ~/trading-bot/logs/bot_$(date +%Y-%m-%d).log
+```
+
+### Problem: Unauthorized error (401)
+
+- Secret key mismatch between MQL5 and Python
+- Check both files have identical keys
+- No extra spaces or quotes
+
+### Problem: Rate limit errors (429)
+
+- You've hit the daily limit or minimum time between signals
+- Use `/stats` command to check current count
+- Adjust limits in Config class if needed
+
+### Problem: Telegram commands not working
+
+- Make sure your User ID is in `ADMIN_USER_IDS` list
+- Check bot token is correct
+- Ensure bot is admin in the channel
+
+### Problem: Service won't start
+
+```bash
+# Check detailed error
+sudo journalctl -u trading-bot -n 50
+
+# Common issues:
+# - Wrong Python path in service file
+# - Missing dependencies
+# - Database permission issues
+```
+
+---
+
+## Quick Reference Card
+
+### Essential Commands
+
+| Task | Command |
+|------|---------|
+| Start bot | `sudo systemctl start trading-bot` |
+| Stop bot | `sudo systemctl stop trading-bot` |
+| Restart bot | `sudo systemctl restart trading-bot` |
+| Check status | `sudo systemctl status trading-bot` |
+| View logs | `tail -f ~/trading-bot/logs/bot_$(date +%Y-%m-%d).log` |
+| Check stats | `curl http://51.20.32.51:5000/stats` |
+
+### File Locations
+
+| Item | Location |
+|------|----------|
+| Main application | `/home/ubuntu/trading-bot/main.py` |
+| Database | `/home/ubuntu/trading-bot/trading_signals.db` |
+| Daily logs | `/home/ubuntu/trading-bot/logs/bot_YYYY-MM-DD.log` |
+| Service file | `/etc/systemd/system/trading-bot.service` |
+| Requirements | `/home/ubuntu/trading-bot/requirements.txt` |
+
+### Important URLs
+
+| Endpoint | URL | Purpose |
+|----------|-----|---------|
+| Signal webhook | `http://51.20.32.51:5000/signal` | Receive signals from MT5 |
+| Health check | `http://51.20.32.51:5000/health` | Check if bot is running |
+| Statistics | `http://51.20.32.51:5000/stats` | Get today's stats (JSON) |
+
+---
+
+## Security Checklist
+
+- ✅ Use strong, cryptographically secure secret key
+- ✅ Limit admin access to specific Telegram user IDs
+- ✅ Keep secret key private (never commit to Git)
+- ✅ Consider HTTPS for production
+- ✅ Regular database backups
+- ✅ Monitor logs for suspicious activity
+- ✅ Update dependencies regularly: `pip install --upgrade -r requirements.txt`
+- ✅ Consider IP whitelisting for MT5 server
+
+---
+
+## Next Steps
+
+1. ✅ Complete Steps 1-8 to get basic system running
+2. 📊 Monitor first day of trading signals
+3. 📈 Adjust rate limits based on your trading frequency
+4. 🔒 Set up HTTPS if using in production
+5. 💾 Configure automated backups
+6. 📱 Test all Telegram admin commands
+7. 🎯 Fine-tune trading hours for your market
+
+---
+
+## Support & Resources
+
+- **FastAPI Docs**: https://fastapi.tiangolo.com/
+- **python-telegram-bot Docs**: https://docs.python-telegram-bot.org/
+- **Systemd Service Management**: `man systemctl`
+
+For issues, check the logs first:
+```bash
+tail -f ~/trading-bot/logs/bot_$(date +%Y-%m-%d).log
+```
+
+---
+
+**🎉 You're all set! Your trading signal bot is now ready to receive signals from MT5 and send real-time alerts to Telegram!**
+
+
+
+
+#!/usr/bin/env python3
+"""
+Test script to send sample signals to your trading bot
+Use this to verify the bot is working correctly before connecting MT5
+"""
+
+import requests
+import json
+import time
+
+# =====================================================================
+# CONFIGURATION - Match your main.py settings
+# =====================================================================
+
+WEBHOOK_URL = "http://51.20.32.51:5000/signal"
+SECRET_KEY = "YOUR_SECURE_SECRET_KEY_HERE"  # Must match main.py
+
+# =====================================================================
+# Test Functions
+# =====================================================================
+
+def send_signal(action: str, symbol: str, price: float, open_signal_id: int = None):
+    """Send a test signal to the bot"""
+    
+    payload = {
+        "secret_key": SECRET_KEY,
+        "action": action,
+        "symbol": symbol,
+        "price": price
+    }
+    
+    if open_signal_id:
+        payload["open_signal_id"] = open_signal_id
+    
+    print(f"\n{'='*60}")
+    print(f"Sending {action} signal for {symbol} @ {price}")
+    print(f"{'='*60}")
+    
+    try:
+        response = requests.post(
+            WEBHOOK_URL,
+            json=payload,
+            headers={"Content-Type": "application/json"},
+            timeout=10
+        )
+        
+        print(f"Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            data = response.json()
+            print(f"✅ SUCCESS!")
+            print(f"Response: {json.dumps(data, indent=2)}")
+        else:
+            print(f"❌ ERROR!")
+            print(f"Response: {response.text}")
+            
+    except requests.exceptions.ConnectionError:
+        print("❌ CONNECTION ERROR!")
+        print("Cannot reach the server. Check:")
+        print("  1. Is the bot service running? (sudo systemctl status trading-bot)")
+        print("  2. Is the firewall allowing port 5000? (sudo ufw status)")
+        print("  3. Is the URL correct?")
+    except requests.exceptions.Timeout:
+        print("⏰ TIMEOUT ERROR!")
+        print("Server took too long to respond.")
+    except Exception as e:
+        print(f"❌ UNEXPECTED ERROR: {e}")
+
+def test_health():
+    """Test the health endpoint"""
+    print(f"\n{'='*60}")
+    print("Testing Health Check Endpoint")
+    print(f"{'='*60}")
+    
+    try:
+        response = requests.get(f"{WEBHOOK_URL.replace('/signal', '/health')}", timeout=5)
+        print(f"Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            data = response.json()
+            print(f"✅ Bot is healthy!")
+            print(f"Response: {json.dumps(data, indent=2)}")
+        else:
+            print(f"❌ Health check failed!")
+            
+    except Exception as e:
+        print(f"❌ Error: {e}")
+
+def test_stats():
+    """Test the stats endpoint"""
+    print(f"\n{'='*60}")
+    print("Testing Statistics Endpoint")
+    print(f"{'='*60}")
+    
+    try:
+        response = requests.get(f"{WEBHOOK_URL.replace('/signal', '/stats')}", timeout=5)
+        print(f"Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            data = response.json()
+            print(f"✅ Stats retrieved successfully!")
+            print(f"Response: {json.dumps(data, indent=2)}")
+        else:
+            print(f"❌ Stats retrieval failed!")
+            
+    except Exception as e:
+        print(f"❌ Error: {e}")
+
+# =====================================================================
+# Test Scenarios
+# =====================================================================
+
+def test_basic_flow():
+    """Test basic signal flow: BUY -> SELL -> CLOSE"""
+    print("\n" + "="*60)
+    print("TEST SCENARIO 1: Basic Signal Flow")
+    print("="*60)
+    
+    # Test 1: BUY Signal
+    send_signal("BUY", "EURUSD", 1.08450)
+    time.sleep(2)
+    
+    # Test 2: SELL Signal
+    send_signal("SELL", "GBPUSD", 1.26350)
+    time.sleep(2)
+    
+    # Test 3: CLOSE Signal (closing signal ID 1)
+    send_signal("CLOSE", "EURUSD", 1.08550, open_signal_id=1)
+    time.sleep(2)
+
+def test_rate_limiting():
+    """Test rate limiting (should fail after first signal)"""
+    print("\n" + "="*60)
+    print("TEST SCENARIO 2: Rate Limiting")
+    print("="*60)
+    
+    send_signal("BUY", "USDJPY", 149.500)
+    print("\nSending another signal immediately (should be rate limited)...")
+    time.sleep(1)
+    send_signal("BUY", "USDJPY", 149.550)
+
+def test_invalid_secret():
+    """Test with invalid secret key (should fail)"""
+    print("\n" + "="*60)
+    print("TEST SCENARIO 3: Invalid Secret Key (Should Fail)")
+    print("="*60)
+    
+    payload = {
+        "secret_key": "WRONG_SECRET_KEY",
+        "action": "BUY",
+        "symbol": "EURUSD",
+        "price": 1.08000
+    }
+    
+    try:
+        response = requests.post(
+            WEBHOOK_URL,
+            json=payload,
+            headers={"Content-Type": "application/json"},
+            timeout=10
+        )
+        
+        print(f"Status Code: {response.status_code}")
+        if response.status_code == 401:
+            print("✅ Correctly rejected unauthorized request!")
+        else:
+            print("❌ Expected 401 Unauthorized!")
+            
+    except Exception as e:
+        print(f"❌ Error: {e}")
+
+def test_invalid_action():
+    """Test with invalid action (should fail)"""
+    print("\n" + "="*60)
+    print("TEST SCENARIO 4: Invalid Action (Should Fail)")
+    print("="*60)
+    
+    payload = {
+        "secret_key": SECRET_KEY,
+        "action": "HOLD",  # Invalid action
+        "symbol": "EURUSD",
+        "price": 1.08000
+    }
+    
+    try:
+        response = requests.post(
+            WEBHOOK_URL,
+            json=payload,
+            headers={"Content-Type": "application/json"},
+            timeout=10
+        )
+        
+        print(f"Status Code: {response.status_code}")
+        if response.status_code == 400:
+            print("✅ Correctly rejected invalid action!")
+        else:
+            print("❌ Expected 400 Bad Request!")
+            
+    except Exception as e:
+        print(f"❌ Error: {e}")
+
+# =====================================================================
+# Main Menu
+# =====================================================================
+
+def main():
+    print("""
+╔══════════════════════════════════════════════════════════════╗
+║         Trading Signal Bot - Test Script                     ║
+╚══════════════════════════════════════════════════════════════╝
+
+This script helps you test your trading bot before connecting MT5.
+
+""")
+    
+    # Check configuration
+    if SECRET_KEY == "YOUR_SECURE_SECRET_KEY_HERE":
+        print(⚠️  WARNING: Please update SECRET_KEY in this script first!")
+        print("   It must match the key in your main.py Config class.\n")
+        return
+    
+    while True:
+        print("\nSelect a test:")
+        print("  1. Health Check")
+        print("  2. Get Statistics")
+        print("  3. Send Single BUY Signal")
+        print("  4. Send Single SELL Signal")
+        print("  5. Send CLOSE Signal")
+        print("  6. Run Basic Flow Test (BUY -> SELL -> CLOSE)")
+        print("  7. Test Rate Limiting")
+        print("  8. Test Invalid Secret Key (Security)")
+        print("  9. Test Invalid Action (Validation)")
+        print("  0. Exit")
+        
+        choice = input("\nEnter choice: ").strip()
+        
+        if choice == "1":
+            test_health()
+        elif choice == "2":
+            test_stats()
+        elif choice == "3":
+            send_signal("BUY", "EURUSD", 1.08450)
+        elif choice == "4":
+            send_signal("SELL", "GBPUSD", 1.26350)
+        elif choice == "5":
+            signal_id = input("Enter signal ID to close: ").strip()
+            try:
+                send_signal("CLOSE", "EURUSD", 1.08550, open_signal_id=int(signal_id))
+            except ValueError:
+                print("Invalid signal ID!")
+        elif choice == "6":
+            test_basic_flow()
+        elif choice == "7":
+            test_rate_limiting()
+        elif choice == "8":
+            test_invalid_secret()
+        elif choice == "9":
+            test_invalid_action()
+        elif choice == "0":
+            print("\n👋 Goodbye!")
+            break
+        else:
+            print("Invalid choice!")
+
+if __name__ == "__main__":
+    main()
+
+
+
+
+
+# MQL5 Integration Guide for Trading Signal Bot
+
+## Quick Setup for MQL5 Developer
+
+### Step 1: Whitelist the URL in MetaTrader 5
+
+1. Open **MetaTrader 5**
+2. Go to **Tools** → **Options**
+3. Click **Expert Advisors** tab
+4. ✅ Check: **"Allow WebRequest for listed URLs"**
+5. Click **Add** and enter: `http://51.20.32.51:5000`
+6. Click **OK**
+⚠️ **Important**: Without this step, WebRequest will fail with error code -1!
+
+---
+
+### Step 2: Add This Code to Your Expert Advisor
+
+```mql5
+//+------------------------------------------------------------------+
+//|                                          TelegramSignalSender.mqh |
+//|                                      Trading Signal Integration   |
+//+------------------------------------------------------------------+
+
+// =====================================================================
+// CONFIGURATION - Update these values
+// =====================================================================
+
+#define WEBHOOK_URL "http://51.20.32.51:5000/signal"
+#define SECRET_KEY  "YOUR_SECURE_SECRET_KEY_HERE"  // Get from Python team
+
+// =====================================================================
+// Main Function to Send Signals
+// =====================================================================
+
+bool SendTradeSignal(string action, string symbol, double price, int open_signal_id = 0)
+{
+    // Build JSON payload
+    string json_data = "{" +
+                       "\"secret_key\":\"" + SECRET_KEY + "\"," +
+                       "\"action\":\"" + action + "\"," +
+                       "\"symbol\":\"" + symbol + "\"," +
+                       "\"price\":" + DoubleToString(price, _Digits);
+    
+    // Add open_signal_id for CLOSE actions
+    if(action == "CLOSE" && open_signal_id > 0)
+    {
+        json_data += ",\"open_signal_id\":" + IntegerToString(open_signal_id);
+    }
+    
+    json_data += "}";
+    
+    // Convert string to char array
+    char post_data[];
+    StringToCharArray(json_data, post_data);
+    ArrayResize(post_data, StringLen(json_data));  // Remove null terminator
+    
+    // Prepare for response
+    char result_data[];
+    string result_headers;
+    
+    // Send HTTP POST request
+    int timeout = 5000;  // 5 seconds
+    int res = WebRequest(
+        "POST",
+        WEBHOOK_URL,
+        NULL,           // No custom headers needed
+        NULL,           // No cookies
+        timeout,
+        post_data,
+        ArraySize(post_data),
+        result_data,
+        result_headers
+    );
+    
+    // Handle response
+    if(res == 200)
+    {
+        string response = CharArrayToString(result_data);
+        Print("✅ Signal sent successfully: ", action, " ", symbol, " @ ", price);
+        Print("Server response: ", response);
+        return true;
+    }
+    else if(res == -1)
+    {
+        Print("❌ WebRequest Error! Did you whitelist the URL?");
+        Print("Go to Tools → Options → Expert Advisors → Allow WebRequest");
+        Print("Add URL: ", WEBHOOK_URL);
+        return false;
+    }
+    else if(res == 401)
+    {
+        Print("❌ Unauthorized! Check SECRET_KEY matches Python configuration.");
+        return false;
+    }
+    else if(res == 429)
+    {
+        Print("⚠️ Rate limit reached. Signal rejected.");
+        string response = CharArrayToString(result_data);
+        Print("Server says: ", response);
+        return false;
+    }
+    else
+    {
+        Print("❌ HTTP Error: ", res);
+        if(ArraySize(result_data) > 0)
+        {
+            string response = CharArrayToString(result_data);
+            Print("Server response: ", response);
+        }
+        return false;
+    }
+}
+
+// =====================================================================
+// Example Usage in Your EA
+// =====================================================================
+
+//+------------------------------------------------------------------+
+//| Example: How to use in your trading logic                        |
+//+------------------------------------------------------------------+
+
+void OnTick()
+{
+    // Your trading logic here...
+    
+    // Example: When you want to send a BUY signal
+    if(/* your BUY condition */)
+    {
+        double entryPrice = SymbolInfoDouble(_Symbol, SYMBOL_ASK);
+        
+        if(SendTradeSignal("BUY", _Symbol, entryPrice))
+        {
+            // Signal sent successfully, proceed with trade
+            // Your order opening code here...
+        }
+    }
+    
+    // Example: When you want to send a SELL signal
+    if(/* your SELL condition */)
+    {
+        double entryPrice = SymbolInfoDouble(_Symbol, SYMBOL_BID);
+        
+        if(SendTradeSignal("SELL", _Symbol, entryPrice))
+        {
+            // Signal sent successfully, proceed with trade
+            // Your order opening code here...
+        }
+    }
+    
+    // Example: When you close a position
+    if(/* position closed */)
+    {
+        double closePrice = SymbolInfoDouble(_Symbol, SYMBOL_BID);
+        int signalId = 1;  // You need to track this from when position opened
+        
+        SendTradeSignal("CLOSE", _Symbol, closePrice, signalId);
+    }
+}
+
+// =====================================================================
+// Advanced: Track Signal IDs
+// =====================================================================
+
+// If you want to properly track which signals are closed, you can parse
+// the JSON response to get the signal_id and store it with your position
+
+#include <JAson.mqh>  // Include JSON parser library
+
+int ExtractSignalId(string json_response)
+{
+    CJAVal json;
+    
+    if(json.Deserialize(json_response))
+    {
+        if(json["signal_id"].ToInt() > 0)
+        {
+            return (int)json["signal_id"].ToInt();
+        }
+    }
+    
+    return 0;
+}
+
+// Modified SendTradeSignal that returns signal ID
+int SendTradeSignalWithId(string action, string symbol, double price)
+{
+    // ... (same code as above until response handling)
+    
+    if(res == 200)
+    {
+        string response = CharArrayToString(result_data);
+        Print("✅ Signal sent successfully");
+        
+        // Extract and return signal_id from response
+        int signal_id = ExtractSignalId(response);
+        return signal_id;
+    }
+    
+    return 0;  // Failed
+}
+
+// Usage example with tracking:
+int g_LastSignalId = 0;
+
+void OpenBuyPosition()
+{
+    double price = SymbolInfoDouble(_Symbol, SYMBOL_ASK);
+    
+    g_LastSignalId = SendTradeSignalWithId("BUY", _Symbol, price);
+    
+    if(g_LastSignalId > 0)
+    {
+        // Open your position and store g_LastSignalId with it
+        // ...
+    }
+}
+
+void ClosePosition()
+{
+    double price = SymbolInfoDouble(_Symbol, SYMBOL_BID);
+    
+    SendTradeSignal("CLOSE", _Symbol, price, g_LastSignalId);
+}
+```
+
+---
+
+## Common Error Codes & Solutions
+
+| Error Code | Meaning | Solution |
+|------------|---------|----------|
+| **-1** | WebRequest not allowed | Whitelist URL in MT5 settings |
+| **200** | Success | Everything working! |
+| **401** | Unauthorized | Check SECRET_KEY matches Python config |
+| **400** | Bad Request | Check action is "BUY", "SELL", or "CLOSE" |
+| **429** | Rate Limit | Too many signals, wait and retry |
+| **500** | Server Error | Check Python bot logs |
+| **0** | Connection Failed | Check server is running, firewall open |
+
+---
+
+## Testing Your Integration
+
+### Quick Test Function
+
+Add this test function to your EA:
+
+```mql5
+void TestSignalSending()
+{
+    Print("=== Testing Signal Sending ===");
+    
+    // Test 1: BUY Signal
+    if(SendTradeSignal("BUY", "EURUSD", 1.08450))
+        Print("✅ Test 1 passed: BUY signal");
+    else
+        Print("❌ Test 1 failed");
+    
+    Sleep(2000);  // Wait 2 seconds
+    
+    // Test 2: SELL Signal
+    if(SendTradeSignal("SELL", "GBPUSD", 1.26350))
+        Print("✅ Test 2 passed: SELL signal");
+    else
+        Print("❌ Test 2 failed");
+    
+    Sleep(2000);
+    
+    // Test 3: CLOSE Signal
+    if(SendTradeSignal("CLOSE", "EURUSD", 1.08550, 1))
+        Print("✅ Test 3 passed: CLOSE signal");
+    else
+        Print("❌ Test 3 failed");
+}
+
+// Call this in OnInit() for testing
+int OnInit()
+{
+    TestSignalSending();
+    return INIT_SUCCEEDED;
+}
+```
+
+---
+
+## Integration Checklist
+
+- [ ] Whitelisted URL in MT5 (Tools → Options → Expert Advisors)
+- [ ] Updated `WEBHOOK_URL` constant (should be `http://51.20.32.51:5000/signal`)
+- [ ] Updated `SECRET_KEY`

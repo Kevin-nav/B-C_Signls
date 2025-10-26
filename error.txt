@@ -1,0 +1,316 @@
+# MQL5 Integration Guide for Trading Signal Bot
+
+## Quick Setup for MQL5 Developer
+
+### Step 1: Whitelist the URL in MetaTrader 5
+
+1. Open **MetaTrader 5**
+2. Go to **Tools** → **Options**
+3. Click **Expert Advisors** tab
+4. ✅ Check: **"Allow WebRequest for listed URLs"**
+5. Click **Add** and enter: `http://51.20.32.51:5000`
+6. Click **OK**
+⚠️ **Important**: Without this step, WebRequest will fail with error code -1!
+
+---
+
+### Step 2: Add This Code to Your Expert Advisor
+
+```mql5
+//+------------------------------------------------------------------+
+//|                                          TelegramSignalSender.mqh |
+//|                                      Trading Signal Integration   |
+//+------------------------------------------------------------------+
+
+// =====================================================================
+// CONFIGURATION - Update these values
+// =====================================================================
+
+#define WEBHOOK_URL "http://51.20.32.51:5000/signal"
+#define SECRET_KEY  "YOUR_SECURE_SECRET_KEY_HERE"  // Get from Python team
+
+// =====================================================================
+// Main Function to Send Signals
+// =====================================================================
+
+bool SendTradeSignal(string action, string symbol, double price, int open_signal_id = 0)
+{
+    // Build JSON payload
+    string json_data = "{" +
+                       "\"secret_key\":\"" + SECRET_KEY + "\"," +
+                       "\"action\":\"" + action + "\"," +
+                       "\"symbol\":\"" + symbol + "\"," +
+                       "\"price\":" + DoubleToString(price, _Digits);
+    
+    // Add open_signal_id for CLOSE actions
+    if(action == "CLOSE" && open_signal_id > 0)
+    {
+        json_data += ",\"open_signal_id\":" + IntegerToString(open_signal_id);
+    }
+    
+    json_data += "}";
+    
+    // Convert string to char array
+    char post_data[];
+    StringToCharArray(json_data, post_data);
+    ArrayResize(post_data, StringLen(json_data));  // Remove null terminator
+    
+    // Prepare for response
+    char result_data[];
+    string result_headers;
+    
+    // Send HTTP POST request
+    int timeout = 5000;  // 5 seconds
+    int res = WebRequest(
+        "POST",
+        WEBHOOK_URL,
+        NULL,           // No custom headers needed
+        NULL,           // No cookies
+        timeout,
+        post_data,
+        ArraySize(post_data),
+        result_data,
+        result_headers
+    );
+    
+    // Handle response
+    if(res == 200)
+    {
+        string response = CharArrayToString(result_data);
+        Print("✅ Signal sent successfully: ", action, " ", symbol, " @ ", price);
+        Print("Server response: ", response);
+        return true;
+    }
+    else if(res == -1)
+    {
+        Print("❌ WebRequest Error! Did you whitelist the URL?");
+        Print("Go to Tools → Options → Expert Advisors → Allow WebRequest");
+        Print("Add URL: ", WEBHOOK_URL);
+        return false;
+    }
+    else if(res == 401)
+    {
+        Print("❌ Unauthorized! Check SECRET_KEY matches Python configuration.");
+        return false;
+    }
+    else if(res == 429)
+    {
+        Print("⚠️ Rate limit reached. Signal rejected.");
+        string response = CharArrayToString(result_data);
+        Print("Server says: ", response);
+        return false;
+    }
+    else
+    {
+        Print("❌ HTTP Error: ", res);
+        if(ArraySize(result_data) > 0)
+        {
+            string response = CharArrayToString(result_data);
+            Print("Server response: ", response);
+        }
+        return false;
+    }
+}
+
+// =====================================================================
+// Example Usage in Your EA
+// =====================================================================
+
+//+------------------------------------------------------------------+
+//| Example: How to use in your trading logic                        |
+//+------------------------------------------------------------------+
+
+void OnTick()
+{
+    // Your trading logic here...
+    
+    // Example: When you want to send a BUY signal
+    if(/* your BUY condition */)
+    {
+        double entryPrice = SymbolInfoDouble(_Symbol, SYMBOL_ASK);
+        
+        if(SendTradeSignal("BUY", _Symbol, entryPrice))
+        {
+            // Signal sent successfully, proceed with trade
+            // Your order opening code here...
+        }
+    }
+    
+    // Example: When you want to send a SELL signal
+    if(/* your SELL condition */)
+    {
+        double entryPrice = SymbolInfoDouble(_Symbol, SYMBOL_BID);
+        
+        if(SendTradeSignal("SELL", _Symbol, entryPrice))
+        {
+            // Signal sent successfully, proceed with trade
+            // Your order opening code here...
+        }
+    }
+    
+    // Example: When you close a position
+    if(/* position closed */)
+    {
+        double closePrice = SymbolInfoDouble(_Symbol, SYMBOL_BID);
+        int signalId = 1;  // You need to track this from when position opened
+        
+        SendTradeSignal("CLOSE", _Symbol, closePrice, signalId);
+    }
+}
+
+// =====================================================================
+// Advanced: Track Signal IDs
+// =====================================================================
+
+// If you want to properly track which signals are closed, you can parse
+// the JSON response to get the signal_id and store it with your position
+
+#include <JAson.mqh>  // Include JSON parser library
+
+int ExtractSignalId(string json_response)
+{
+    CJAVal json;
+    
+    if(json.Deserialize(json_response))
+    {
+        if(json["signal_id"].ToInt() > 0)
+        {
+            return (int)json["signal_id"].ToInt();
+        }
+    }
+    
+    return 0;
+}
+
+// Modified SendTradeSignal that returns signal ID
+int SendTradeSignalWithId(string action, string symbol, double price)
+{
+    // ... (same code as above until response handling)
+    
+    if(res == 200)
+    {
+        string response = CharArrayToString(result_data);
+        Print("✅ Signal sent successfully");
+        
+        // Extract and return signal_id from response
+        int signal_id = ExtractSignalId(response);
+        return signal_id;
+    }
+    
+    return 0;  // Failed
+}
+
+// Usage example with tracking:
+int g_LastSignalId = 0;
+
+void OpenBuyPosition()
+{
+    double price = SymbolInfoDouble(_Symbol, SYMBOL_ASK);
+    
+    g_LastSignalId = SendTradeSignalWithId("BUY", _Symbol, price);
+    
+    if(g_LastSignalId > 0)
+    {
+        // Open your position and store g_LastSignalId with it
+        // ...
+    }
+}
+
+void ClosePosition()
+{
+    double price = SymbolInfoDouble(_Symbol, SYMBOL_BID);
+    
+    SendTradeSignal("CLOSE", _Symbol, price, g_LastSignalId);
+}
+```
+
+---
+
+## Common Error Codes & Solutions
+
+| Error Code | Meaning | Solution |
+|------------|---------|----------|
+| **-1** | WebRequest not allowed | Whitelist URL in MT5 settings |
+| **200** | Success | Everything working! |
+| **401** | Unauthorized | Check SECRET_KEY matches Python config |
+| **400** | Bad Request | Check action is "BUY", "SELL", or "CLOSE" |
+| **429** | Rate Limit | Too many signals, wait and retry |
+| **500** | Server Error | Check Python bot logs |
+| **0** | Connection Failed | Check server is running, firewall open |
+
+---
+
+## Testing Your Integration
+
+### Quick Test Function
+
+Add this test function to your EA:
+
+```mql5
+void TestSignalSending()
+{
+    Print("=== Testing Signal Sending ===");
+    
+    // Test 1: BUY Signal
+    if(SendTradeSignal("BUY", "EURUSD", 1.08450))
+        Print("✅ Test 1 passed: BUY signal");
+    else
+        Print("❌ Test 1 failed");
+    
+    Sleep(2000);  // Wait 2 seconds
+    
+    // Test 2: SELL Signal
+    if(SendTradeSignal("SELL", "GBPUSD", 1.26350))
+        Print("✅ Test 2 passed: SELL signal");
+    else
+        Print("❌ Test 2 failed");
+    
+    Sleep(2000);
+    
+    // Test 3: CLOSE Signal
+    if(SendTradeSignal("CLOSE", "EURUSD", 1.08550, 1))
+        Print("✅ Test 3 passed: CLOSE signal");
+    else
+        Print("❌ Test 3 failed");
+}
+
+// Call this in OnInit() for testing
+int OnInit()
+{
+    TestSignalSending();
+    return INIT_SUCCEEDED;
+}
+```
+
+---
+
+## Integration Checklist
+
+- [ ] Whitelisted URL in MT5 (Tools → Options → Expert Advisors)
+- [ ] Updated `WEBHOOK_URL` constant (should be `http://51.20.32.51:5000/signal`)
+- [ ] Updated `SECRET_KEY`
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
