@@ -23,6 +23,8 @@ logger = logging.getLogger(__name__)
 CHOOSE_SETTING, RECEIVE_VALUE = range(2)
 # Conversation states for /chats
 CHATS_MENU, GET_ADD_CHAT_ID, GET_REMOVE_CHAT_ID = range(2, 5)
+# Conversation states for /reports
+REPORTS_MENU, VIEW_REPORT = range(5, 7)
 
 class TelegramService:
     CHANGEABLE_SETTINGS = {
@@ -70,11 +72,21 @@ class TelegramService:
             BotCommand("resume", "Resume the bot and process new signals"),
             BotCommand("set", "Change a bot setting via an interactive menu"),
             BotCommand("chats", "Manage channels/groups receiving signals"),
+            BotCommand("reports", "View system reports"),
             BotCommand("help", "Show help message and available commands"),
             BotCommand("cancel", "Cancel the current operation"),
         ]
         await self.bot.set_my_commands(commands)
         logger.info("Bot command menu has been set.")
+
+        # Conversation handler for /reports
+        reports_conv_handler = ConversationHandler(
+            entry_points=[CommandHandler("reports", self.cmd_reports)],
+            states={
+                REPORTS_MENU: [CallbackQueryHandler(self.handle_reports_menu_choice)],
+            },
+            fallbacks=[CommandHandler("cancel", self.cmd_cancel)],
+        )
 
         # Conversation handler for /set
         set_conv_handler = ConversationHandler(
@@ -100,6 +112,7 @@ class TelegramService:
         # Add command handlers
         self.app.add_handler(set_conv_handler)
         self.app.add_handler(chats_conv_handler)
+        self.app.add_handler(reports_conv_handler)
         self.app.add_handler(CommandHandler("stats", self.cmd_stats))
         self.app.add_handler(CommandHandler("pause", self.cmd_pause))
         self.app.add_handler(CommandHandler("resume", self.cmd_resume))
@@ -118,6 +131,18 @@ class TelegramService:
                 await self.app.updater.stop()
             await self.app.stop()
             logger.info("Telegram bot has been shut down.")
+
+    async def notify_admins(self, message: str):
+        """Sends a direct message to all admin users."""
+        if not self.bot:
+            return
+        # Iterate through the existing list of admin user IDs
+        for user_id in settings.ADMIN_USER_IDS:
+            try:
+                await self.bot.send_message(chat_id=user_id, text=message)
+                logger.info(f"Sent admin notification to {user_id}.")
+            except Exception as e:
+                logger.error(f"Failed to send notification to admin {user_id}: {e}")
 
     async def send_alert(self, message: str):
         """Send a message to all managed chats in the database."""
@@ -423,6 +448,59 @@ class TelegramService:
                 conn.close()
 
         await self.cmd_chats(update, context)
+        return ConversationHandler.END
+
+    # --- Conversation Handlers for /reports ---
+
+    async def cmd_reports(self, update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+        """Entry point for the /reports conversation. Shows unread reports."""
+        user_id = update.effective_user.id
+        if not self._is_admin(user_id):
+            await update.message.reply_text("⛔️ Unauthorized")
+            return ConversationHandler.END
+
+        conn = database.create_bot_connection()
+        try:
+            unread_reports = repository.get_unread_reports(conn)
+        finally:
+            conn.close()
+
+        if not unread_reports:
+            await update.message.reply_text("No unread reports.")
+            return ConversationHandler.END
+
+        keyboard = []
+        for report in unread_reports:
+            report_id, timestamp, report_type = report
+            # Format timestamp for display
+            ts_str = timestamp.strftime("%Y-%m-%d %H:%M")
+            button_text = f"{ts_str} - {report_type.replace('_', ' ').title()}"
+            keyboard.append([InlineKeyboardButton(button_text, callback_data=f"view_{report_id}")])
+        
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        await update.message.reply_text("Please select a report to view:", reply_markup=reply_markup)
+        return REPORTS_MENU
+
+    async def handle_reports_menu_choice(self, update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+        """Handles the user selecting a report to view."""
+        query = update.callback_query
+        await query.answer()
+        report_id_str = query.data.split('_')[1]
+        report_id = int(report_id_str)
+
+        conn = database.create_bot_connection()
+        try:
+            details = repository.get_report_details(conn, report_id)
+        finally:
+            conn.close()
+
+        if details:
+            # Escape HTML characters in the details for safety
+            escaped_details = html.escape(details)
+            await query.edit_message_text(f"<b>Report Details:</b>\n\n<pre>{escaped_details}</pre>", parse_mode='HTML')
+        else:
+            await query.edit_message_text("Could not retrieve report details. It may have been deleted.")
+        
         return ConversationHandler.END
     
     # --- Other Admin Command Handlers ---

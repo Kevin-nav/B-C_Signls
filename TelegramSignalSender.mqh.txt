@@ -1,0 +1,221 @@
+//+------------------------------------------------------------------+
+//|                                          TelegramSignalSender.mqh |
+//|      MQL5 Client for Python TCP Signal Server (JSON Protocol)     |
+//|                                             Version 1.0           |
+//+------------------------------------------------------------------+
+#property copyright "Gemini"
+#property version   "1.0"
+
+#import "ws2_32.dll"
+int     WSAStartup(ushort wVersionRequested, uchar &lpWSAData[]);
+int     socket(int af, int type, int protocol);
+int     connect(int s, uchar &name[], int namelen);
+int     send(int s, uchar &buf[], int len, int flags);
+int     recv(int s, uchar &buf[], int len, int flags);
+int     closesocket(int s);
+uint    inet_addr(uchar &cp[]);
+ushort  htons(ushort hostshort);
+int     WSACleanup();
+#import
+
+//--- Global socket handle
+int g_sock = -1;
+
+//+------------------------------------------------------------------+
+//| Connects and authenticates with the TCP server.                  |
+//| Returns true on success, false on failure.                       |
+//+------------------------------------------------------------------+
+bool ConnectAndAuth(string ip, int port, string secret_key)
+{
+    //--- Disconnect if already connected
+    if(g_sock != -1)
+    {
+        closesocket(g_sock);
+        g_sock = -1;
+    }
+
+    //--- Start Winsock
+    uchar wsaData[400];
+    if(WSAStartup(0x202, wsaData) != 0)
+    {
+        Print("WSAStartup failed. Error: ", GetLastError());
+        return false;
+    }
+
+    //--- Create socket
+    g_sock = socket(2, 1, 6); // AF_INET, SOCK_STREAM, IPPROTO_TCP
+    if(g_sock < 0)
+    {
+        Print("socket() failed. Error: ", GetLastError());
+        WSACleanup();
+        return false;
+    }
+
+    //--- Build sockaddr structure
+    uchar sockaddr[16];
+    ArrayInitialize(sockaddr, 0);
+    sockaddr[0] = 2; // AF_INET
+
+    ushort port_net = htons((ushort)port);
+    sockaddr[2] = (uchar)(port_net & 0xFF);
+    sockaddr[3] = (uchar)((port_net >> 8) & 0xFF);
+
+    uchar host_bytes[];
+    StringToCharArray(ip, host_bytes, 0, WHOLE_ARRAY, CP_ACP);
+    uint ip_addr = inet_addr(host_bytes);
+    sockaddr[4] = (uchar)(ip_addr & 0xFF);
+    sockaddr[5] = (uchar)((ip_addr >> 8) & 0xFF);
+    sockaddr[6] = (uchar)((ip_addr >> 16) & 0xFF);
+    sockaddr[7] = (uchar)((ip_addr >> 24) & 0xFF);
+
+    //--- Attempt connection
+    if(connect(g_sock, sockaddr, 16) != 0)
+    {
+        Print("connect() failed. Is the server running at ", ip, ":", port, "? Error: ", GetLastError());
+        closesocket(g_sock);
+        g_sock = -1;
+        WSACleanup();
+        return false;
+    }
+
+    Print("Connected to server. Authenticating...");
+
+    //--- 1. Send Authentication Message
+    string auth_json = "{\"secret_key\":\"" + secret_key + "\"}";
+    if(!SendMessage(auth_json))
+    {
+        Print("Failed to send authentication message.");
+        closesocket(g_sock);
+        g_sock = -1;
+        WSACleanup();
+        return false;
+    }
+
+    //--- 2. Receive Authentication Response
+    uchar recv_buf[1024];
+    int bytes_received = recv(g_sock, recv_buf, 1024, 0);
+    if(bytes_received > 0)
+    {
+        string response = CharArrayToString(recv_buf, 0, bytes_received);
+        if(StringFind(response, "Authentication successful") != -1)
+        {
+            Print("Authentication successful.");
+            return true;
+        }
+        else
+        {
+            Print("Authentication failed. Server response: ", response);
+        }
+    }
+    else
+    {
+        Print("Did not receive authentication response from server.");
+    }
+
+    //--- Auth failed, close socket
+    closesocket(g_sock);
+    g_sock = -1;
+    WSACleanup();
+    return false;
+}
+
+//+------------------------------------------------------------------+
+//| Sends a length-prefixed message to the server.                   |
+//+------------------------------------------------------------------+
+bool SendMessage(string message)
+{
+    if(g_sock == -1)
+    {
+        Print("Not connected to server.");
+        return false;
+    }
+
+    //--- Convert message to UTF-8 bytes
+    uchar msg_data[];
+    int msg_len = StringToCharArray(message, msg_data, 0, -1, CP_UTF8) - 1; // Exclude null terminator
+
+    //--- Create 4-byte length prefix (big-endian)
+    uchar header[4];
+    header[0] = (uchar)((msg_len >> 24) & 0xFF);
+    header[1] = (uchar)((msg_len >> 16) & 0xFF);
+    header[2] = (uchar)((msg_len >> 8) & 0xFF);
+    header[3] = (uchar)(msg_len & 0xFF);
+
+    //--- Send header
+    if(send(g_sock, header, 4, 0) != 4)
+    {
+        Print("Failed to send message header. Error: ", GetLastError());
+        return false;
+    }
+
+    //--- Send message payload
+    if(send(g_sock, msg_data, msg_len, 0) != msg_len)
+    {
+        Print("Failed to send message payload. Error: ", GetLastError());
+        return false;
+    }
+
+    Print("Sent message: ", message);
+    return true;
+}
+
+//+------------------------------------------------------------------+
+//| Receives a length-prefixed message from the server.              |
+//+------------------------------------------------------------------+
+string ReceiveMessage()
+{
+    if(g_sock == -1)
+    {
+        Print("Not connected to server.");
+        return "";
+    }
+
+    //--- Receive 4-byte header
+    uchar header[4];
+    if(recv(g_sock, header, 4, 0) != 4)
+    {
+        Print("Failed to receive message header. Error: ", GetLastError());
+        return "";
+    }
+    int msg_len = (header[0] << 24) | (header[1] << 16) | (header[2] << 8) | header[3];
+
+    //--- Receive payload
+    if(msg_len > 0)
+    {
+        uchar msg_data[];
+        ArrayResize(msg_data, msg_len);
+        int total_received = 0;
+        while(total_received < msg_len)
+        {
+            int received = recv(g_sock, msg_data, msg_len - total_received, 0, total_received);
+            if(received <= 0)
+            {
+                Print("Failed to receive full message payload. Error: ", GetLastError());
+                return "";
+            }
+            total_received += received;
+        }
+        string response = CharArrayToString(msg_data, 0, msg_len, CP_UTF8);
+        Print("Received message: ", response);
+        return response;
+    }
+    return "";
+}
+
+
+//+------------------------------------------------------------------+
+//| Public function to send a trade signal.                          |
+//+------------------------------------------------------------------+
+bool SendTradeSignal(string action, string symbol, double price, int open_signal_id = 0)
+{
+    if(g_sock == -1)
+    {
+        Print("Cannot send signal, not connected.");
+        return false;
+    }
+
+    //--- Build JSON payload
+    string json_data = "{";
+    json_data += "\"action\":\"" + action + "\",";
+    json_data += "\"symbol\":\"" + symbol + "\",";
+    json_data += "\"price\":

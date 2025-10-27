@@ -7,34 +7,11 @@ from fastapi import FastAPI
 import uvicorn
 
 from app.api.endpoints import router as api_router
-from app.core.config import settings, reload_settings_from_db
+from app.core.config import reload_settings_from_db
 from app.db.database import init_database
 from app.services.telegram_service import telegram_service
+from app.services.queue_service import queue_service
 from app.tcp_server import start_tcp_server
-
-# =====================================================================
-# LOGGING SETUP
-# =====================================================================
-
-# Ensure log directory exists
-Path(settings.LOG_DIR).mkdir(exist_ok=True)
-
-def setup_logging():
-    """Configures logging to file and console."""
-    log_filename = Path(settings.LOG_DIR) / f"bot_{datetime.now().strftime('%Y-%m-%d')}.log"
-    
-    logging.basicConfig(
-        level=logging.INFO,
-        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-        datefmt='%Y-%m-%d %H:%M:%S',
-        handlers=[
-            logging.FileHandler(log_filename),
-            logging.StreamHandler()
-        ]
-    )
-    # Suppress noisy logs from libraries
-    logging.getLogger("httpx").setLevel(logging.WARNING)
-    logging.getLogger("telegram").setLevel(logging.WARNING)
 
 # =====================================================================
 # FASTAPI LIFESPAN EVENTS
@@ -46,10 +23,12 @@ async def lifespan(app: FastAPI):
     Handles application startup and shutdown events.
     """
     # Startup
+    setup_logging() # Setup logging first
     logging.info("Starting Trading Signal Bot...")
     init_database()
     reload_settings_from_db()  # Load .env and override with DB settings
     await telegram_service.initialize()
+    await queue_service.start_worker() # Start the retry queue worker
     
     # Start the TCP server in the background
     tcp_server_task = asyncio.create_task(start_tcp_server())
