@@ -8,10 +8,15 @@ from datetime import datetime
 from app.core.config import settings
 
 class JsonFormatter(logging.Formatter):
-    """Formats log records as JSON strings."""
+    """Formats log records as JSON strings in ISO 8601 format."""
+    def formatTime(self, record, datefmt=None):
+        ct = self.converter(record.created)
+        dt = datetime.fromtimestamp(ct)
+        return dt.strftime('%Y-%m-%dT%H:%M:%S') + '.%03dZ' % record.msecs
+
     def format(self, record):
         log_object = {
-            "timestamp": self.formatTime(record, self.datefmt),
+            "timestamp": self.formatTime(record),
             "level": record.levelname,
             "message": record.getMessage(),
             "name": record.name,
@@ -42,7 +47,7 @@ def setup_logging():
 
     # --- File Handler (JSON) ---
     file_handler = logging.FileHandler(log_filename, mode='a')
-    file_handler.setFormatter(JsonFormatter('%Y-%m-%dT%H:%M:%S.%fZ'))
+
     root_logger.addHandler(file_handler)
 
     # --- Console Handler (for human-readable output during development) ---

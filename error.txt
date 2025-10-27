@@ -1,316 +1,839 @@
-# MQL5 Integration Guide for Trading Signal Bot
+(venv)
+Kevin Nchorbuno@Kevin MINGW64 ~/Project/EA/AutoSig (master)
+$ python main.py
+INFO:     Will watch for changes in these directories: ['C:\\Users\\MORO\\Project\\EA\\AutoSig']
+INFO:     Uvicorn running on http://0.0.0.0:5000 (Press CTRL+C to quit)
+INFO:     Started reloader process [37548] using WatchFiles
+INFO:     Started server process [18964]
+INFO:     Waiting for application startup.
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\logging\__init__.py", line 1151, in emit
+    msg = self.format(record)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\logging\__init__.py", line 999, in format
+    return fmt.format(record)
+           ~~~~~~~~~~^^^^^^^^
+  File "C:\Users\MORO\Project\EA\AutoSig\app\core\logging_config.py", line 18, in format
+    "timestamp": self.formatTime(record, self.datefmt),
+                 ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\logging\__init__.py", line 651, in formatTime
+    s = time.strftime(datefmt, ct)
+ValueError: Invalid format string
+Call stack:
+  File "<string>", line 1, in <module>
+    from multiprocessing.spawn import spawn_main; spawn_main(parent_pid=37548, pipe_handle=1132)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\multiprocessing\spawn.py", line 122, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\multiprocessing\spawn.py", line 135, in _main
+    return self._bootstrap(parent_sentinel)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\multiprocessing\process.py", line 313, in _bootstrap
+    self.run()
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\multiprocessing\process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\uvicorn\_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\uvicorn\server.py", line 67, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\runners.py", line 195, in run
+    return runner.run(main)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\base_events.py", line 712, in run_until_complete
+    self.run_forever()
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\base_events.py", line 683, in run_forever
+    self._run_once()
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\base_events.py", line 2050, in _run_once
+    handle._run()
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\events.py", line 89, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\uvicorn\lifespan\on.py", line 86, in main
+    await app(scope, self.receive, self.send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\uvicorn\middleware\proxy_headers.py", line 29, in __call__
+    return await self.app(scope, receive, send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\fastapi\applications.py", line 1133, in __call__
+    await super().__call__(scope, receive, send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\starlette\applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\starlette\middleware\errors.py", line 151, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\starlette\middleware\exceptions.py", line 49, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\starlette\routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\starlette\routing.py", line 725, in app
+    await self.lifespan(scope, receive, send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\starlette\routing.py", line 694, in lifespan
+    async with self.lifespan_context(app) as maybe_state:
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\contextlib.py", line 214, in __aenter__
+    return await anext(self.gen)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\fastapi\routing.py", line 209, in merged_lifespan
+    async with original_context(app) as maybe_original_state:
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\contextlib.py", line 214, in __aenter__
+    return await anext(self.gen)
+  File "C:\Users\MORO\Project\EA\AutoSig\main.py", line 27, in lifespan
+    setup_logging() # Setup logging first
+  File "C:\Users\MORO\Project\EA\AutoSig\app\core\logging_config.py", line 66, in setup_logging
+    logger.info("Structured JSON logging configured.")
+Message: 'Structured JSON logging configured.'
+Arguments: ()
+2025-10-27 09:42:38 - app.core.logging_config - INFO - Structured JSON logging configured.
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\logging\__init__.py", line 1151, in emit
+    msg = self.format(record)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\logging\__init__.py", line 999, in format
+    return fmt.format(record)
+           ~~~~~~~~~~^^^^^^^^
+  File "C:\Users\MORO\Project\EA\AutoSig\app\core\logging_config.py", line 18, in format
+    "timestamp": self.formatTime(record, self.datefmt),
+                 ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\logging\__init__.py", line 651, in formatTime
+    s = time.strftime(datefmt, ct)
+ValueError: Invalid format string
+Call stack:
+  File "<string>", line 1, in <module>
+    from multiprocessing.spawn import spawn_main; spawn_main(parent_pid=37548, pipe_handle=1132)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\multiprocessing\spawn.py", line 122, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\multiprocessing\spawn.py", line 135, in _main
+    return self._bootstrap(parent_sentinel)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\multiprocessing\process.py", line 313, in _bootstrap
+    self.run()
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\multiprocessing\process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\uvicorn\_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\uvicorn\server.py", line 67, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\runners.py", line 195, in run
+    return runner.run(main)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\base_events.py", line 712, in run_until_complete
+    self.run_forever()
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\base_events.py", line 683, in run_forever
+    self._run_once()
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\base_events.py", line 2050, in _run_once
+    handle._run()
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\events.py", line 89, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\uvicorn\lifespan\on.py", line 86, in main
+    await app(scope, self.receive, self.send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\uvicorn\middleware\proxy_headers.py", line 29, in __call__
+    return await self.app(scope, receive, send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\fastapi\applications.py", line 1133, in __call__
+    await super().__call__(scope, receive, send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\starlette\applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\starlette\middleware\errors.py", line 151, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\starlette\middleware\exceptions.py", line 49, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\starlette\routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\starlette\routing.py", line 725, in app
+    await self.lifespan(scope, receive, send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\starlette\routing.py", line 694, in lifespan
+    async with self.lifespan_context(app) as maybe_state:
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\contextlib.py", line 214, in __aenter__
+    return await anext(self.gen)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\fastapi\routing.py", line 209, in merged_lifespan
+    async with original_context(app) as maybe_original_state:
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\contextlib.py", line 214, in __aenter__
+    return await anext(self.gen)
+  File "C:\Users\MORO\Project\EA\AutoSig\main.py", line 28, in lifespan
+    logging.info("Starting Trading Signal Bot...")
+Message: 'Starting Trading Signal Bot...'
+Arguments: ()
+2025-10-27 09:42:38 - root - INFO - Starting Trading Signal Bot...
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\logging\__init__.py", line 1151, in emit
+    msg = self.format(record)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\logging\__init__.py", line 999, in format
+    return fmt.format(record)
+           ~~~~~~~~~~^^^^^^^^
+  File "C:\Users\MORO\Project\EA\AutoSig\app\core\logging_config.py", line 18, in format
+    "timestamp": self.formatTime(record, self.datefmt),
+                 ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\logging\__init__.py", line 651, in formatTime
+    s = time.strftime(datefmt, ct)
+ValueError: Invalid format string
+Call stack:
+  File "<string>", line 1, in <module>
+    from multiprocessing.spawn import spawn_main; spawn_main(parent_pid=37548, pipe_handle=1132)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\multiprocessing\spawn.py", line 122, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\multiprocessing\spawn.py", line 135, in _main
+    return self._bootstrap(parent_sentinel)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\multiprocessing\process.py", line 313, in _bootstrap
+    self.run()
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\multiprocessing\process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\uvicorn\_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\uvicorn\server.py", line 67, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\runners.py", line 195, in run
+    return runner.run(main)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\base_events.py", line 712, in run_until_complete
+    self.run_forever()
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\base_events.py", line 683, in run_forever
+    self._run_once()
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\base_events.py", line 2050, in _run_once
+    handle._run()
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\events.py", line 89, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\uvicorn\lifespan\on.py", line 86, in main
+    await app(scope, self.receive, self.send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\uvicorn\middleware\proxy_headers.py", line 29, in __call__
+    return await self.app(scope, receive, send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\fastapi\applications.py", line 1133, in __call__
+    await super().__call__(scope, receive, send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\starlette\applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\starlette\middleware\errors.py", line 151, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\starlette\middleware\exceptions.py", line 49, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\starlette\routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\starlette\routing.py", line 725, in app
+    await self.lifespan(scope, receive, send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\starlette\routing.py", line 694, in lifespan
+    async with self.lifespan_context(app) as maybe_state:
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\contextlib.py", line 214, in __aenter__
+    return await anext(self.gen)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\fastapi\routing.py", line 209, in merged_lifespan
+    async with original_context(app) as maybe_original_state:
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\contextlib.py", line 214, in __aenter__
+    return await anext(self.gen)
+  File "C:\Users\MORO\Project\EA\AutoSig\main.py", line 29, in lifespan
+    init_database()
+  File "C:\Users\MORO\Project\EA\AutoSig\app\db\database.py", line 95, in init_database
+    logger.info("Database initialized successfully")
+Message: 'Database initialized successfully'
+Arguments: ()
+2025-10-27 09:42:38 - app.db.database - INFO - Database initialized successfully
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\logging\__init__.py", line 1151, in emit
+    msg = self.format(record)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\logging\__init__.py", line 999, in format
+    return fmt.format(record)
+           ~~~~~~~~~~^^^^^^^^
+  File "C:\Users\MORO\Project\EA\AutoSig\app\core\logging_config.py", line 18, in format
+    "timestamp": self.formatTime(record, self.datefmt),
+                 ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\logging\__init__.py", line 651, in formatTime
+    s = time.strftime(datefmt, ct)
+ValueError: Invalid format string
+Call stack:
+  File "<string>", line 1, in <module>
+    from multiprocessing.spawn import spawn_main; spawn_main(parent_pid=37548, pipe_handle=1132)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\multiprocessing\spawn.py", line 122, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\multiprocessing\spawn.py", line 135, in _main
+    return self._bootstrap(parent_sentinel)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\multiprocessing\process.py", line 313, in _bootstrap
+    self.run()
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\multiprocessing\process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\uvicorn\_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\uvicorn\server.py", line 67, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\runners.py", line 195, in run
+    return runner.run(main)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\base_events.py", line 712, in run_until_complete
+    self.run_forever()
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\base_events.py", line 683, in run_forever
+    self._run_once()
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\base_events.py", line 2050, in _run_once
+    handle._run()
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\events.py", line 89, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\uvicorn\lifespan\on.py", line 86, in main
+    await app(scope, self.receive, self.send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\uvicorn\middleware\proxy_headers.py", line 29, in __call__
+    return await self.app(scope, receive, send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\fastapi\applications.py", line 1133, in __call__
+    await super().__call__(scope, receive, send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\starlette\applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\starlette\middleware\errors.py", line 151, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\starlette\middleware\exceptions.py", line 49, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\starlette\routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\starlette\routing.py", line 725, in app
+    await self.lifespan(scope, receive, send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\starlette\routing.py", line 694, in lifespan
+    async with self.lifespan_context(app) as maybe_state:
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\contextlib.py", line 214, in __aenter__
+    return await anext(self.gen)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\fastapi\routing.py", line 209, in merged_lifespan
+    async with original_context(app) as maybe_original_state:
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\contextlib.py", line 214, in __aenter__
+    return await anext(self.gen)
+  File "C:\Users\MORO\Project\EA\AutoSig\main.py", line 30, in lifespan
+    reload_settings_from_db()  # Load .env and override with DB settings
+  File "C:\Users\MORO\Project\EA\AutoSig\app\core\config.py", line 64, in reload_settings_from_db
+    logger.info("Attempting to load and apply settings from the database...")
+Message: 'Attempting to load and apply settings from the database...'
+Arguments: ()
+2025-10-27 09:42:38 - app.core.config - INFO - Attempting to load and apply settings from the database...
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\logging\__init__.py", line 1151, in emit
+    msg = self.format(record)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\logging\__init__.py", line 999, in format
+    return fmt.format(record)
+           ~~~~~~~~~~^^^^^^^^
+  File "C:\Users\MORO\Project\EA\AutoSig\app\core\logging_config.py", line 18, in format
+    "timestamp": self.formatTime(record, self.datefmt),
+                 ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\logging\__init__.py", line 651, in formatTime
+    s = time.strftime(datefmt, ct)
+ValueError: Invalid format string
+Call stack:
+  File "<string>", line 1, in <module>
+    from multiprocessing.spawn import spawn_main; spawn_main(parent_pid=37548, pipe_handle=1132)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\multiprocessing\spawn.py", line 122, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\multiprocessing\spawn.py", line 135, in _main
+    return self._bootstrap(parent_sentinel)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\multiprocessing\process.py", line 313, in _bootstrap
+    self.run()
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\multiprocessing\process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\uvicorn\_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\uvicorn\server.py", line 67, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\runners.py", line 195, in run
+    return runner.run(main)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\base_events.py", line 712, in run_until_complete
+    self.run_forever()
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\base_events.py", line 683, in run_forever
+    self._run_once()
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\base_events.py", line 2050, in _run_once
+    handle._run()
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\events.py", line 89, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\uvicorn\lifespan\on.py", line 86, in main
+    await app(scope, self.receive, self.send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\uvicorn\middleware\proxy_headers.py", line 29, in __call__
+    return await self.app(scope, receive, send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\fastapi\applications.py", line 1133, in __call__
+    await super().__call__(scope, receive, send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\starlette\applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\starlette\middleware\errors.py", line 151, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\starlette\middleware\exceptions.py", line 49, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\starlette\routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\starlette\routing.py", line 725, in app
+    await self.lifespan(scope, receive, send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\starlette\routing.py", line 694, in lifespan
+    async with self.lifespan_context(app) as maybe_state:
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\contextlib.py", line 214, in __aenter__
+    return await anext(self.gen)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\fastapi\routing.py", line 209, in merged_lifespan
+    async with original_context(app) as maybe_original_state:
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\contextlib.py", line 214, in __aenter__
+    return await anext(self.gen)
+  File "C:\Users\MORO\Project\EA\AutoSig\main.py", line 30, in lifespan
+    reload_settings_from_db()  # Load .env and override with DB settings
+  File "C:\Users\MORO\Project\EA\AutoSig\app\core\config.py", line 109, in reload_settings_from_db
+    logger.info(f"Successfully applied {update_count} settings from the database.")
+Message: 'Successfully applied 3 settings from the database.'
+Arguments: ()
+2025-10-27 09:42:38 - app.core.config - INFO - Successfully applied 3 settings from the database.
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\logging\__init__.py", line 1151, in emit
+    msg = self.format(record)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\logging\__init__.py", line 999, in format
+    return fmt.format(record)
+           ~~~~~~~~~~^^^^^^^^
+  File "C:\Users\MORO\Project\EA\AutoSig\app\core\logging_config.py", line 18, in format
+    "timestamp": self.formatTime(record, self.datefmt),
+                 ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\logging\__init__.py", line 651, in formatTime
+    s = time.strftime(datefmt, ct)
+ValueError: Invalid format string
+Call stack:
+  File "<string>", line 1, in <module>
+    from multiprocessing.spawn import spawn_main; spawn_main(parent_pid=37548, pipe_handle=1132)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\multiprocessing\spawn.py", line 122, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\multiprocessing\spawn.py", line 135, in _main
+    return self._bootstrap(parent_sentinel)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\multiprocessing\process.py", line 313, in _bootstrap
+    self.run()
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\multiprocessing\process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\uvicorn\_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\uvicorn\server.py", line 67, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\runners.py", line 195, in run
+    return runner.run(main)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\base_events.py", line 712, in run_until_complete
+    self.run_forever()
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\base_events.py", line 683, in run_forever
+    self._run_once()
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\base_events.py", line 2050, in _run_once
+    handle._run()
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\events.py", line 89, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\uvicorn\lifespan\on.py", line 86, in main
+    await app(scope, self.receive, self.send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\uvicorn\middleware\proxy_headers.py", line 29, in __call__
+    return await self.app(scope, receive, send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\fastapi\applications.py", line 1133, in __call__
+    await super().__call__(scope, receive, send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\starlette\applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\starlette\middleware\errors.py", line 151, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\starlette\middleware\exceptions.py", line 49, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\starlette\routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\starlette\routing.py", line 725, in app
+    await self.lifespan(scope, receive, send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\starlette\routing.py", line 694, in lifespan
+    async with self.lifespan_context(app) as maybe_state:
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\contextlib.py", line 214, in __aenter__
+    return await anext(self.gen)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\fastapi\routing.py", line 209, in merged_lifespan
+    async with original_context(app) as maybe_original_state:
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\contextlib.py", line 214, in __aenter__
+    return await anext(self.gen)
+  File "C:\Users\MORO\Project\EA\AutoSig\main.py", line 31, in lifespan
+    await telegram_service.initialize()
+  File "C:\Users\MORO\Project\EA\AutoSig\app\services\telegram_service.py", line 64, in initialize
+    logger.info(f"Ensured default chat '{chat.title}' ({chat.id}) is in the database.")
+Message: "Ensured default chat 'AskTheSage Customer Help' (-1002951925977) is in the database."
+Arguments: ()
+2025-10-27 09:42:40 - app.services.telegram_service - INFO - Ensured default chat 'AskTheSage Customer Help' (-1002951925977) is in the database.
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\logging\__init__.py", line 1151, in emit
+    msg = self.format(record)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\logging\__init__.py", line 999, in format
+    return fmt.format(record)
+           ~~~~~~~~~~^^^^^^^^
+  File "C:\Users\MORO\Project\EA\AutoSig\app\core\logging_config.py", line 18, in format
+    "timestamp": self.formatTime(record, self.datefmt),
+                 ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\logging\__init__.py", line 651, in formatTime
+    s = time.strftime(datefmt, ct)
+ValueError: Invalid format string
+Call stack:
+  File "<string>", line 1, in <module>
+    from multiprocessing.spawn import spawn_main; spawn_main(parent_pid=37548, pipe_handle=1132)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\multiprocessing\spawn.py", line 122, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\multiprocessing\spawn.py", line 135, in _main
+    return self._bootstrap(parent_sentinel)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\multiprocessing\process.py", line 313, in _bootstrap
+    self.run()
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\multiprocessing\process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\uvicorn\_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\uvicorn\server.py", line 67, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\runners.py", line 195, in run
+    return runner.run(main)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\base_events.py", line 712, in run_until_complete
+    self.run_forever()
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\base_events.py", line 683, in run_forever
+    self._run_once()
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\base_events.py", line 2050, in _run_once
+    handle._run()
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\events.py", line 89, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\uvicorn\lifespan\on.py", line 86, in main
+    await app(scope, self.receive, self.send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\uvicorn\middleware\proxy_headers.py", line 29, in __call__
+    return await self.app(scope, receive, send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\fastapi\applications.py", line 1133, in __call__
+    await super().__call__(scope, receive, send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\starlette\applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\starlette\middleware\errors.py", line 151, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\starlette\middleware\exceptions.py", line 49, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\starlette\routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\starlette\routing.py", line 725, in app
+    await self.lifespan(scope, receive, send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\starlette\routing.py", line 694, in lifespan
+    async with self.lifespan_context(app) as maybe_state:
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\contextlib.py", line 214, in __aenter__
+    return await anext(self.gen)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\fastapi\routing.py", line 209, in merged_lifespan
+    async with original_context(app) as maybe_original_state:
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\contextlib.py", line 214, in __aenter__
+    return await anext(self.gen)
+  File "C:\Users\MORO\Project\EA\AutoSig\main.py", line 31, in lifespan
+    await telegram_service.initialize()
+  File "C:\Users\MORO\Project\EA\AutoSig\app\services\telegram_service.py", line 80, in initialize
+    logger.info("Bot command menu has been set.")
+Message: 'Bot command menu has been set.'
+Arguments: ()
+2025-10-27 09:42:41 - app.services.telegram_service - INFO - Bot command menu has been set.
+C:\Users\MORO\Project\EA\AutoSig\app\services\telegram_service.py:83: PTBUserWarning: If 'per_message=False', 'CallbackQueryHandler' will not be tracked for every message. Read this FAQ entry to learn more about the per_* settings: https://github.com/python-telegram-bot/python-telegram-bot/wiki/Frequently-Asked-Questions#what-do-the-per_-settings-in-conversationhandler-do.
+  reports_conv_handler = ConversationHandler(
+C:\Users\MORO\Project\EA\AutoSig\app\services\telegram_service.py:92: PTBUserWarning: If 'per_message=False', 'CallbackQueryHandler' will not be tracked for every message. Read this FAQ entry to learn more about the per_* settings: https://github.com/python-telegram-bot/python-telegram-bot/wiki/Frequently-Asked-Questions#what-do-the-per_-settings-in-conversationhandler-do.
+  set_conv_handler = ConversationHandler(
+C:\Users\MORO\Project\EA\AutoSig\app\services\telegram_service.py:102: PTBUserWarning: If 'per_message=False', 'CallbackQueryHandler' will not be tracked for every message. Read this FAQ entry to learn more about the per_* settings: https://github.com/python-telegram-bot/python-telegram-bot/wiki/Frequently-Asked-Questions#what-do-the-per_-settings-in-conversationhandler-do.
+  chats_conv_handler = ConversationHandler(
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\logging\__init__.py", line 1151, in emit
+    msg = self.format(record)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\logging\__init__.py", line 999, in format
+    return fmt.format(record)
+           ~~~~~~~~~~^^^^^^^^
+  File "C:\Users\MORO\Project\EA\AutoSig\app\core\logging_config.py", line 18, in format
+    "timestamp": self.formatTime(record, self.datefmt),
+                 ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\logging\__init__.py", line 651, in formatTime
+    s = time.strftime(datefmt, ct)
+ValueError: Invalid format string
+Call stack:
+  File "<string>", line 1, in <module>
+    from multiprocessing.spawn import spawn_main; spawn_main(parent_pid=37548, pipe_handle=1132)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\multiprocessing\spawn.py", line 122, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\multiprocessing\spawn.py", line 135, in _main
+    return self._bootstrap(parent_sentinel)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\multiprocessing\process.py", line 313, in _bootstrap
+    self.run()
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\multiprocessing\process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\uvicorn\_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\uvicorn\server.py", line 67, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\runners.py", line 195, in run
+    return runner.run(main)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\base_events.py", line 712, in run_until_complete
+    self.run_forever()
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\base_events.py", line 683, in run_forever
+    self._run_once()
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\base_events.py", line 2050, in _run_once
+    handle._run()
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\events.py", line 89, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\uvicorn\lifespan\on.py", line 86, in main
+    await app(scope, self.receive, self.send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\uvicorn\middleware\proxy_headers.py", line 29, in __call__
+    return await self.app(scope, receive, send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\fastapi\applications.py", line 1133, in __call__
+    await super().__call__(scope, receive, send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\starlette\applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\starlette\middleware\errors.py", line 151, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\starlette\middleware\exceptions.py", line 49, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\starlette\routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\starlette\routing.py", line 725, in app
+    await self.lifespan(scope, receive, send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\starlette\routing.py", line 694, in lifespan
+    async with self.lifespan_context(app) as maybe_state:
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\contextlib.py", line 214, in __aenter__
+    return await anext(self.gen)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\fastapi\routing.py", line 209, in merged_lifespan
+    async with original_context(app) as maybe_original_state:
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\contextlib.py", line 214, in __aenter__
+    return await anext(self.gen)
+  File "C:\Users\MORO\Project\EA\AutoSig\main.py", line 31, in lifespan
+    await telegram_service.initialize()
+  File "C:\Users\MORO\Project\EA\AutoSig\app\services\telegram_service.py", line 126, in initialize
+    logger.info("Telegram bot initialized and polling started.")
+Message: 'Telegram bot initialized and polling started.'
+Arguments: ()
+2025-10-27 09:42:41 - app.services.telegram_service - INFO - Telegram bot initialized and polling started.
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\logging\__init__.py", line 1151, in emit
+    msg = self.format(record)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\logging\__init__.py", line 999, in format
+    return fmt.format(record)
+           ~~~~~~~~~~^^^^^^^^
+  File "C:\Users\MORO\Project\EA\AutoSig\app\core\logging_config.py", line 18, in format
+    "timestamp": self.formatTime(record, self.datefmt),
+                 ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\logging\__init__.py", line 651, in formatTime
+    s = time.strftime(datefmt, ct)
+ValueError: Invalid format string
+Call stack:
+  File "<string>", line 1, in <module>
+    from multiprocessing.spawn import spawn_main; spawn_main(parent_pid=37548, pipe_handle=1132)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\multiprocessing\spawn.py", line 122, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\multiprocessing\spawn.py", line 135, in _main
+    return self._bootstrap(parent_sentinel)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\multiprocessing\process.py", line 313, in _bootstrap
+    self.run()
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\multiprocessing\process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\uvicorn\_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\uvicorn\server.py", line 67, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\runners.py", line 195, in run
+    return runner.run(main)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\base_events.py", line 712, in run_until_complete
+    self.run_forever()
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\base_events.py", line 683, in run_forever
+    self._run_once()
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\base_events.py", line 2050, in _run_once
+    handle._run()
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\events.py", line 89, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\uvicorn\lifespan\on.py", line 86, in main
+    await app(scope, self.receive, self.send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\uvicorn\middleware\proxy_headers.py", line 29, in __call__
+    return await self.app(scope, receive, send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\fastapi\applications.py", line 1133, in __call__
+    await super().__call__(scope, receive, send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\starlette\applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\starlette\middleware\errors.py", line 151, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\starlette\middleware\exceptions.py", line 49, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\starlette\routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\starlette\routing.py", line 725, in app
+    await self.lifespan(scope, receive, send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\starlette\routing.py", line 694, in lifespan
+    async with self.lifespan_context(app) as maybe_state:
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\contextlib.py", line 214, in __aenter__
+    return await anext(self.gen)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\fastapi\routing.py", line 209, in merged_lifespan
+    async with original_context(app) as maybe_original_state:
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\contextlib.py", line 214, in __aenter__
+    return await anext(self.gen)
+  File "C:\Users\MORO\Project\EA\AutoSig\main.py", line 32, in lifespan
+    await queue_service.start_worker() # Start the retry queue worker
+  File "C:\Users\MORO\Project\EA\AutoSig\app\services\queue_service.py", line 27, in start_worker
+    logger.info("Retry queue worker has been started.")
+Message: 'Retry queue worker has been started.'
+Arguments: ()
+2025-10-27 09:42:41 - app.services.queue_service - INFO - Retry queue worker has been started.
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\logging\__init__.py", line 1151, in emit
+    msg = self.format(record)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\logging\__init__.py", line 999, in format
+    return fmt.format(record)
+           ~~~~~~~~~~^^^^^^^^
+  File "C:\Users\MORO\Project\EA\AutoSig\app\core\logging_config.py", line 18, in format
+    "timestamp": self.formatTime(record, self.datefmt),
+                 ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\logging\__init__.py", line 651, in formatTime
+    s = time.strftime(datefmt, ct)
+ValueError: Invalid format string
+Call stack:
+  File "<string>", line 1, in <module>
+    from multiprocessing.spawn import spawn_main; spawn_main(parent_pid=37548, pipe_handle=1132)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\multiprocessing\spawn.py", line 122, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\multiprocessing\spawn.py", line 135, in _main
+    return self._bootstrap(parent_sentinel)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\multiprocessing\process.py", line 313, in _bootstrap
+    self.run()
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\multiprocessing\process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\uvicorn\_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\uvicorn\server.py", line 67, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\runners.py", line 195, in run
+    return runner.run(main)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\base_events.py", line 712, in run_until_complete
+    self.run_forever()
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\base_events.py", line 683, in run_forever
+    self._run_once()
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\base_events.py", line 2050, in _run_once
+    handle._run()
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\events.py", line 89, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\uvicorn\lifespan\on.py", line 86, in main
+    await app(scope, self.receive, self.send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\uvicorn\middleware\proxy_headers.py", line 29, in __call__
+    return await self.app(scope, receive, send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\fastapi\applications.py", line 1133, in __call__
+    await super().__call__(scope, receive, send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\starlette\applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\starlette\middleware\errors.py", line 151, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\starlette\middleware\exceptions.py", line 49, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\starlette\routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\starlette\routing.py", line 725, in app
+    await self.lifespan(scope, receive, send)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\starlette\routing.py", line 694, in lifespan
+    async with self.lifespan_context(app) as maybe_state:
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\contextlib.py", line 214, in __aenter__
+    return await anext(self.gen)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\fastapi\routing.py", line 209, in merged_lifespan
+    async with original_context(app) as maybe_original_state:
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\contextlib.py", line 214, in __aenter__
+    return await anext(self.gen)
+  File "C:\Users\MORO\Project\EA\AutoSig\main.py", line 37, in lifespan
+    logging.info(f"HTTP server starting on http://{settings.HOST}:{settings.PORT}")
+Message: 'HTTP server starting on http://0.0.0.0:5000'
+Arguments: ()
+2025-10-27 09:42:41 - root - INFO - HTTP server starting on http://0.0.0.0:5000
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\MORO\Project\EA\AutoSig\app\tcp_server.py", line 209, in start_tcp_server
+    ssl_context.load_cert_chain(certfile=settings.SSL_CERT_PATH, keyfile=settings.SSL_KEY_PATH)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory
 
-## Quick Setup for MQL5 Developer
+During handling of the above exception, another exception occurred:
 
-### Step 1: Whitelist the URL in MetaTrader 5
-
-1. Open **MetaTrader 5**
-2. Go to **Tools** → **Options**
-3. Click **Expert Advisors** tab
-4. ✅ Check: **"Allow WebRequest for listed URLs"**
-5. Click **Add** and enter: `http://51.20.32.51:5000`
-6. Click **OK**
-⚠️ **Important**: Without this step, WebRequest will fail with error code -1!
-
----
-
-### Step 2: Add This Code to Your Expert Advisor
-
-```mql5
-//+------------------------------------------------------------------+
-//|                                          TelegramSignalSender.mqh |
-//|                                      Trading Signal Integration   |
-//+------------------------------------------------------------------+
-
-// =====================================================================
-// CONFIGURATION - Update these values
-// =====================================================================
-
-#define WEBHOOK_URL "http://51.20.32.51:5000/signal"
-#define SECRET_KEY  "YOUR_SECURE_SECRET_KEY_HERE"  // Get from Python team
-
-// =====================================================================
-// Main Function to Send Signals
-// =====================================================================
-
-bool SendTradeSignal(string action, string symbol, double price, int open_signal_id = 0)
-{
-    // Build JSON payload
-    string json_data = "{" +
-                       "\"secret_key\":\"" + SECRET_KEY + "\"," +
-                       "\"action\":\"" + action + "\"," +
-                       "\"symbol\":\"" + symbol + "\"," +
-                       "\"price\":" + DoubleToString(price, _Digits);
-    
-    // Add open_signal_id for CLOSE actions
-    if(action == "CLOSE" && open_signal_id > 0)
-    {
-        json_data += ",\"open_signal_id\":" + IntegerToString(open_signal_id);
-    }
-    
-    json_data += "}";
-    
-    // Convert string to char array
-    char post_data[];
-    StringToCharArray(json_data, post_data);
-    ArrayResize(post_data, StringLen(json_data));  // Remove null terminator
-    
-    // Prepare for response
-    char result_data[];
-    string result_headers;
-    
-    // Send HTTP POST request
-    int timeout = 5000;  // 5 seconds
-    int res = WebRequest(
-        "POST",
-        WEBHOOK_URL,
-        NULL,           // No custom headers needed
-        NULL,           // No cookies
-        timeout,
-        post_data,
-        ArraySize(post_data),
-        result_data,
-        result_headers
-    );
-    
-    // Handle response
-    if(res == 200)
-    {
-        string response = CharArrayToString(result_data);
-        Print("✅ Signal sent successfully: ", action, " ", symbol, " @ ", price);
-        Print("Server response: ", response);
-        return true;
-    }
-    else if(res == -1)
-    {
-        Print("❌ WebRequest Error! Did you whitelist the URL?");
-        Print("Go to Tools → Options → Expert Advisors → Allow WebRequest");
-        Print("Add URL: ", WEBHOOK_URL);
-        return false;
-    }
-    else if(res == 401)
-    {
-        Print("❌ Unauthorized! Check SECRET_KEY matches Python configuration.");
-        return false;
-    }
-    else if(res == 429)
-    {
-        Print("⚠️ Rate limit reached. Signal rejected.");
-        string response = CharArrayToString(result_data);
-        Print("Server says: ", response);
-        return false;
-    }
-    else
-    {
-        Print("❌ HTTP Error: ", res);
-        if(ArraySize(result_data) > 0)
-        {
-            string response = CharArrayToString(result_data);
-            Print("Server response: ", response);
-        }
-        return false;
-    }
-}
-
-// =====================================================================
-// Example Usage in Your EA
-// =====================================================================
-
-//+------------------------------------------------------------------+
-//| Example: How to use in your trading logic                        |
-//+------------------------------------------------------------------+
-
-void OnTick()
-{
-    // Your trading logic here...
-    
-    // Example: When you want to send a BUY signal
-    if(/* your BUY condition */)
-    {
-        double entryPrice = SymbolInfoDouble(_Symbol, SYMBOL_ASK);
-        
-        if(SendTradeSignal("BUY", _Symbol, entryPrice))
-        {
-            // Signal sent successfully, proceed with trade
-            // Your order opening code here...
-        }
-    }
-    
-    // Example: When you want to send a SELL signal
-    if(/* your SELL condition */)
-    {
-        double entryPrice = SymbolInfoDouble(_Symbol, SYMBOL_BID);
-        
-        if(SendTradeSignal("SELL", _Symbol, entryPrice))
-        {
-            // Signal sent successfully, proceed with trade
-            // Your order opening code here...
-        }
-    }
-    
-    // Example: When you close a position
-    if(/* position closed */)
-    {
-        double closePrice = SymbolInfoDouble(_Symbol, SYMBOL_BID);
-        int signalId = 1;  // You need to track this from when position opened
-        
-        SendTradeSignal("CLOSE", _Symbol, closePrice, signalId);
-    }
-}
-
-// =====================================================================
-// Advanced: Track Signal IDs
-// =====================================================================
-
-// If you want to properly track which signals are closed, you can parse
-// the JSON response to get the signal_id and store it with your position
-
-#include <JAson.mqh>  // Include JSON parser library
-
-int ExtractSignalId(string json_response)
-{
-    CJAVal json;
-    
-    if(json.Deserialize(json_response))
-    {
-        if(json["signal_id"].ToInt() > 0)
-        {
-            return (int)json["signal_id"].ToInt();
-        }
-    }
-    
-    return 0;
-}
-
-// Modified SendTradeSignal that returns signal ID
-int SendTradeSignalWithId(string action, string symbol, double price)
-{
-    // ... (same code as above until response handling)
-    
-    if(res == 200)
-    {
-        string response = CharArrayToString(result_data);
-        Print("✅ Signal sent successfully");
-        
-        // Extract and return signal_id from response
-        int signal_id = ExtractSignalId(response);
-        return signal_id;
-    }
-    
-    return 0;  // Failed
-}
-
-// Usage example with tracking:
-int g_LastSignalId = 0;
-
-void OpenBuyPosition()
-{
-    double price = SymbolInfoDouble(_Symbol, SYMBOL_ASK);
-    
-    g_LastSignalId = SendTradeSignalWithId("BUY", _Symbol, price);
-    
-    if(g_LastSignalId > 0)
-    {
-        // Open your position and store g_LastSignalId with it
-        // ...
-    }
-}
-
-void ClosePosition()
-{
-    double price = SymbolInfoDouble(_Symbol, SYMBOL_BID);
-    
-    SendTradeSignal("CLOSE", _Symbol, price, g_LastSignalId);
-}
-```
-
----
-
-## Common Error Codes & Solutions
-
-| Error Code | Meaning | Solution |
-|------------|---------|----------|
-| **-1** | WebRequest not allowed | Whitelist URL in MT5 settings |
-| **200** | Success | Everything working! |
-| **401** | Unauthorized | Check SECRET_KEY matches Python config |
-| **400** | Bad Request | Check action is "BUY", "SELL", or "CLOSE" |
-| **429** | Rate Limit | Too many signals, wait and retry |
-| **500** | Server Error | Check Python bot logs |
-| **0** | Connection Failed | Check server is running, firewall open |
-
----
-
-## Testing Your Integration
-
-### Quick Test Function
-
-Add this test function to your EA:
-
-```mql5
-void TestSignalSending()
-{
-    Print("=== Testing Signal Sending ===");
-    
-    // Test 1: BUY Signal
-    if(SendTradeSignal("BUY", "EURUSD", 1.08450))
-        Print("✅ Test 1 passed: BUY signal");
-    else
-        Print("❌ Test 1 failed");
-    
-    Sleep(2000);  // Wait 2 seconds
-    
-    // Test 2: SELL Signal
-    if(SendTradeSignal("SELL", "GBPUSD", 1.26350))
-        Print("✅ Test 2 passed: SELL signal");
-    else
-        Print("❌ Test 2 failed");
-    
-    Sleep(2000);
-    
-    // Test 3: CLOSE Signal
-    if(SendTradeSignal("CLOSE", "EURUSD", 1.08550, 1))
-        Print("✅ Test 3 passed: CLOSE signal");
-    else
-        Print("❌ Test 3 failed");
-}
-
-// Call this in OnInit() for testing
-int OnInit()
-{
-    TestSignalSending();
-    return INIT_SUCCEEDED;
-}
-```
-
----
-
-## Integration Checklist
-
-- [ ] Whitelisted URL in MT5 (Tools → Options → Expert Advisors)
-- [ ] Updated `WEBHOOK_URL` constant (should be `http://51.20.32.51:5000/signal`)
-- [ ] Updated `SECRET_KEY`
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+Traceback (most recent call last):
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\logging\__init__.py", line 1151, in emit
+    msg = self.format(record)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\logging\__init__.py", line 999, in format
+    return fmt.format(record)
+           ~~~~~~~~~~^^^^^^^^
+  File "C:\Users\MORO\Project\EA\AutoSig\app\core\logging_config.py", line 18, in format
+    "timestamp": self.formatTime(record, self.datefmt),
+                 ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\logging\__init__.py", line 651, in formatTime
+    s = time.strftime(datefmt, ct)
+ValueError: Invalid format string
+Call stack:
+  File "<string>", line 1, in <module>
+    from multiprocessing.spawn import spawn_main; spawn_main(parent_pid=37548, pipe_handle=1132)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\multiprocessing\spawn.py", line 122, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\multiprocessing\spawn.py", line 135, in _main
+    return self._bootstrap(parent_sentinel)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\multiprocessing\process.py", line 313, in _bootstrap
+    self.run()
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\multiprocessing\process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\uvicorn\_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\uvicorn\server.py", line 67, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\runners.py", line 195, in run
+    return runner.run(main)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\base_events.py", line 712, in run_until_complete
+    self.run_forever()
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\base_events.py", line 683, in run_forever
+    self._run_once()
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\base_events.py", line 2050, in _run_once
+    handle._run()
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\events.py", line 89, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\MORO\Project\EA\AutoSig\app\tcp_server.py", line 212, in start_tcp_server
+    logger.error("SSL certificate or key file not found. Server will start without SSL.")
+Message: 'SSL certificate or key file not found. Server will start without SSL.'
+Arguments: ()
+2025-10-27 09:42:41 - app.tcp_server - ERROR - SSL certificate or key file not found. Server will start without SSL.
+INFO:     Application startup complete.
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\logging\__init__.py", line 1151, in emit
+    msg = self.format(record)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\logging\__init__.py", line 999, in format
+    return fmt.format(record)
+           ~~~~~~~~~~^^^^^^^^
+  File "C:\Users\MORO\Project\EA\AutoSig\app\core\logging_config.py", line 18, in format
+    "timestamp": self.formatTime(record, self.datefmt),
+                 ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\logging\__init__.py", line 651, in formatTime
+    s = time.strftime(datefmt, ct)
+ValueError: Invalid format string
+Call stack:
+  File "<string>", line 1, in <module>
+    from multiprocessing.spawn import spawn_main; spawn_main(parent_pid=37548, pipe_handle=1132)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\multiprocessing\spawn.py", line 122, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\multiprocessing\spawn.py", line 135, in _main
+    return self._bootstrap(parent_sentinel)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\multiprocessing\process.py", line 313, in _bootstrap
+    self.run()
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\multiprocessing\process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\uvicorn\_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "C:\Users\MORO\Project\EA\AutoSig\venv\Lib\site-packages\uvicorn\server.py", line 67, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\runners.py", line 195, in run
+    return runner.run(main)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\base_events.py", line 712, in run_until_complete
+    self.run_forever()
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\base_events.py", line 683, in run_forever
+    self._run_once()
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\base_events.py", line 2050, in _run_once
+    handle._run()
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\events.py", line 89, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\MORO\Project\EA\AutoSig\app\tcp_server.py", line 228, in start_tcp_server
+    logger.info(f"Serving on {addr} using {protocol}")
+Message: "Serving on ('0.0.0.0', 5200) using TCP"
+Arguments: ()
+2025-10-27 09:42:41 - app.tcp_server - INFO - Serving on ('0.0.0.0', 5200) using TCP
