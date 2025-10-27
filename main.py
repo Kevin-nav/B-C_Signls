@@ -7,7 +7,8 @@ from fastapi import FastAPI
 import uvicorn
 
 from app.api.endpoints import router as api_router
-from app.core.config import reload_settings_from_db
+from app.core.logging_config import setup_logging
+from app.core.config import settings, reload_settings_from_db
 from app.db.database import init_database
 from app.services.telegram_service import telegram_service
 from app.services.queue_service import queue_service
@@ -55,8 +56,7 @@ async def lifespan(app: FastAPI):
 # FASTAPI APPLICATION
 # =====================================================================
 
-# Setup logging immediately
-setup_logging()
+
 
 # Create FastAPI app
 app = FastAPI(
