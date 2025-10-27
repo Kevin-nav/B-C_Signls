@@ -79,6 +79,17 @@ def init_database():
             )
         """)
 
+        # Reports table for admin notifications
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS reports (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+                report_type TEXT NOT NULL, -- e.g., 'STALE_SIGNAL', 'RETRY_FAILURE'
+                details TEXT NOT NULL, -- Full JSON or text details of the report
+                is_read BOOLEAN DEFAULT FALSE
+            )
+        """)
+
         conn.commit()
         conn.close()
         logger.info("Database initialized successfully")

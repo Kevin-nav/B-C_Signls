@@ -1,0 +1,62 @@
+//+------------------------------------------------------------------+
+//|                                               TestSignalBot.mq5 |
+//|                                      Copyright 2025, Gemini AI  |
+//+------------------------------------------------------------------+
+#property copyright "Copyright 2025, Gemini AI"
+#property version   "1.00"
+
+#include <TelegramSignalSender.mqh>
+
+//--- EA Inputs
+input string Inp_ServerIP = "35.208.6.252"; // Your VPS public IP
+input int    Inp_ServerPort = 5200;         // Your TCP server port
+input string Inp_SecretKey = "YOUR_SECURE_SECRET_KEY_HERE"; // The secret key from your .env file
+
+//--- OnInit: Connect to the server
+int OnInit()
+{
+    Print("Attempting to connect and authenticate...");
+    if(ConnectAndAuth(Inp_ServerIP, Inp_ServerPort, Inp_SecretKey))
+    {
+        Print("Successfully connected and authenticated with the signal server.");
+    }
+    else
+    {
+        Print("Failed to connect to the signal server. Check IP, Port, and Secret Key.");
+        return(INIT_FAILED);
+    }
+    return(INIT_SUCCEEDED);
+}
+
+//--- OnDeinit: Disconnect from the server
+void OnDeinit(const int reason)
+{
+    Print("Disconnecting from server...");
+    Disconnect();
+}
+
+//--- OnTick: Example logic to send signals
+void OnTick()
+{
+    // This is just a simple example.
+    // Replace this with your actual trading logic.
+
+    // Example: Send a BUY signal every 100 ticks
+    static int tick_count = 0;
+    tick_count++;
+
+    if(tick_count == 100)
+    {
+        double ask_price = SymbolInfoDouble(_Symbol, SYMBOL_ASK);
+        Print("Sending test BUY signal...");
+        SendTradeSignal("BUY", _Symbol, ask_price);
+    }
+    // Example: Send a SELL signal every 250 ticks
+    else if(tick_count == 250)
+    {
+        double bid_price = SymbolInfoDouble(_Symbol, SYMBOL_BID);
+        Print("Sending test SELL signal...");
+        SendTradeSignal("SELL", _Symbol, bid_price);
+        tick_count = 0; // Reset counter
+    }
+}

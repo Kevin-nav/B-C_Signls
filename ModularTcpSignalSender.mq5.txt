@@ -1,0 +1,218 @@
+//+------------------------------------------------------------------+
+//|        TCP Signal Sending Library with Persistent Connection       |
+//|                 Version 2.1 -- With Heartbeat                    |
+//+------------------------------------------------------------------+
+#property copyright "Gemini"
+#property version   "2.1"
+
+#import "ws2_32.dll"
+int     WSAStartup(ushort wVersionRequested, uchar &lpWSAData[]);
+int     socket(int af, int type, int protocol);
+int     connect(int s, uchar &name[], int namelen);
+int     send(int s, uchar &buf[], int len, int flags);
+int     recv(int s, uchar &buf[], int len, int flags);
+int     closesocket(int s);
+uint    inet_addr(uchar &cp[]);
+ushort  htons(ushort hostshort);
+int     WSACleanup();
+#import
+
+int g_tcp_socket = -1;
+void Disconnect();
+
+bool _SendMessage(int sock, string message)
+{
+    if(sock == -1) return false;
+    uchar msg_data[];
+    int msg_len = StringToCharArray(message, msg_data, 0, -1, CP_UTF8) - 1;
+    uchar header[4];
+    header[0] = (uchar)((msg_len >> 24) & 0xFF);
+    header[1] = (uchar)((msg_len >> 16) & 0xFF);
+    header[2] = (uchar)((msg_len >> 8) & 0xFF);
+    header[3] = (uchar)(msg_len & 0xFF);
+    if(send(sock, header, 4, 0) != 4) return false;
+    if(send(sock, msg_data, msg_len, 0) != msg_len) return false;
+    return true;
+}
+
+bool ConnectAndAuthenticate(string server_ip, int server_port, string secret_key)
+{
+    if(g_tcp_socket != -1) { Disconnect(); }
+    uchar wsaData[400];
+    if(WSAStartup(0x202, wsaData) != 0) { Print("WSAStartup failed: ", GetLastError()); return false; }
+    g_tcp_socket = socket(2, 1, 6);
+    if(g_tcp_socket < 0) { Print("socket() failed: ", GetLastError()); WSACleanup(); return false; }
+    uchar sockaddr[16];
+    ArrayInitialize(sockaddr, 0);
+    sockaddr[0] = 2;
+    ushort port_net = htons((ushort)server_port);
+    sockaddr[2] = (uchar)(port_net & 0xFF);
+    sockaddr[3] = (uchar)((port_net >> 8) & 0xFF);
+    uchar host_bytes[];
+    StringToCharArray(server_ip, host_bytes, 0, WHOLE_ARRAY, CP_ACP);
+    uint ip_addr = inet_addr(host_bytes);
+    sockaddr[4] = (uchar)(ip_addr & 0xFF);
+    sockaddr[5] = (uchar)((ip_addr >> 8) & 0xFF);
+    sockaddr[6] = (uchar)((ip_addr >> 16) & 0xFF);
+    sockaddr[7] = (uchar)((ip_addr >> 24) & 0xFF);
+    if(connect(g_tcp_socket, sockaddr, 16) != 0)
+    {
+        Print("connect() failed. Is server at ", server_ip, ":", server_port, " running? Error: ", GetLastError());
+        closesocket(g_tcp_socket); g_tcp_socket = -1; WSACleanup(); return false;
+    }
+    string auth_json = "{\"secret_key\":\"" + secret_key + "\"}";
+    if(!_SendMessage(g_tcp_socket, auth_json))
+    {
+        Print("Authentication send failed."); Disconnect(); return false;
+    }
+        uchar auth_recv_buf[1024];
+        int bytes_received = recv(g_tcp_socket, auth_recv_buf, 1024, 0);
+        if (bytes_received > 0)
+        {
+            string response = CharArrayToString(auth_recv_buf, 0, bytes_received);
+            // The server now sends a JSON response for auth
+            if(StringFind(response, "\"status\":\"success\"") != -1)
+            {
+                Print("Authentication successful (JSON response received).");
+                return true;
+            }
+            else
+            {
+                Print("Authentication failed. Server response: ", response);
+            }
+        }
+        else
+        {
+            Print("Did not receive authentication response from server.");
+        }
+        
+        // If we reach here, auth failed.
+        Disconnect();
+        return false;
+}
+
+void Disconnect()
+{
+    if(g_tcp_socket != -1)
+    {
+        closesocket(g_tcp_socket); g_tcp_socket = -1; WSACleanup();
+        Print("Disconnected from TCP server.");
+    }
+}
+
+bool SendTradeSignal(string action, string symbol, double price, int open_signal_id = 0)
+
+{
+
+    if(g_tcp_socket == -1)
+
+    {
+
+        Print("Cannot send signal: Not connected.");
+
+        return false;
+
+    }
+
+
+
+    // Generate a unique client message ID
+
+    static long id_counter = 0;
+
+    string client_msg_id = TimeToString(TimeCurrent(), TIME_DATE | TIME_SECONDS) + "-" + IntegerToString(id_counter++);
+
+
+
+    string signal_json = "{\"action\":\"" + action + "\",\"symbol\":\"" + symbol + "\",\"price\":" + DoubleToString(price, _Digits) + ",\"client_msg_id\":\"" + client_msg_id + "\"";
+    if(action == "CLOSE" && open_signal_id > 0) { signal_json += ",\"open_signal_id\":" + IntegerToString(open_signal_id); }
+    signal_json += "}";
+    if(!_SendMessage(g_tcp_socket, signal_json)) { Print("Failed to send signal message. Error: ", GetLastError()); return false; }
+    Print("Signal sent: ", signal_json);
+    uchar conf_recv_buf[2048];
+    int bytes_received = recv(g_tcp_socket, conf_recv_buf, 2048, 0);
+    if (bytes_received > 0)
+    {
+        string response = CharArrayToString(conf_recv_buf, 0, bytes_received);
+        Print("Received confirmation: ", response);
+        if(StringFind(response, "\"status\":\"success\"") != -1) { return true; }
+    }
+    else { Print("Failed to receive confirmation from server. Error: ", GetLastError()); }
+    return false;
+}
+
+//+------------------------------------------------------------------+
+//|                   EXAMPLE EA IMPLEMENTATION                      |
+//+------------------------------------------------------------------+
+#property copyright "Gemini"
+#property version   "2.1"
+#property script_show_inputs
+
+input string Inp_ServerIP   = "35.208.6.252";
+input int    Inp_ServerPort = 5200;
+input string Inp_SecretKey  = "LZ2QThkLXWjmUCIADhLDu8tz4UwwQ35RnP3Bks76tjI";
+
+int OnInit()
+{
+    Print("EA Initializing... Attempting TCP connection.");
+    if(!ConnectAndAuthenticate(Inp_ServerIP, Inp_ServerPort, Inp_SecretKey))
+    {
+        Print("CRITICAL: Failed to connect and authenticate. EA will not trade.");
+        return(INIT_FAILED);
+    }
+    EventSetTimer(30); // Set a timer to fire every 30 seconds for the heartbeat
+    return(INIT_SUCCEEDED);
+}
+
+void OnDeinit(const int reason)
+{
+    EventKillTimer();
+    Print("EA Deinitializing. Disconnecting from server...");
+    Disconnect();
+}
+
+// --- OnTimer: Handles the 30-second heartbeat ping
+void OnTimer()
+{
+    if(g_tcp_socket == -1)
+    {
+        Print("Heartbeat: Not connected. Attempting to reconnect...");
+        if(!ConnectAndAuthenticate(Inp_ServerIP, Inp_ServerPort, Inp_SecretKey))
+        {
+            Print("Heartbeat: Reconnect failed.");
+        }
+        return;
+    }
+
+    string ping_json = "{\"type\":\"ping\"}";
+    if(!_SendMessage(g_tcp_socket, ping_json))
+    {
+        Print("Heartbeat: Failed to send ping. Connection may be lost.");
+        Disconnect(); // Disconnect to force a reconnect on the next timer event
+    }
+    else
+    {
+        // Optionally, you can wait for the "pong" response here, but it's often not necessary
+        // A failed send is enough to detect a broken pipe.
+        Print("Heartbeat: Ping sent.");
+    }
+}
+
+void OnTick()
+{
+    static bool signal_sent = false;
+    if (!signal_sent)
+    {
+        double price = SymbolInfoDouble(_Symbol, SYMBOL_ASK);
+        Print("Condition met. Attempting to send BUY signal...");
+        if(SendTradeSignal("BUY", _Symbol, price))
+        {
+            Print("Successfully sent BUY signal and received success confirmation.");
+            signal_sent = true;
+        }
+        else
+        {
+            Print("Failed to send BUY signal. Check logs.");
+        }
+    }
+}

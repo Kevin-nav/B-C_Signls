@@ -136,3 +136,33 @@ def load_settings_from_db(conn: sqlite3.Connection) -> dict:
     cursor = conn.cursor()
     cursor.execute("SELECT key, value FROM settings")
     return {row['key']: row['value'] for row in cursor.fetchall()}
+
+# =====================================================================
+# Reports Management Functions
+# =====================================================================
+
+def create_report(conn: sqlite3.Connection, report_type: str, details: str):
+    """Saves a new system report to the database."""
+    cursor = conn.cursor()
+    cursor.execute(
+        "INSERT INTO reports (report_type, details) VALUES (?, ?)",
+        (report_type, details)
+    )
+    conn.commit()
+
+def get_unread_reports(conn: sqlite3.Connection) -> list:
+    """Fetch all unread reports from the database."""
+    cursor = conn.cursor()
+    cursor.execute("SELECT id, timestamp, report_type FROM reports WHERE is_read = FALSE ORDER BY timestamp DESC")
+    return cursor.fetchall()
+
+def get_report_details(conn: sqlite3.Connection, report_id: int) -> str | None:
+    """Fetch the full details of a specific report and mark it as read."""
+    cursor = conn.cursor()
+    cursor.execute("SELECT details FROM reports WHERE id = ?", (report_id,))
+    result = cursor.fetchone()
+    if result:
+        cursor.execute("UPDATE reports SET is_read = TRUE WHERE id = ?", (report_id,))
+        conn.commit()
+        return result['details']
+    return None

@@ -1,117 +1,112 @@
-# B/C Signals - Trading Signal Bot
+# B/C Signals - Trading Signal to Telegram Bot
 
-B/C Signals is a Python-based application that acts as a bridge between a trading source (like an MQL5 Expert Advisor) and a Telegram channel. It receives trading signals via a secure webhook, records them in a database, and broadcasts them to designated Telegram chats. Administrators can manage the bot's settings and view statistics directly through a Telegram command interface.
+This project is a robust, high-performance server designed to receive trading signals from an MQL5 Expert Advisor (or any other source) via a TCP connection and instantly relay them as formatted alerts to designated Telegram channels.
 
-## Key Features
+Built with Python and `asyncio`, it's engineered for low latency and high concurrency, capable of handling multiple trading bots simultaneously. It includes a suite of professional features for reliability, monitoring, and administration.
 
--   **Secure Webhook API**: Receives `BUY`, `SELL`, and `CLOSE` signals via an HTTP endpoint secured with a secret key.
--   **Telegram Bot Interface**: A full-featured bot for administrators to manage the system.
-    -   View daily trading statistics (`/stats`).
-    -   Pause and resume signal processing (`/pause`, `/resume`).
-    -   Dynamically manage the list of Telegram channels receiving signals (`/chats`).
-    -   Change operational settings like rate limits and trading hours in real-time (`/set`).
--   **Database Persistence**: All signals, chats, and settings are stored in a robust SQLite database.
--   **Dynamic Configuration**: Settings can be updated live via the bot without needing to restart the application. Initial defaults are loaded from a `.env` file.
--   **Flexible Signal Limits**: Protects against signal spam by enforcing a minimum time between signals and a daily signal limit, which can be set to a specific number or to "unlimited".
--   **Dynamic Statistics Display**: The `/stats` command intelligently hides profit/loss details if no trades have been closed, providing a cleaner view for signal-only usage.
--   **Trading Hours**: Can be configured to only process signals within a specific UTC time window.
+![Signal Example](https://i.imgur.com/your-image-link.png) <!-- Replace with an actual image of a Telegram signal -->
 
 ---
 
-## Setup and Installation
+## ✨ Key Features
 
-Follow these steps to set up and run the application.
+- **High-Performance TCP Server**: Uses `asyncio` for non-blocking I/O to handle numerous concurrent client connections with minimal overhead.
+- **Persistent Connections**: Clients connect once and maintain a stable, long-lived TCP session for ultra-low-latency signal delivery.
+- **Robust Heartbeat Mechanism**: An application-level "ping/pong" heartbeat automatically detects and prunes dead or zombie connections.
+- **Smart Retry Queue**: Failed signals due to temporary database issues are automatically queued and retried. Stale signals (older than 3 minutes) are discarded to ensure timeliness.
+- **Structured JSON Logging**: All events are logged in a structured JSON format with daily log rotation, making it easy to monitor, parse, and debug.
+- **Connection Tracing**: Each client connection is assigned a unique ID, allowing for easy tracing of a single session through the logs.
+- **Telegram Bot Admin Interface**: A full-featured bot interface for administrators.
+  - `/stats`: View real-time trading statistics for the day.
+  - `/pause` & `/resume`: Globally pause or resume signal processing.
+  - `/set`: Interactively change bot settings (e.g., max signals per day) on the fly.
+  - `/chats`: Dynamically manage which Telegram channels or groups receive signals.
+  - `/reports`: View detailed reports on system events, such as discarded stale signals.
+- **Dynamic Configuration**: Core settings can be changed live via the Telegram bot without needing to restart the server.
+- **Secure**: Uses a secret key for client authentication and enforces message size limits to prevent abuse.
 
-### 1. Prerequisites
+---
 
--   Python 3.10+
--   A Telegram Bot Token from [@BotFather](https://t.me/BotFather)
--   Your Telegram User ID (for admin access)
+## 🚀 Getting Started
 
-### 2. Clone the Repository
+### Prerequisites
+
+- Python 3.11+
+- An active Telegram Bot and its API Token (get from [@BotFather](https://t.me/BotFather))
+- Your personal Telegram User ID (get from [@userinfobot](https://t.me/userinfobot))
+
+### 1. Clone & Setup
 
 ```bash
-git clone <your-repository-url>
-cd AutoSig
-```
+# Clone the repository
+git clone https://github.com/Kevin-nav/B-C_Signls.git
+cd B-C_Signls
 
-### 3. Set Up a Virtual Environment
-
-It is highly recommended to use a virtual environment to manage dependencies.
-
-```bash
-# Windows
+# Create and activate a virtual environment
 python -m venv venv
-venv\Scripts\activate
+source venv/bin/activate  # On Windows: venv\Scripts\activate
 
-# macOS / Linux
-python3 -m venv venv
-source venv/bin/activate
-```
-
-### 4. Install Dependencies
-
-Install all the required Python packages using the `requirements.txt` file.
-
-```bash
+# Install dependencies
 pip install -r requirements.txt
 ```
 
-### 5. Configure Environment Variables
+### 2. Configuration
 
-Create a `.env` file by copying the example file and filling in the required values.
+1.  Rename `.env.example` to `.env`.
+2.  Open the `.env` file and fill in the required values:
+    - `TELEGRAM_BOT_TOKEN`: Your bot's API token.
+    - `TELEGRAM_DEFAULT_CHAT_ID`: The main public channel ID for signals.
+    - `WEBHOOK_SECRET_KEY`: A long, random string for security. You can generate one with `python -c "import secrets; print(secrets.token_urlsafe(32))"`.
+    - `ADMIN_USER_IDS`: A comma-separated list of Telegram User IDs for admins (e.g., `12345678,98765432`).
 
-```bash
-# Copy the example file
-copy .env.example .env
-```
+### 3. Running the Server
 
-Now, open the `.env` file and edit the following:
-
--   `TELEGRAM_BOT_TOKEN`: Your token from BotFather.
--   `TELEGRAM_DEFAULT_CHAT_ID`: The main channel/group ID where the bot will operate.
--   `WEBHOOK_SECRET_KEY`: A long, random string you create. This key is used to authorize requests from your MQL5 EA.
--   `ADMIN_USER_IDS`: Your personal Telegram User ID. You can get this from [@userinfobot](https://t.me/userinfobot).
-
-### 6. Initialize the Database
-
-The first time you run the application, it will automatically create the `trading_signals.db` file and all the necessary tables.
-
----
-
-## Running the Application
-
-To run the server, use `uvicorn`. The application will be accessible at `http://0.0.0.0:5000`.
+Once configured, you can run the server:
 
 ```bash
 python main.py
 ```
 
-The server will start, initialize the database (if it's the first run), and the Telegram bot will begin polling for messages.
-
--   To run in development mode with auto-reload, set `RELOAD_UVICORN=True` in your `.env` file. **Note:** This is not recommended for production as it can cause issues with the Telegram bot's polling.
+The server will start, initialize the database (`trading_signals.db`), and begin listening for TCP connections on port `5200` and HTTP traffic on port `5000`.
 
 ---
 
-## Usage
+## 🤖 Telegram Bot Commands
 
-### Telegram Bot Commands (Admin Only)
+All commands must be sent in a private message to the bot from a registered admin user.
 
--   `/start`: Initializes the bot.
--   `/stats`: Shows today's trading statistics (total signals, wins, losses, P&L).
--   `/pause`: Pauses the processing of new signals from the webhook.
--   `/resume`: Resumes signal processing.
--   `/set`: Opens an interactive menu to change settings. For `MAX_SIGNALS_PER_DAY`, you can enter a number or `unlimited`.
--   `/chats`: Opens a menu to list, add, or remove Telegram chats that receive signals.
--   `/help`: Displays a list of available commands and current settings.
--   `/cancel`: Cancels any ongoing multi-step operation (like adding a chat).
+- `/start` or `/help`: Shows the welcome message and command list.
+- `/stats`: Displays a summary of today's trading activity (total signals, buys/sells, wins/losses, P&L).
+- `/pause`: Temporarily stops the bot from processing any new incoming signals.
+- `/resume`: Resumes normal signal processing.
+- `/set`: Starts an interactive conversation to change live settings like `MAX_SIGNALS_PER_DAY`.
+- `/chats`: Allows you to add or remove channels/groups that will receive signal alerts.
+- `/reports`: Shows a list of system-generated reports (e.g., stale signals) for review.
 
-### API Endpoint for MQL5
+---
 
-The application exposes a single endpoint for receiving signals:
+##  MQL5 Integration Protocol
 
--   **URL**: `http://<your_server_ip>:5000/signal`
--   **Method**: `POST`
--   **Content-Type**: `application/json`
+Your MQL5 client should connect to the server using the following TCP protocol:
 
-For detailed instructions on how to send requests from an MQL5 Expert Advisor, please see the [MQL5 Integration Guide](MQL5_Integration_Guide.md).
+1.  **Connection**: Establish a persistent TCP connection to the server's IP on port `5200`.
+2.  **Framing**: All messages (client-to-server and server-to-client) must be prefixed with a 4-byte, big-endian integer representing the length of the following UTF-8 JSON payload.
+3.  **Authentication**: Immediately after connecting, send a JSON authentication message:
+    ```json
+    { "secret_key": "YOUR_SECRET_KEY" }
+    ```
+4.  **Heartbeat**: Send a JSON ping message every 30 seconds to keep the connection alive:
+    ```json
+    { "type": "ping" }
+    ```
+5.  **Signal Messages**: Send trade signals as a JSON payload:
+    ```json
+    {
+      "client_msg_id": "2025-10-28-01",
+      "action": "BUY",
+      "symbol": "EURUSD",
+      "price": 1.12500
+    }
+    ```
+
+The server will respond to each message with a length-prefixed JSON confirmation.
