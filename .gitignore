@@ -1,0 +1,10 @@
+# Python cache and temporary files
+__pycache__/
+*.pyc
+
+# Application data to keep locally (your database and logs)
+trading_signals.db
+logs/
+
+# Local configuration that must not be overwritten by a pull
+.env
