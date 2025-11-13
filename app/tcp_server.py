@@ -8,6 +8,8 @@ import uuid
 
 from app.core.config import settings
 from app.db.database import create_bot_connection
+from app.db import repository
+from app.services.telegram_service import telegram_service
 from app.services.signal_service import signal_service
 
 logger = logging.getLogger(__name__)
@@ -118,7 +120,7 @@ async def write_message(writer: StreamWriter, data: dict):
 
 async def process_signal_data(data: dict) -> dict:
     """
-    Processes the signal data using the existing signal_service.
+    Processes the signal data by calling the centralized signal_service.
     All database operations are run in a separate thread to avoid blocking the event loop.
     """
     conn = None
@@ -126,73 +128,48 @@ async def process_signal_data(data: dict) -> dict:
         action = data.get("action", "").upper()
         symbol = data.get("symbol")
         price = data.get("price")
+        atr = data.get("atr") # Extract ATR value
         open_signal_id = data.get("open_signal_id")
 
-        # Base response structure
         response = {"client_msg_id": data.get("client_msg_id")}
 
         if not all([action, symbol, price]):
-            response.update({"status": "error", "message": "Missing required fields: action, symbol, price"})
-            return response
+            return {**response, "status": "error", "message": "Missing required fields: action, symbol, price"}
 
-        # 1. Create DB connection in a non-blocking way
         conn = await asyncio.to_thread(create_bot_connection)
 
         if action in ["BUY", "SELL"]:
-            # 2. Run blocking DB checks in a thread
             can_send, reason = await asyncio.to_thread(signal_service.can_send_signal, conn)
             if not can_send:
-                response.update({"status": "error", "message": reason})
-                return response
-            
-            # 3. Process signal (which includes more blocking calls) in a thread
-            # Note: process_new_signal is async because of telegram, but its DB part is blocking.
-            # We can't use to_thread on the whole async function, so we refactor it.
-            signal_id = await asyncio.to_thread(repository.save_signal, conn, action, symbol, price)
-            logger.info(f"Signal saved to DB: ID={signal_id}, {action} {symbol} @ {price}")
+                return {**response, "status": "error", "message": reason}
 
-            stats = await asyncio.to_thread(repository.get_today_stats, conn)
-            message = signal_service._format_signal_message(action, symbol, price, signal_id, stats)
-            await telegram_service.send_alert(message)
-
-            signal_service.update_last_signal_time()
+            # Call the centralized service which now handles DB, Telegram, and SL/TP logic
+            signal_id = await signal_service.process_new_signal(conn, action, symbol, price, atr)
             
             message = f"Signal {action} processed successfully"
-            response.update({"status": "success", "message": message, "signal_id": signal_id})
-            return response
+            return {**response, "status": "success", "message": message, "signal_id": signal_id}
 
         elif action == "CLOSE":
             if not open_signal_id:
-                response.update({"status": "error", "message": "open_signal_id is required for CLOSE action"})
-                return response
+                return {**response, "status": "error", "message": "open_signal_id is required for CLOSE action"}
             
-            # 4. Process close signal (with blocking DB calls) in a thread
-            try:
-                pl = await asyncio.to_thread(repository.close_signal, conn, open_signal_id, price)
-                logger.info(f"Signal {open_signal_id} closed: P&L={pl:.5f}")
-
-                stats = await asyncio.to_thread(repository.get_today_stats, conn)
-                message = signal_service._format_close_message(symbol, price, open_signal_id, pl, stats)
-                await telegram_service.send_alert(message)
-
-                message = f"Close signal for #{open_signal_id} processed successfully"
-                response.update({"status": "success", "message": message, "signal_id": open_signal_id})
-                return response
-            except ValueError as e:
-                logger.error(f"Error closing signal: {e}")
-                response.update({"status": "error", "message": str(e)})
-                return response
+            # Call the centralized service for closing signals
+            await signal_service.process_close_signal(conn, symbol, price, open_signal_id)
+            
+            message = f"Close signal for #{open_signal_id} processed successfully"
+            return {**response, "status": "success", "message": message, "signal_id": open_signal_id}
 
         else:
-            response.update({"status": "error", "message": "Invalid action"})
-            return response
+            return {**response, "status": "error", "message": "Invalid action"}
 
+    except ValueError as e:
+        logger.error(f"Value error processing signal data: {e}", exc_info=True)
+        return {**response, "status": "error", "message": str(e)}
     except Exception as e:
         logger.error(f"Error processing signal data: {e}", exc_info=True)
-        return {"status": "error", "message": "An internal server error occurred."}
+        return {**response, "status": "error", "message": "An internal server error occurred."}
     finally:
         if conn:
-            # 5. Close connection in a non-blocking way
             await asyncio.to_thread(conn.close)
 
 async def start_tcp_server():

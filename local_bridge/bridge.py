@@ -1,13 +1,18 @@
 # -*- coding: utf-8 -*-
 import asyncio
-import configparser
 import json
 import logging
-import time
+import configparser
+import os
+from datetime import datetime
 from asyncio import StreamReader, StreamWriter, Queue
-from typing import Optional
+from typing import Optional, Dict
 
-# --- Configuration Loading ---
+import MetaTrader5 as mt5
+import pandas as pd
+import pandas_ta as ta
+
+# --- Config ---
 def load_config():
     config = configparser.ConfigParser()
     config.read('config.ini')
@@ -15,175 +20,324 @@ def load_config():
 
 CONFIG = load_config()
 
-# --- Logging Setup ---
+# --- Logging ---
 def setup_logging():
-    log_format = '[%(asctime)s] %(levelname)s: %(message)s'
-    logging.basicConfig(level=logging.INFO, format=log_format, datefmt='%Y-%m-%d %H:%M:%S')
-    # Optional: Add file handler
-    # handler = logging.FileHandler('bridge.log')
-    # handler.setFormatter(logging.Formatter(log_format))
-    # logging.getLogger().addHandler(handler)
+    """Configures logging to both console and a daily rotating file."""
+    log_dir = "logs"
+    os.makedirs(log_dir, exist_ok=True)
+    
+    log_filename = os.path.join(log_dir, f"bridge_{datetime.now().strftime('%Y-%m-%d')}.log")
+    
+    log_format = '[%(asctime)s] %(levelname)s: %(name)s - %(message)s'
+    date_format = '%Y-%m-%d %H:%M:%S'
+    
+    # Get the root logger and set its level
+    logger = logging.getLogger()
+    logger.setLevel(logging.INFO)
+    
+    # Clear any previous handlers to prevent duplicate logs
+    if logger.hasHandlers():
+        logger.handlers.clear()
+        
+    # Create file handler for daily logs
+    file_handler = logging.FileHandler(log_filename, mode='a')
+    file_handler.setFormatter(logging.Formatter(log_format, datefmt=date_format))
+    logger.addHandler(file_handler)
+    
+    # Create console handler for real-time output
+    console_handler = logging.StreamHandler()
+    console_handler.setFormatter(logging.Formatter(log_format, datefmt=date_format))
+    logger.addHandler(console_handler)
+    
+    logging.info("Logging initialized with daily file rotation.")
 
 # --- Global State ---
-# These will hold the connection streams to the VPS
 vps_reader: Optional[StreamReader] = None
 vps_writer: Optional[StreamWriter] = None
-# Queue for messages from the EA that need to be sent to the VPS
 vps_send_queue = Queue()
+client_map: Dict[str, StreamWriter] = {}  # map client_msg_id -> EA writer
+mt5_initialized = False
 
-# --- Low-level Message Framing ---
+# --- MT5 Timeframe Mapping ---
+TIMEFRAME_MAP = {
+    "M1": mt5.TIMEFRAME_M1, "M2": mt5.TIMEFRAME_M2, "M3": mt5.TIMEFRAME_M3,
+    "M4": mt5.TIMEFRAME_M4, "M5": mt5.TIMEFRAME_M5, "M6": mt5.TIMEFRAME_M6,
+    "M10": mt5.TIMEFRAME_M10, "M12": mt5.TIMEFRAME_M12, "M15": mt5.TIMEFRAME_M15,
+    "M20": mt5.TIMEFRAME_M20, "M30": mt5.TIMEFRAME_M30, "H1": mt5.TIMEFRAME_H1,
+    "H2": mt5.TIMEFRAME_H2, "H3": mt5.TIMEFRAME_H3, "H4": mt5.TIMEFRAME_H4,
+    "H6": mt5.TIMEFRAME_H6, "H8": mt5.TIMEFRAME_H8, "H12": mt5.TIMEFRAME_H12,
+    "D1": mt5.TIMEFRAME_D1, "W1": mt5.TIMEFRAME_W1, "MN1": mt5.TIMEFRAME_MN1,
+}
+
+# --- MT5 Functions ---
+async def initialize_mt5():
+    """Initialize connection to the MetaTrader 5 terminal."""
+    global mt5_initialized
+    mt5_path = CONFIG.get('metatrader', 'mt5_path', fallback=None)
+    
+    while not mt5_initialized:
+        try:
+            logging.info("Attempting to initialize MetaTrader 5...")
+            if mt5_path:
+                mt5_initialized = mt5.initialize(path=mt5_path)
+            else:
+                mt5_initialized = mt5.initialize()
+
+            if mt5_initialized:
+                logging.info("MetaTrader 5 initialized successfully.")
+                version = mt5.version()
+                logging.info(f"MT5 Version: {version}")
+                
+                account_info = mt5.account_info()
+                if account_info:
+                    logging.info(f"Logged in to account: {account_info.login} on {account_info.server}")
+                else:
+                    logging.warning("Not logged into a trading account.")
+            else:
+                logging.error(f"mt5.initialize() failed, error code = {mt5.last_error()}")
+                logging.info("Retrying in 15 seconds...")
+                await asyncio.sleep(15)
+        except Exception as e:
+            logging.error(f"An exception occurred during MT5 initialization: {e}")
+            logging.info("Retrying in 15 seconds...")
+            await asyncio.sleep(15)
+
+async def get_atr(symbol: str) -> Optional[float]:
+    """
+    Fetches candles and calculates the 14-period ATR.
+    The timeframe is determined dynamically based on the symbol name.
+    """
+    if not mt5_initialized:
+        logging.error("Cannot get ATR, MT5 not initialized.")
+        return None
+    
+    try:
+        # Determine timeframe based on symbol name
+        if "Crash" in symbol or "Boom" in symbol:
+            timeframe_str = "M30"
+        elif "Volatility" in symbol:
+            timeframe_str = "M15"
+        else:
+            # Fallback to config for other symbols (Forex, etc.)
+            timeframe_str = CONFIG.get('metatrader', 'atr_timeframe', fallback='M30').upper()
+
+        mt5_timeframe = TIMEFRAME_MAP.get(timeframe_str, mt5.TIMEFRAME_M30)
+        logging.info(f"Calculating ATR for {symbol} on timeframe {timeframe_str}")
+
+        # Fetch 20 candles to ensure enough data for calculation
+        rates = mt5.copy_rates_from_pos(symbol, mt5_timeframe, 0, 20)
+        if rates is None or len(rates) < 15:
+            logging.error(f"Could not get enough rates for {symbol} on {timeframe_str}. Received: {len(rates) if rates else 0}")
+            return None
+            
+        rates_df = pd.DataFrame(rates)
+        rates_df['time'] = pd.to_datetime(rates_df['time'], unit='s')
+        
+        # Calculate ATR using pandas_ta
+        atr_series = rates_df.ta.atr(length=14)
+        if atr_series is None or atr_series.empty:
+            logging.error(f"Failed to calculate ATR for {symbol}.")
+            return None
+            
+        # Get the latest ATR value (from the second to last candle, as the last one is live and incomplete)
+        latest_atr = atr_series.iloc[-2]
+        logging.info(f"Calculated ATR for {symbol} on {timeframe_str}: {latest_atr}")
+        return latest_atr
+        
+    except Exception as e:
+        logging.error(f"Error calculating ATR for {symbol}: {e}")
+        return None
+
+# --- Message helpers ---
 async def read_message(reader: StreamReader) -> Optional[dict]:
     try:
         header = await reader.readexactly(4)
         msg_len = int.from_bytes(header, 'big')
-        if msg_len > 4 * 1024 * 1024: # 4MB limit
-            logging.error(f"Message size {msg_len} exceeds 4MB limit. Closing connection.")
+        if msg_len > 4 * 1024 * 1024:
+            logging.error(f"Message too large ({msg_len} bytes).")
             return None
-        payload = await reader.readexactly(msg_len)
-        return json.loads(payload.decode('utf-8'))
-    except (asyncio.IncompleteReadError, ConnectionResetError):
+        data = await reader.readexactly(msg_len)
+        return json.loads(data.decode())
+    except asyncio.IncompleteReadError:
         logging.warning("Connection closed by peer.")
     except Exception as e:
-        logging.error(f"Failed to read or decode message: {e}")
+        logging.error(f"read_message error: {e}")
     return None
 
 async def write_message(writer: StreamWriter, data: dict):
     try:
-        payload = json.dumps(data).encode('utf-8')
+        payload = json.dumps(data).encode()
         header = len(payload).to_bytes(4, 'big')
         writer.write(header + payload)
         await writer.drain()
     except Exception as e:
-        logging.error(f"Failed to write message: {e}")
+        logging.error(f"write_message error: {e}")
 
-# --- VPS Client Logic ---
+# --- VPS connection ---
 async def vps_client_handler():
-    """Manages the persistent connection to the remote VPS server."""
     global vps_reader, vps_writer
     host = CONFIG.get('server', 'vps_host')
     port = CONFIG.getint('server', 'vps_port')
     secret = CONFIG.get('security', 'secret_key')
-    heartbeat_interval = CONFIG.getint('timing', 'heartbeat_interval')
+    heartbeat_interval = CONFIG.getint('timing', 'heartbeat_interval', fallback=30)
 
     while True:
         try:
-            logging.info(f"Connecting to VPS at {host}:{port}...")
-            # Connect with a timeout
-            vps_reader, vps_writer = await asyncio.wait_for(
-                asyncio.open_connection(host, port), 
-                timeout=CONFIG.getfloat('timing', 'connect_timeout')
-            )
+            logging.info(f"Connecting to VPS {host}:{port} ...")
+            vps_reader, vps_writer = await asyncio.open_connection(host, port)
             logging.info("Connected to VPS. Authenticating...")
-
-            # Authenticate
             await write_message(vps_writer, {"secret_key": secret})
-            auth_response = await read_message(vps_reader)
+            resp = await read_message(vps_reader)
 
-            if auth_response and auth_response.get("status") == "success":
-                logging.info("Authentication with VPS successful.")
-                # Start heartbeat and message processing loops
+            if resp and resp.get("status") == "success":
+                logging.info("Authenticated with VPS.")
                 await asyncio.gather(
-                    send_loop(vps_writer, heartbeat_interval),
-                    receive_loop(vps_reader)
+                    send_to_vps_loop(vps_writer, heartbeat_interval),
+                    receive_from_vps_loop(vps_reader)
                 )
             else:
-                logging.error(f"VPS authentication failed: {auth_response}")
-
-        except asyncio.TimeoutError:
-            logging.error("Connection to VPS timed out.")
-        except ConnectionRefusedError:
-            logging.error("Connection to VPS refused. Is the server running?")
+                logging.error(f"Auth failed: {resp}")
         except Exception as e:
             logging.error(f"VPS connection error: {e}")
         finally:
             if vps_writer:
                 vps_writer.close()
                 await vps_writer.wait_closed()
-            vps_reader, vps_writer = None, None
-            logging.info("Disconnected from VPS. Reconnecting in 10 seconds...")
-            await asyncio.sleep(10) # Reconnect delay
+            vps_reader = vps_writer = None
+            logging.info("Reconnecting to VPS in 10s...")
+            await asyncio.sleep(10)
 
-async def send_loop(writer: StreamWriter, heartbeat_interval: int):
-    """Handles sending queued messages and heartbeats to the VPS."""
+async def send_to_vps_loop(writer: StreamWriter, heartbeat_interval: int):
     while True:
         try:
-            # Wait for a message from the EA or for the heartbeat interval
-            message = await asyncio.wait_for(vps_send_queue.get(), timeout=heartbeat_interval)
-            await write_message(writer, message)
-            logging.info(f"Forwarded message to VPS: {message}")
+            msg = await asyncio.wait_for(vps_send_queue.get(), timeout=heartbeat_interval)
+            await write_message(writer, msg)
             vps_send_queue.task_done()
+            logging.info(f"Forwarded signal to VPS: {msg}")
         except asyncio.TimeoutError:
-            # No message from EA, send a heartbeat
-            logging.info("Sending heartbeat to VPS...")
             await write_message(writer, {"type": "ping"})
+            logging.info("Sent heartbeat to VPS.")
         except Exception as e:
-            logging.error(f"Error in send loop: {e}")
-            break # Exit loop to trigger reconnect
+            logging.error(f"send_to_vps_loop error: {e}")
+            break
 
-async def receive_loop(reader: StreamReader):
-    """Handles receiving messages (pongs, confirmations) from the VPS."""
+async def receive_from_vps_loop(reader: StreamReader):
     while True:
-        response = await read_message(reader)
-        if response is None:
-            break # Connection closed
-        
-        if response.get("type") == "pong":
-            logging.info("Received pong from VPS.")
-        else:
-            logging.info(f"Received confirmation from VPS: {response}")
-            # Here you could add logic to pass confirmation back to the EA if needed
+        resp = await read_message(reader)
+        if not resp:
+            break
 
-# --- Local EA Server Logic ---
-async def handle_ea_client(ea_reader: StreamReader, ea_writer: StreamWriter):
-    """Handles a connection from a single MQL5 EA client."""
-    peername = ea_writer.get_extra_info('peername')
-    logging.info(f"MQL5 EA client connected from {peername}")
+        if resp.get("type") == "pong":
+            logging.info("Received pong from VPS.")
+            continue
+
+        logging.info(f"Received from VPS: {resp}")
+
+        # Relay confirmation to EA if applicable
+        cid = resp.get("client_msg_id") or resp.get("open_client_msg_id")
+        if cid and cid in client_map:
+            try:
+                ea_writer = client_map[cid]
+                await write_message(ea_writer, resp)
+                logging.info(f"Relayed VPS confirmation to EA for {cid}")
+            except Exception as e:
+                logging.warning(f"Failed to relay to EA {cid}: {e}")
+
+# --- Local EA server ---
+async def handle_ea_client(reader: StreamReader, writer: StreamWriter):
+    peer = writer.get_extra_info("peername")
+    logging.info(f"EA connected: {peer}")
 
     try:
         while True:
-            message = await read_message(ea_reader)
-            if message is None:
-                break # EA disconnected
+            msg = await read_message(reader)
+            if not msg:
+                break
 
-            logging.info(f"Received from EA: {message}")
-            
-            if vps_writer is None:
-                logging.warning("VPS is not connected. Cannot forward signal.")
-                # Optionally queue the message here for later sending
-                error_response = {"status": "error", "message": "Server temporarily unavailable"}
-                await write_message(ea_writer, error_response)
+            logging.info(f"From EA: {msg}")
+
+            # Handle pings from the EA directly instead of forwarding
+            if msg.get("type") == "ping":
+                await write_message(writer, {"type": "pong"})
+                logging.info("Responded to EA ping with pong.")
+                continue
+
+            # --- ATR Enrichment ---
+            action = msg.get("action", "").upper()
+            if action in ["BUY", "SELL"]:
+                symbol = msg.get("symbol")
+                if symbol:
+                    atr_value = await get_atr(symbol)
+                    if atr_value is not None:
+                        msg["atr"] = atr_value
+                        logging.info(f"Enriched signal with ATR={atr_value}")
+                    else:
+                        logging.warning(f"Could not get ATR for {symbol}. Sending signal without it.")
+                else:
+                    logging.warning("Signal message is missing 'symbol' field.")
+            # --- End ATR Enrichment ---
+
+            # Map the client_msg_id to this specific EA client writer
+            cid = msg.get("client_msg_id")
+            if cid:
+                client_map[cid] = writer
+
+            # Forward the signal to the VPS if connected
+            if vps_writer:
+                await vps_send_queue.put(msg)
+                # NOTE: We no longer send an immediate ACK. The EA will wait for the real response.
             else:
-                # Put the message into the queue to be sent to the VPS
-                await vps_send_queue.put(message)
-                # For now, we send an immediate acknowledgment to the EA.
-                # A more robust system might wait for the actual VPS confirmation.
-                ack = {"status": "success", "message": "Signal received by bridge and queued for VPS."}
-                await write_message(ea_writer, ack)
+                err = {"status": "error", "message": "Bridge not connected to VPS."}
+                await write_message(writer, err)
 
     except Exception as e:
-        logging.error(f"Error with EA client {peername}: {e}")
+        logging.error(f"EA client error: {e}")
     finally:
-        logging.info(f"EA client {peername} disconnected.")
-        ea_writer.close()
-        await ea_writer.wait_closed()
+        # Clean up the client_map to prevent memory leaks when a client disconnects
+        keys_to_remove = [key for key, val in client_map.items() if val == writer]
+        for key in keys_to_remove:
+            del client_map[key]
+        logging.info(f"EA disconnected: {peer}. Cleaned up {len(keys_to_remove)} message IDs.")
+        writer.close()
+        await writer.wait_closed()
+
+async def start_local_server_with_retry():
+    local_host = CONFIG.get('bridge', 'local_host', fallback='127.0.0.1')
+    local_port = CONFIG.getint('bridge', 'local_port', fallback=5050)
+
+    while True:
+        try:
+            server = await asyncio.start_server(handle_ea_client, local_host, local_port)
+            logging.info(f"Local bridge started. Listening for MQL5 EA on {local_host}:{local_port}")
+            async with server:
+                await server.serve_forever()
+        except OSError as e:
+            logging.error(f"Failed to bind to {local_host}:{local_port}: {e}. Retrying in 10s...")
+            await asyncio.sleep(10)
+        except Exception as e:
+            logging.error(f"Unexpected error in EA server: {e}")
+            await asyncio.sleep(10)
 
 async def main():
     setup_logging()
-    local_host = CONFIG.get('bridge', 'local_host')
-    local_port = CONFIG.getint('bridge', 'local_port')
+    logging.getLogger("asyncio").setLevel(logging.WARNING)
+    
+    # Start MT5 initialization in the background
+    asyncio.create_task(initialize_mt5())
+    
+    # Start the main application tasks
+    vps_task = asyncio.create_task(vps_client_handler())
+    server_task = asyncio.create_task(start_local_server_with_retry())
+    
+    await asyncio.gather(vps_task, server_task)
 
-    # Start the local server for the EA
-    local_server = await asyncio.start_server(handle_ea_client, local_host, local_port)
-    logging.info(f"Local bridge started. Listening for MQL5 EA on {local_host}:{local_port}")
-
-    # Start the VPS client handler
-    vps_client_task = asyncio.create_task(vps_client_handler())
-
-    async with local_server:
-        await local_server.serve_forever()
 
 if __name__ == "__main__":
     try:
         asyncio.run(main())
     except KeyboardInterrupt:
         logging.info("Bridge shutting down.")
+    finally:
+        if mt5_initialized:
+            mt5.shutdown()
+            logging.info("MetaTrader 5 connection shut down.")

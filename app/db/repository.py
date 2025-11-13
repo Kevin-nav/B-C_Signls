@@ -1,12 +1,26 @@
 import sqlite3
 from datetime import datetime
 
-def save_signal(conn: sqlite3.Connection, action: str, symbol: str, price: float) -> int:
+def save_signal(
+    conn: sqlite3.Connection, 
+    action: str, 
+    symbol: str, 
+    price: float,
+    atr: float | None,
+    stop_loss: float | None,
+    take_profit_1: float | None,
+    take_profit_2: float | None,
+    take_profit_3: float | None
+) -> int:
     """Save a new signal to the database."""
     cursor = conn.cursor()
     cursor.execute(
-        "INSERT INTO signals (action, symbol, price, sent_to_telegram) VALUES (?, ?, ?, TRUE)",
-        (action, symbol, price)
+        """
+        INSERT INTO signals 
+            (action, symbol, price, atr, stop_loss, take_profit_1, take_profit_2, take_profit_3, sent_to_telegram) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, TRUE)
+        """,
+        (action, symbol, price, atr, stop_loss, take_profit_1, take_profit_2, take_profit_3)
     )
     signal_id = cursor.lastrowid
     conn.commit()

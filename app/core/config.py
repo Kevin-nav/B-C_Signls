@@ -39,6 +39,13 @@ class Settings(BaseSettings):
     DB_PATH: str = "trading_signals.db"
     LOG_DIR: str = "logs"
 
+    # Trading Server
+    TRADING_SERVER_URL: Optional[str] = None
+    TRADING_SERVER_SECRET_KEY: Optional[str] = None
+
+    # Bot Settings
+    SIGNAL_MESSAGE_STYLE: str = "modern"
+
     @field_validator('ADMIN_USER_IDS', mode='before')
     @classmethod
     def split_values(cls, v: Any) -> List[str]:

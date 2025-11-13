@@ -1,7 +1,10 @@
-# -*- coding: utf-8 -*-
 import logging
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
+from typing import Optional
 import sqlite3
+import requests
+import asyncio
+
 from app.core.config import settings
 from app.db import repository
 from .telegram_service import telegram_service
@@ -47,21 +50,87 @@ class SignalService:
         """Update the timestamp of the last processed signal."""
         self.last_signal_time = datetime.now()
 
-    async def process_new_signal(self, conn: sqlite3.Connection, action: str, symbol: str, price: float) -> int:
+    async def _forward_signal_to_trader(self, action: str, symbol: str, price: float, sl: float, tp1: float, tp2: float, tp3: float):
+        """Forwards the signal to the external trading server via HTTP."""
+        if not settings.TRADING_SERVER_URL or not settings.TRADING_SERVER_SECRET_KEY:
+            logger.info("Trading server URL or secret key not configured. Skipping forwarding.")
+            return
+
+        payload = {
+            "action": action,
+            "symbol": symbol,
+            "price": price,
+            "sl": sl,
+            "tp1": tp1,
+            "tp2": tp2,
+            "tp3": tp3,
+        }
+        headers = {
+            "X-Secret-Key": settings.TRADING_SERVER_SECRET_KEY,
+            "Content-Type": "application/json"
+        }
+
+        try:
+            logger.info(f"Forwarding signal to trading server at {settings.TRADING_SERVER_URL}")
+            
+            def post_request():
+                return requests.post(settings.TRADING_SERVER_URL, json=payload, headers=headers, timeout=10)
+
+            response = await asyncio.to_thread(post_request)
+            response.raise_for_status()  # Raise an exception for bad status codes (4xx or 5xx)
+
+            logger.info(f"Successfully forwarded signal. Trading server responded with: {response.json()}")
+
+        except requests.exceptions.RequestException as e:
+            logger.error(f"Failed to forward signal to trading server: {e}")
+        except Exception as e:
+            logger.error(f"An unexpected error occurred while forwarding signal: {e}")
+
+
+    async def process_new_signal(
+        self, conn: sqlite3.Connection, action: str, symbol: str, price: float, atr: Optional[float] = None
+    ) -> int:
         """
         Process a new BUY or SELL signal.
-        Saves to DB, sends Telegram alert, and updates rate limit state.
+        Calculates SL/TP, saves to DB, sends Telegram alert, and forwards to trader.
         """
-        # 1. Save signal to DB to get an ID
-        signal_id = repository.save_signal(conn, action, symbol, price)
-        logger.info(f"Signal saved to DB: ID={signal_id}, {action} {symbol} @ {price}")
+        stop_loss, tp1, tp2, tp3 = None, None, None, None
+        
+        if atr:
+            sl_multiplier = 1.5
+            tp1_multiplier = 1.5
+            tp2_multiplier = 3.0
+            tp3_multiplier = 4.5
 
-        # 2. Send Telegram alert
+            if action == "BUY":
+                stop_loss = price - (atr * sl_multiplier)
+                tp1 = price + (atr * tp1_multiplier)
+                tp2 = price + (atr * tp2_multiplier)
+                tp3 = price + (atr * tp3_multiplier)
+            elif action == "SELL":
+                stop_loss = price + (atr * sl_multiplier)
+                tp1 = price - (atr * tp1_multiplier)
+                tp2 = price - (atr * tp2_multiplier)
+                tp3 = price - (atr * tp3_multiplier)
+
+        # 1. Save signal to DB to get an ID
+        signal_id = repository.save_signal(conn, action, symbol, price, atr, stop_loss, tp1, tp2, tp3)
+        logger.info(f"Signal saved to DB: ID={signal_id}, {action} {symbol} @ {price}, SL={stop_loss}, TP1={tp1}")
+
+        # 2. Choose message style based on settings and send Telegram alert
         stats = repository.get_today_stats(conn)
-        message = self._format_signal_message(action, symbol, price, signal_id, stats)
+        if settings.SIGNAL_MESSAGE_STYLE == "classic":
+            message = self._format_classic_message(action, symbol, price, signal_id, stats)
+        else: # Default to "modern"
+            message = self._format_modern_message(action, symbol, price, signal_id, stop_loss, tp1, tp2, tp3)
+        
         await telegram_service.send_alert(message)
 
-        # 3. Update rate limiting state
+        # 3. Forward signal to external trading server (if applicable)
+        if all([stop_loss, tp1, tp2, tp3]):
+            await self._forward_signal_to_trader(action, symbol, price, stop_loss, tp1, tp2, tp3)
+
+        # 4. Update rate limiting state
         self.update_last_signal_time()
         return signal_id
 
@@ -81,25 +150,57 @@ class SignalService:
             logger.error(f"Error closing signal: {e}")
             raise
 
-    def _format_signal_message(self, action: str, symbol: str, price: float, signal_id: int, stats: dict) -> str:
-        """Format the message for a new BUY/SELL signal."""
-        emoji = "\U0001F7E2" if action == "BUY" else "\U0001F534"  # Green/Red circle
+    def _format_modern_message(
+        self, action: str, symbol: str, price: float, signal_id: int,
+        stop_loss: float | None, tp1: float | None, tp2: float | None, tp3: float | None
+    ) -> str:
+        """Formats the message for a new BUY/SELL signal using the 'Compact & Clean' layout."""
+        action_emoji = "🟢" if action == "BUY" else "🔴"
+        
+        # Base message
+        message = f"{action_emoji} <b>{action} SIGNAL: {symbol}</b>\n\n"
+
+        # Conditionally build the rest of the message
+        if all([stop_loss, tp1, tp2, tp3]):
+            message += (
+                f"➡️  <b>Entry:</b>   <code>{price:.5f}</code>\n"
+                f"🔴  <b>Stop:</b>    <code>{stop_loss:.5f}</code>\n"
+                f"‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐\n"
+                f"🎯  <b>TP 1:</b>    <code>{tp1:.5f}</code>\n"
+                f"🎯  <b>TP 2:</b>    <code>{tp2:.5f}</code>\n"
+                f"🎯  <b>TP 3:</b>    <code>{tp3:.5f}</code>\n\n"
+                f"<i>Signal #{signal_id} | {datetime.now().strftime('%Y-%m-%d %H:%M')} UTC</i>\n"
+                f"‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐\n"
+                f"Set your Stop Loss and Take Profit based on your personal risk tolerance and account size.\n"
+                f"✅ Practice proper risk management for consistent results."
+            )
+        else:
+            # Fallback for signals without SL/TP
+            message += (
+                f"➡️  <b>Entry:</b>   <code>{price:.5f}</code>\n\n"
+                f"<i>Signal #{signal_id} | {datetime.now().strftime('%Y-%m-%d %H:%M')} UTC</i>"
+            )
+
+        return message
+
+    def _format_classic_message(
+        self, action: str, symbol: str, price: float, signal_id: int, stats: dict
+    ) -> str:
+        """Formats the message using the classic style with daily stats."""
+        action_emoji = "🟢" if action == "BUY" else "🔴"
         daily_limit_str = "Unlimited" if settings.MAX_SIGNALS_PER_DAY == 0 else str(settings.MAX_SIGNALS_PER_DAY)
-        message = f"""
-{emoji} <b>{action} SIGNAL</b> {emoji}
 
-\U0001F4CA <b>Symbol:</b> {symbol}
-\U0001F4B0 <b>Price:</b> {price:.5f}
-\U0001F550 <b>Time:</b> {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} UTC
-\U0001F4DD <b>Signal ID:</b> #{signal_id}
-
-\U0001F4C8 <b>Today's Stats:</b>
-   • Signals: {stats['total_signals']}/{daily_limit_str}
-   • Buys: {stats['buys']} | Sells: {stats['sells']}
-   • Closed: {stats['closed']} (W:{stats['wins']} L:{stats['losses']})
-"""
-        if stats['total_pl'] != 0:
-            message += f"   • Total P&L: {stats['total_pl']:+.5f}\n"
+        message = (
+            f"{action_emoji} <b>{action} SIGNAL</b> {action_emoji}\n\n"
+            f"📊 <b>Symbol:</b> {symbol}\n"
+            f"💲 <b>Price:</b> {price:.5f}\n"
+            f"⏰ <b>Time:</b> {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S UTC')}\n"
+            f"📝 <b>Signal ID:</b> #{signal_id}\n\n"
+            f"📈 <b>Today's Stats:</b>\n"
+            f"   • Signals: {stats['total_signals']}/{daily_limit_str}\n"
+            f"   • Buys: {stats['buys']} | Sells: {stats['sells']}\n"
+            f"   • Closed: {stats['closed']} (W:{stats['wins']} L:{stats['losses']})"
+        )
         return message
 
     def _format_close_message(self, symbol: str, price: float, signal_id: int, pl: float, stats: dict) -> str:

@@ -7,6 +7,7 @@ class SignalData(BaseModel):
     action: str = Field(..., description="Trade action: BUY, SELL, or CLOSE")
     symbol: str = Field(..., description="Trading symbol (e.g., EURUSD)")
     price: float = Field(..., gt=0, description="Trade price")
+    atr: Optional[float] = Field(None, gt=0, description="Average True Range (ATR) at the time of the signal")
     open_signal_id: Optional[int] = Field(None, description="ID of the signal being closed (required for CLOSE action)")
 
 class SignalResponse(BaseModel):

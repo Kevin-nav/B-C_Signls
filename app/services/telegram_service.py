@@ -14,17 +14,16 @@ from telegram.ext import (
     filters,
     PicklePersistence,
 )
-from app.core.config import settings
+from app.core.config import settings, reload_settings_from_db
 from app.db import repository, database
 
 logger = logging.getLogger(__name__)
 
-# Conversation states for /set
-CHOOSE_SETTING, RECEIVE_VALUE = range(2)
-# Conversation states for /chats
-CHATS_MENU, GET_ADD_CHAT_ID, GET_REMOVE_CHAT_ID = range(2, 5)
-# Conversation states for /reports
-REPORTS_MENU, VIEW_REPORT = range(5, 7)
+# Conversation states
+CHOOSE_SETTING, RECEIVE_VALUE, CHOOSE_STYLE_FORMAT = range(3)
+CHATS_MENU, GET_ADD_CHAT_ID, GET_REMOVE_CHAT_ID = range(3, 6)
+REPORTS_MENU, VIEW_REPORT = range(6, 8)
+
 
 class TelegramService:
     CHANGEABLE_SETTINGS = {
@@ -32,6 +31,7 @@ class TelegramService:
         "MIN_SECONDS_BETWEEN_SIGNALS": int,
         "TRADING_START_TIME": str,
         "TRADING_END_TIME": str,
+        "SIGNAL_MESSAGE_STYLE": str,
     }
 
     def __init__(self):
@@ -94,6 +94,7 @@ class TelegramService:
             states={
                 CHOOSE_SETTING: [CallbackQueryHandler(self.handle_setting_choice)],
                 RECEIVE_VALUE: [MessageHandler(filters.TEXT & ~filters.COMMAND, self.handle_new_value)],
+                CHOOSE_STYLE_FORMAT: [CallbackQueryHandler(self.handle_style_choice, pattern="^style_")],
             },
             fallbacks=[CommandHandler("cancel", self.cmd_cancel)],
         )
@@ -119,11 +120,18 @@ class TelegramService:
         self.app.add_handler(CommandHandler("help", self.cmd_help))
         self.app.add_handler(CommandHandler("cancel", self.cmd_cancel))
 
+        # Add a global error handler
+        self.app.add_error_handler(self._error_handler)
+
         await self.app.initialize()
         await self.app.start()
         if self.app.updater:
             asyncio.create_task(self.app.updater.start_polling(drop_pending_updates=True))
         logger.info("Telegram bot initialized and polling started.")
+
+    async def _error_handler(self, update: object, context: ContextTypes.DEFAULT_TYPE) -> None:
+        """Log the error and send a telegram message to notify the developer."""
+        logger.error(f"Exception while handling an update: {context.error}", exc_info=context.error)
 
     async def shutdown(self):
         if self.app:
@@ -189,6 +197,21 @@ class TelegramService:
         setting_name = query.data
         context.user_data['setting_to_change'] = setting_name
 
+        # Special handling for message style setting
+        if setting_name == "SIGNAL_MESSAGE_STYLE":
+            keyboard = [
+                [InlineKeyboardButton("Modern (with SL/TP)", callback_data="style_modern")],
+                [InlineKeyboardButton("Classic (with Stats)", callback_data="style_classic")],
+            ]
+            reply_markup = InlineKeyboardMarkup(keyboard)
+            await query.edit_message_text(
+                f"Current message style is: <b>{settings.SIGNAL_MESSAGE_STYLE.title()}</b>\n\n"
+                "Please choose a new signal message style:",
+                reply_markup=reply_markup,
+                parse_mode='HTML'
+            )
+            return CHOOSE_STYLE_FORMAT
+
         current_value = getattr(settings, setting_name)
         
         prompt_text = f"Current value for <code>{setting_name}</code> is <code>{current_value or 'Not Set'}</code>.\n\n"
@@ -203,6 +226,30 @@ class TelegramService:
 
         await query.edit_message_text(text=prompt_text, parse_mode='HTML')
         return RECEIVE_VALUE
+
+    async def handle_style_choice(self, update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+        """Handle the user's choice of message style."""
+        query = update.callback_query
+        await query.answer()
+        
+        choice = query.data.split('_')[1] # "modern" or "classic"
+        
+        try:
+            conn = database.create_bot_connection()
+            repository.set_setting(conn, "SIGNAL_MESSAGE_STYLE", choice)
+            conn.close()
+            
+            # Reload settings from DB to apply immediately
+            reload_settings_from_db()
+            
+            logger.info(f"Admin {update.effective_user.id} changed SIGNAL_MESSAGE_STYLE to '{choice}'")
+            await query.edit_message_text(f"✅ Message style has been set to <b>{choice.title()}</b>.", parse_mode='HTML')
+
+        except Exception as e:
+            logger.error(f"Error updating message style setting: {e}")
+            await query.edit_message_text("An unexpected error occurred while setting the message style.")
+
+        return ConversationHandler.END
 
     async def handle_new_value(self, update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
         """Handle the new value sent by the user, with validation."""
@@ -267,8 +314,7 @@ class TelegramService:
                 conn.close()
 
             # Update in-memory settings object
-            old_value = getattr(settings, setting_name)
-            setattr(settings, setting_name, new_value)
+            reload_settings_from_db()
             
             # --- Format values for a user-friendly display message ---
             def format_for_display(key, value):
@@ -276,8 +322,9 @@ class TelegramService:
                     return "Unlimited"
                 return value or "Not Set"
 
-            old_value_display = format_for_display(setting_name, old_value)
+            old_value = getattr(settings, setting_name) # Get old value before it's overwritten by display format
             new_value_display = format_for_display(setting_name, new_value)
+            old_value_display = format_for_display(setting_name, old_value)
             # --- End of formatting ---
 
             logger.info(f"Admin {update.effective_user.id} changed setting {setting_name} from {old_value} to {new_value}")

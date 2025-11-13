@@ -1,0 +1,28 @@
+# Environments
+.env
+.env.*
+!.env.example
+venv/
+.venv/
+
+# Databases
+*.db
+*.sqlite3
+trading_signals.db
+
+# Logs
+*.log
+logs/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# IDE files
+.idea/
+.vscode/
+
+# Other
+telegram_persistence.pkl
+error.txt
+*.zip

@@ -44,7 +44,7 @@ async def receive_signal(
                 raise HTTPException(status_code=429, detail=reason)
 
             signal_id = await signal_service.process_new_signal(
-                conn, signal.action, signal.symbol, signal.price
+                conn, signal.action, signal.symbol, signal.price, signal.atr
             )
             message = f"Signal {signal.action} processed successfully"
 

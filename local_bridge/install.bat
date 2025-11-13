@@ -1,60 +1,122 @@
 @echo off
-:: This script sets up the Python environment for the local bridge and creates a startup task.
+setlocal
+cls
+title AutoSig Local Bridge Installer
 
-echo [1/3] Checking for Python...
-python --version >nul 2>&1
-if %errorlevel% neq 0 (
-    echo ERROR: Python is not installed or not in your PATH.
-    echo Please install Python 3.8+ and ensure it is added to your system PATH.
-    pause
-    exit /b 1
-)
+:: Set default color to light green on black
+color 0A
 
-echo [2/3] Creating Python virtual environment in './venv'...
+echo.
+echo  +------------------------------------------------------------------------+
+echo  ^|                                                                        ^|
+echo  ^|                  AutoSig Local Bridge Installer v1.0                   ^|
+echo  ^|                                                                        ^|
+echo  ^|                  Developed by HCX Technologies                       ^|
+echo  ^|                                                                        ^|
+echo  +------------------------------------------------------------------------+
+echo.
+echo  This tool will set up the local bridge to connect your MT5 terminal
+echo  to the main signal server.
+echo.
+echo  Press any key to begin the installation...
+pause > nul
+
+
+:: === PHASE 1: ENVIRONMENT SETUP ===
+echo.
+echo  ==========================================================================
+echo  :: [PHASE 1 of 2] Preparing Python Environment
+echo  ==========================================================================
+echo.
+
 if not exist venv (
+    echo   - Python virtual environment not found. Creating one now...
     python -m venv venv
     if %errorlevel% neq 0 (
-        echo ERROR: Failed to create virtual environment.
-        pause
-        exit /b 1
+        echo   - ERROR: Failed to create virtual environment. Is Python installed?
+        goto :error
     )
+    echo   - Virtual environment created successfully.
 ) else (
-    echo Virtual environment already exists.
+    echo   - Virtual environment already exists.
+)
+echo.
+
+echo   - Installing required libraries (pywin32). This may take a moment...
+call .\venv\Scripts\activate.bat >nul 2>&1
+.\venv\Scripts\pip.exe install -r requirements.txt
+if %errorlevel% neq 0 (
+    echo   - ERROR: Failed to install libraries. Check your internet connection.
+    goto :error
+)
+echo   - Libraries installed successfully.
+echo.
+echo  --------------------------------------------------------------------------
+echo  [PHASE 1 COMPLETE]
+
+echo.
+
+
+:: === PHASE 2: SHORTCUT CREATION ===
+echo  ==========================================================================
+echo  :: [PHASE 2 of 2] Creating Windows Startup Shortcut
+echo  ==========================================================================
+echo.
+
+if not exist .\venv\Scripts\python.exe (
+    echo   - ERROR: Cannot find Python in the virtual environment.
+    goto :error
 )
 
-echo [3/3] Installing dependencies from requirements.txt...
-call .\venv\Scripts\activate.bat
-pip install -r requirements.txt
+:: Run the Python script to create the shortcut
+.\venv\Scripts\python.exe installer.py
+if %errorlevel% neq 0 (
+    echo.
+    echo   - The shortcut creation script reported an error.
+    goto :error
+)
+echo.
+echo  --------------------------------------------------------------------------
+echo  [PHASE 2 COMPLETE]
 
 echo.
-echo --- SETUP COMPLETE ---
-
-echo Creating startup shortcut...
-
-:: Define paths
-set SCRIPT_PATH=%~dp0run_background.vbs
-set SHORTCUT_PATH=%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup\run_bridge.lnk
-set TEMP_VBS_FILE=%~dp0_create_shortcut.vbs
-
-:: Create a temporary VBScript file to generate the shortcut
-(   echo Set oWS = WScript.CreateObject("WScript.Shell")
-    echo Set oLink = oWS.CreateShortcut("%SHORTCUT_PATH%")
-    echo oLink.TargetPath = "%SCRIPT_PATH%"
-    echo oLink.WindowStyle = 7
-    echo oLink.Description = "Start the AutoSig Local Bridge"
-    echo oLink.WorkingDirectory = "%~dp0"
-    echo oLink.Save
-) > "%TEMP_VBS_FILE%"
-
-:: Execute the VBScript
-cscript /nologo "%TEMP_VBS_FILE%"
-
-:: Clean up the temporary file
-del "%TEMP_VBS_FILE%"
-
 echo.
-echo A shortcut has been added to your Startup folder.
-echo The bridge will now start automatically when you log in.
-echo You can run the bridge manually by double-clicking 'run_background.vbs'.
+echo  +------------------------------------------------------------------------+
+echo.  ^|                                                                        ^|
+echo.  ^|                      INSTALLATION COMPLETE!                            ^|
+echo.  ^|                                                                        ^|
+echo.  +------------------------------------------------------------------------+
 echo.
-pause
+echo  The bridge will now start automatically every time you log into Windows.
+echo.
+echo  To start it for the current session, double-click 'run_background.vbs'.
+echo  To check its status at any time, run 'check_status.bat'.
+echo.
+goto :end
+
+
+:end
+color 07
+echo.
+echo  Press any key to exit.
+pause > nul
+goto :eof
+
+:error
+color 0C
+echo.
+echo  +------------------------------------------------------------------------+
+echo.  ^|                                                                        ^|
+echo.  ^|                       INSTALLATION FAILED                              ^|
+echo.  ^|                                                                        ^|
+echo.  +------------------------------------------------------------------------+
+echo.
+echo  Please review the error messages above.
+echo.
+color 07
+echo.
+echo  Press any key to exit.
+pause > nul
+
+:eof
+endlocal
