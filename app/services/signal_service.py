@@ -87,48 +87,58 @@ class SignalService:
             logger.error(f"An unexpected error occurred while forwarding signal: {e}")
 
 
+    def _format_detailed_message(
+        self, action: str, symbol: str, price: float, signal_id: int,
+        sl: float | None, tp1: float | None, tp2: float | None, tp3: float | None
+    ) -> str:
+        """Formats the detailed message for a new signal."""
+        action_emoji = "🟢" if action == "BUY" else "🔴"
+        
+        message = f"{action_emoji} <b>{action} SIGNAL: {symbol}</b>\n\n"
+
+        # Use 5 decimal places for consistency, as in the old format
+        message += f"➡️  <b>Entry:</b>   <code>{price:.5f}</code>\n"
+        message += f"🔴  <b>Stop:</b>    <code>{sl:.5f}</code>\n"
+        message += f"‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐\n"
+        message += f"🎯  <b>TP 1:</b>    <code>{tp1:.5f}</code>\n"
+        
+        if tp2:
+            message += f"🎯  <b>TP 2:</b>    <code>{tp2:.5f}</code>\n"
+        if tp3:
+            message += f"🎯  <b>TP 3:</b>    <code>{tp3:.5f}</code>\n"
+
+        message += f"\n<i>Signal #{signal_id} | {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M')} UTC</i>\n"
+        message += f"‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐\n"
+        message += "Set your Stop Loss and Take Profit based on your personal risk tolerance and account size.\n"
+        message += "✅ Practice proper risk management for consistent results."
+        
+        return message
+
     async def process_new_signal(
-        self, conn: sqlite3.Connection, action: str, symbol: str, price: float, atr: Optional[float] = None
+        self, conn: sqlite3.Connection, action: str, symbol: str, price: float, 
+        sl: float, tp1: float, tp2: Optional[float], tp3: Optional[float]
     ) -> int:
         """
-        Process a new BUY or SELL signal.
-        Calculates SL/TP, saves to DB, sends Telegram alert, and forwards to trader.
+        Process a new BUY or SELL signal with pre-calculated values.
+        Saves to DB, formats and sends a detailed Telegram alert, and forwards to trader.
         """
-        stop_loss, tp1, tp2, tp3 = None, None, None, None
-        
-        if atr:
-            sl_multiplier = 1.5
-            tp1_multiplier = 1.5
-            tp2_multiplier = 3.0
-            tp3_multiplier = 4.5
-
-            if action == "BUY":
-                stop_loss = price - (atr * sl_multiplier)
-                tp1 = price + (atr * tp1_multiplier)
-                tp2 = price + (atr * tp2_multiplier)
-                tp3 = price + (atr * tp3_multiplier)
-            elif action == "SELL":
-                stop_loss = price + (atr * sl_multiplier)
-                tp1 = price - (atr * tp1_multiplier)
-                tp2 = price - (atr * tp2_multiplier)
-                tp3 = price - (atr * tp3_multiplier)
-
-        # 1. Save signal to DB to get an ID
-        signal_id = repository.save_signal(conn, action, symbol, price, atr, stop_loss, tp1, tp2, tp3)
-        logger.info(f"Signal saved to DB: ID={signal_id}, {action} {symbol} @ {price}, SL={stop_loss}, TP1={tp1}")
+        # 1. Save signal to DB to get an ID. ATR is saved as None.
+        signal_id = repository.save_signal(conn, action, symbol, price, None, sl, tp1, tp2, tp3)
+        logger.info(f"Signal saved to DB: ID={signal_id}, {action} {symbol} @ {price}, SL={sl}, TP1={tp1}")
 
         # 2. Choose message style based on settings and send Telegram alert
-        stats = repository.get_today_stats(conn)
         if settings.SIGNAL_MESSAGE_STYLE == "classic":
+            stats = repository.get_today_stats(conn)
             message = self._format_classic_message(action, symbol, price, signal_id, stats)
-        else: # Default to "modern"
-            message = self._format_modern_message(action, symbol, price, signal_id, stop_loss, tp1, tp2, tp3)
+        else: # Default to "modern" / "detailed"
+            message = self._format_detailed_message(action, symbol, price, signal_id, sl, tp1, tp2, tp3)
         
         await telegram_service.send_alert(message)
+        logger.info(f"Sent '{settings.SIGNAL_MESSAGE_STYLE}' style Telegram alert for signal ID={signal_id}")
 
         # 3. Forward signal to external trading server (if applicable)
-        if all([stop_loss, tp1, tp2, tp3]):
-            await self._forward_signal_to_trader(action, symbol, price, stop_loss, tp1, tp2, tp3)
+        if all([sl, tp1]): # TP2 and TP3 are optional
+            await self._forward_signal_to_trader(action, symbol, price, sl, tp1, tp2, tp3)
 
         # 4. Update rate limiting state
         self.update_last_signal_time()

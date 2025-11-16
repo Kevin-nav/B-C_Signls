@@ -127,24 +127,39 @@ async def process_signal_data(data: dict) -> dict:
     try:
         action = data.get("action", "").upper()
         symbol = data.get("symbol")
-        price = data.get("price")
-        atr = data.get("atr") # Extract ATR value
+        # The EA sends "entry", the server code uses "price"
+        price = data.get("entry") 
         open_signal_id = data.get("open_signal_id")
 
         response = {"client_msg_id": data.get("client_msg_id")}
 
+        # For a close signal, price might not be in the "entry" field
+        if action == "CLOSE" and price is None:
+            price = data.get("price")
+
         if not all([action, symbol, price]):
-            return {**response, "status": "error", "message": "Missing required fields: action, symbol, price"}
+            return {**response, "status": "error", "message": "Missing required fields: action, symbol, entry/price"}
 
         conn = await asyncio.to_thread(create_bot_connection)
 
         if action in ["BUY", "SELL"]:
+            # Extract new fields from the payload
+            sl = data.get("sl")
+            tp1 = data.get("tp1")
+            tp2 = data.get("tp2")
+            tp3 = data.get("tp3")
+
+            if not all([sl, tp1]):
+                 return {**response, "status": "error", "message": "Missing required fields for new signal: sl, tp1"}
+
             can_send, reason = await asyncio.to_thread(signal_service.can_send_signal, conn)
             if not can_send:
                 return {**response, "status": "error", "message": reason}
 
-            # Call the centralized service which now handles DB, Telegram, and SL/TP logic
-            signal_id = await signal_service.process_new_signal(conn, action, symbol, price, atr)
+            # Call the centralized service with the raw signal data
+            signal_id = await signal_service.process_new_signal(
+                conn, action, symbol, price, sl, tp1, tp2, tp3
+            )
             
             message = f"Signal {action} processed successfully"
             return {**response, "status": "success", "message": message, "signal_id": signal_id}
